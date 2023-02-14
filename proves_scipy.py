@@ -64,22 +64,22 @@ A = 900
 B = 6
 Ho = 305
 K = 0.105
-cte_v = 0.072
+cte_v = 100
 
-Q_total = 10
+Q_total = 15
 
 model = pyo.AbstractModel()
 
-l_t = list(range(5))
+l_t = list(range(2))
 model.t = pyo.Set(initialize=l_t)
 
-l_cost = [0, 5, 10, 5, 0]
-# model.cost_elec = pyo.Param(initialize=l_cost)
+l_cost = [1, 5]
+model.cost_elec = pyo.Param(model.t, initialize=l_cost)
 
 model.P = pyo.Var(model.t, within=pyo.NonNegativeReals)
 model.Q = pyo.Var(model.t, within=pyo.NonNegativeReals)
 model.H = pyo.Var(model.t, within=pyo.NonNegativeReals)
-model.a = pyo.Var(model.t, within=pyo.NonNegativeReals)
+model.a = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.00001,1))
 
 def Constraint_P(m, t):
     return m.P[t] == rho_g * m.Q[t] * m.H[t]
@@ -93,12 +93,12 @@ def Constraint_Hr_Hb(m, t):
     return Ho+(K+cte_v/m.a[t])*(m.Q[t])**2 == m.H[t]
 model.Constraint_Hr_Hb = pyo.Constraint(model.t, rule=Constraint_Hr_Hb)
 
-def Constraint_Q_max(m, t):
-    return m.Q[t]<=9
-model.Constraint_Q_max = pyo.Constraint(model.t, rule=Constraint_Q_max)
+# def Constraint_Q_max(m, t):
+#     return m.Q[t]<=9
+# model.Constraint_Q_max = pyo.Constraint(model.t, rule=Constraint_Q_max)
 
 def Constraint_Q_total(m, t):
-    return sum(m.Q[t] for t in l_t) == Q_total
+    return abs(sum(m.Q[t] for t in l_t) - Q_total) <= 0.1
 model.Constraint_Q_total = pyo.Constraint(model.t, rule=Constraint_Q_total)
 
 def Constraint_alpha(m, t):
@@ -108,7 +108,7 @@ model.Constraint_alpha = pyo.Constraint(model.t, rule=Constraint_alpha)
 
 
 def obj_fun(m):
-    return sum(m.P[t]*l_cost[t] for t in l_t)
+    return sum(m.P[t]*m.cost_elec[t] for t in l_t)
 model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)    
 
 
