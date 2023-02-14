@@ -60,13 +60,13 @@ from pyomo.opt import SolverFactory
 import numpy as np
 
 rho_g = 1e3*9.81
-A = 80
-B = 20
-Ho = 20
-K = 50
-cte_v = 30
+A = 900
+B = 6
+Ho = 305
+K = 0.105
+cte_v = 0.072
 
-Q_total = 1
+Q_total = 10
 
 model = pyo.AbstractModel()
 
@@ -90,11 +90,11 @@ def Constraint_H(m, t):
 model.Constraint_H = pyo.Constraint(model.t, rule=Constraint_H)
 
 def Constraint_Hr_Hb(m, t):
-    return Ho+(K+cte_v/m.a[t])*(m.Q[t])**2 == A - B*(m.Q[t])**2
+    return Ho+(K+cte_v/m.a[t])*(m.Q[t])**2 == m.H[t]
 model.Constraint_Hr_Hb = pyo.Constraint(model.t, rule=Constraint_Hr_Hb)
 
 def Constraint_Q_max(m, t):
-    return m.Q[t]<=0.30
+    return m.Q[t]<=9
 model.Constraint_Q_max = pyo.Constraint(model.t, rule=Constraint_Q_max)
 
 def Constraint_Q_total(m, t):
@@ -114,13 +114,14 @@ model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = model.create_instance()
 solver = SolverFactory('ipopt')
+solver.options['max_iter']= 10000
 results = solver.solve(instance)
 results.write()
 
 instance.P.get_values()
 instance.Q.get_values()
-instance.H.get_values()
-instance.a.get_values()
+# instance.H.get_values()
+# instance.a.get_values()
 
 
 
