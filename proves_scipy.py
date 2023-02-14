@@ -120,8 +120,8 @@ results.write()
 
 instance.P.get_values()
 instance.Q.get_values()
-# instance.H.get_values()
-# instance.a.get_values()
+instance.H.get_values()
+instance.a.get_values()
 
 
 

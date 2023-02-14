@@ -45,15 +45,16 @@ Q_res_sum_total = abs(Q_res_sum-Q_total)<=0.1;
 [mc,mic] = min(mr);
 [mic, mir(mic)];
 
-hold on
 pcolor(cost_res_sum)
+hold on
 colorbar
 plot(mic,mir(mic),'ro','MarkerSize',5 , 'MarkerFaceColor','red')
 hold off
 
-hold on
 figure
-pcolor(Q_res_sum_total)
+pcolor(cost_res_sum.*Q_res_sum_total)
+hold on
+plot(mic,mir(mic),'ro','MarkerSize',5 , 'MarkerFaceColor','red')
 colorbar
 hold off
 
