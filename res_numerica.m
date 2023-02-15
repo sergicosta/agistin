@@ -7,14 +7,14 @@ Ho = 305;
 K = 0.105;
 c = 100;
 
-Q_total = 15;
+Q_total = 4;
 
 cost=[1;5];
 
 cost_fun = @(p,i) p.*cost(i);
 P_fun = @(q,h) q.*h.*1e3*9.81;
 H_fun = @(q) A-B.*q.^2;
-Q_fun = @(a) sqrt((A-Ho)./(1./a.*K.*c-B));
+Q_fun = @(a) sqrt((A-Ho)./(c./a+K+B));
 a_vector = linspace(0,1,100);
 
 Q_res = zeros(length(cost),length(a_vector));
