@@ -23,8 +23,8 @@ class system():
         else:
             self.id_pm += 1
     
-    def add_pipe(self, H_0, orig, end, valve=False, C_v=None, alpha=None):
-        self.pipes[f'{self.id_pp}'] = pipe(self, self.id_pp, H_0, orig, end, valve, C_v, alpha)
+    def add_pipe(self, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
+        self.pipes[f'{self.id_pp}'] = pipe(self, self.id_pp, K_i, H_0, orig, end, valve, C_v, alpha)
         if self.pipes[f'{self.id_pp}'].verification == False:
             del(self.pipes[f'{self.id_pp}'])
         else:
@@ -84,11 +84,12 @@ class pump():
 
 class pipe():
     
-    def __init__(self, system, ID, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
+    def __init__(self, system, ID, K_i, H_0, orig, end, valve, C_v, alpha):
         self.system = system
         self.id = ID
         self.K_i = K_i
         self.H_0 = H_0
+        self.Q_max = 1e6
         self.verification = True
         self.orig = self.inpt(orig)
         self.end = self.outpt(end)
@@ -108,7 +109,7 @@ class pipe():
             
     def outpt(self, out):
         if str(out) in list(self.system.rsvrs.keys()):
-            if out != self.input:
+            if out != self.orig:
                 return out
             else:
                 print('Input and Output reservoir IDs cannot be the same. Pipe eliminated')
