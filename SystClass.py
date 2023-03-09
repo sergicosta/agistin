@@ -2,6 +2,11 @@
 """
 Created on Tue Mar  7 09:32:33 2023
 
+Class system represents the whole system, define elements in the following order:
+    1. Reservoirs
+    2. Pipes (connecting reservoirs)
+    3. Pumps (associated to pipes)
+    
 """
 
 class system():
@@ -16,8 +21,8 @@ class system():
         self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min)
         self.id_rs += 1
     
-    def add_pump(self, rho_g, A, B, p_max, Q_max, ins, outs):
-        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, rho_g, A, B, p_max, Q_max, ins, outs)
+    def add_pump(self, rho_g, A, B, p_max, Q_max, in_pipe):
+        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, rho_g, A, B, p_max, Q_max, in_pipe)
         if self.pumps[f'{self.id_pm}'].verification == False:
             del(self.pumps[f'{self.id_pm}'])
         else:
@@ -29,6 +34,15 @@ class system():
             del(self.pipes[f'{self.id_pp}'])
         else:
             self.id_pp += 1
+            
+    def builder(self): # , obj_fun
+        file_name = 'optimization.py'
+        
+        with open(file_name, 'w') as f:
+            f.write('# -*- coding: utf-8 -*-\n\n')
+            f.write('import pyomo.environ as pyo\n')
+            f.write('model = pyo.AbstractModel()\n')
+            #f.write('model.t = pyo.Set(initialize=l_t)\n')
 
 
 class reservoir():
@@ -46,7 +60,7 @@ class reservoir():
 
 class pump():
     
-    def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, ins, outs):
+    def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, in_pipe):
         self.system = system
         self.id = ID
         self.rho_g = rho_g
@@ -55,32 +69,24 @@ class pump():
         self.p_max = p_max
         self.Q_max = Q_max
         self.verification = True
-        self.input = self.inpt(ins)
-        self.output = self.outpt(outs)
+        self.conn = self.conns(in_pipe)
         self.x = [f'p_b{ID}', f'Q_b{ID}', f'H_b{ID}']
         self.eqs = list()
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',]
         
-    def inpt(self, ins):
-        if str(ins) in list(self.system.rsvrs.keys()):
-            return ins
+    def conns(self, conn):
+        if str(conn) in list(self.system.pipes.keys()):
+            return conn
         else:
-            print('Input reservoir ID does not match any created. Pump eliminated')
-            self.verification *= False
-            
-    def outpt(self, out):
-        if str(out) in list(self.system.rsvrs.keys()):
-            if out != self.input:
-                return out
-            else:
-                print('Input and Output reservoir IDs cannot be the same. Pump eliminated')
-                self.verification *= False
-        else:
-            print('Output reservoir ID does not match any created. Pump eliminated')
+            print('Associated pipe ID does not match any created. Pump eliminated')
             self.verification *= False
         
+    def eq_write(self):
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]')
+        self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
+    
 
 class pipe():
     
@@ -119,4 +125,25 @@ class pipe():
             self.verification *= False
         
         
-        
+if __name__ == "__main__":
+    
+    sgr_sud = system()
+    sgr_sud.add_rsvr(58, 90, 30)
+    sgr_sud.add_rsvr(34, 50, 20)
+    sgr_sud.add_pipe(5, 630, 0, 1)
+    sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 2, 0)
+    
+    for i in sgr_sud.rsvrs.keys():
+        print(sgr_sud.rsvrs[i].x)
+        for k in sgr_sud.rsvrs[i].var:
+            print(k)
+        print('\n')
+    
+    for i in sgr_sud.pumps.keys():
+        print(sgr_sud.pumps[i].x)
+        for k in sgr_sud.pumps[i].var:
+            print(k)
+        sgr_sud.pumps[i].eq_write()
+        for k in sgr_sud.pumps[i].eqs:
+            print(k)
+
