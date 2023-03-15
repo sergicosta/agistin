@@ -28,6 +28,13 @@ class system():
         else:
             self.id_pm += 1
     
+    def add_pump_simple(self, p_max, Q_max, efficiency, in_pipe):
+        self.pumps[f'{self.id_pm}'] = pump_simple(self, self.id_pm, p_max, Q_max, efficiency, in_pipe)
+        if self.pumps[f'{self.id_pm}'].verification == False:
+            del(self.pumps[f'{self.id_pm}'])
+        else:
+            self.id_pm += 1
+    
     def add_pipe(self, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
         self.pipes[f'{self.id_pp}'] = pipe(self, self.id_pp, K_i, H_0, orig, end, valve, C_v, alpha)
         if self.pipes[f'{self.id_pp}'].verification == False:
@@ -87,6 +94,33 @@ class pump():
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]')
         self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
     
+    
+class pump_simple():
+    
+    def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe):
+        self.system = system
+        self.id = ID
+        self.p_max = p_max
+        self.Q_max = Q_max
+        self.efficiency = efficiency
+        self.verification = True
+        self.conn = self.conns(in_pipe)
+        self.x = [f'p_b{ID}', f'Q_b{ID}']
+        self.eqs = list()
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+                    ]
+        
+    def conns(self, conn):
+        if str(conn) in list(self.system.pipes.keys()):
+            return conn
+        else:
+            print('Associated pipe ID does not match any created. Pump eliminated')
+            self.verification *= False
+        
+    def eq_write(self):
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}')
+ 
 
 class pipe():
     
@@ -131,7 +165,8 @@ if __name__ == "__main__":
     sgr_sud.add_rsvr(58, 90, 30)
     sgr_sud.add_rsvr(34, 50, 20)
     sgr_sud.add_pipe(5, 630, 0, 1)
-    sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 2, 0)
+    # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 2, 0)
+    sgr_sud.add_pump_simple(25e4, 2, 0.8, 0)
     
     for i in sgr_sud.rsvrs.keys():
         print(sgr_sud.rsvrs[i].x)
@@ -147,3 +182,10 @@ if __name__ == "__main__":
         for k in sgr_sud.pumps[i].eqs:
             print(k)
 
+
+
+    
+    
+        
+        
+        
