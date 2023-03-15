@@ -48,13 +48,38 @@ class system():
         with open(file_name, 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n\n')
             f.write('import pyomo.environ as pyo\n')
-            f.write('model = pyo.AbstractModel()\n')
+            f.write('model = pyo.AbstractModel()\n\n')
             #f.write('model.t = pyo.Set(initialize=l_t)\n')
+            
+            for element_dict in [self.rsvrs, self.pumps, self.pipes]:
+                for ID in element_dict.keys():
+                    for v in element_dict[ID].var: # write variables
+                        f.write(v)
+                        f.write('\n')
+                    f.write('\n')
+                    
+                    element_dict[ID].eq_write()
+                    for eq in element_dict[ID].eqs: # write constraints
+                        f.write(eq)
+                        f.write('\n')
+                    f.write('\n')
+            
+            f.close()
+    
+class syst_element(): # Superclass
+    def __init__(self, ID):
+        self.ID = ID
+        self.x = []
+        self.var = []
+        self.eqs = list()
+    
+    def eq_write(self):
+        pass
 
-
-class reservoir():
+class reservoir(syst_element):
     
     def __init__(self, ID, W_0, W_max, W_min):
+        super().__init__(ID)
         self.id = ID
         self.W_0 = W_0
         self.W_max = W_max
@@ -62,12 +87,18 @@ class reservoir():
         self.x = [f'W_r{ID}']
         self.Q_in = list()
         self.Q_out = list()
+        self.eqs = list()
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(self.W_min)+', '+str(self.W_max)+'), initialize={k:'+str(self.W_0)+' for k in range(n)},)',]
         
+    def eq_write(self):
+        pass
+        # self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] + m.{self.Q_in}[t] - m.{self.Q_out}[t]')
 
-class pump():
+
+class pump(syst_element):
     
     def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, in_pipe):
+        super().__init__(ID)
         self.system = system
         self.id = ID
         self.rho_g = rho_g
@@ -95,9 +126,10 @@ class pump():
         self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
     
     
-class pump_simple():
+class pump_simple(syst_element):
     
     def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe):
+        super().__init__(ID)
         self.system = system
         self.id = ID
         self.p_max = p_max
@@ -119,12 +151,12 @@ class pump_simple():
             self.verification *= False
         
     def eq_write(self):
-        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}')
- 
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}\nmodel.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})\n')
 
-class pipe():
+class pipe(syst_element):
     
     def __init__(self, system, ID, K_i, H_0, orig, end, valve, C_v, alpha):
+        super().__init__(ID)
         self.system = system
         self.id = ID
         self.K_i = K_i
@@ -157,7 +189,7 @@ class pipe():
         else:
             print('Output reservoir ID does not match any created. Pipe eliminated')
             self.verification *= False
-        
+    
         
 if __name__ == "__main__":
     
@@ -168,19 +200,21 @@ if __name__ == "__main__":
     # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 2, 0)
     sgr_sud.add_pump_simple(25e4, 2, 0.8, 0)
     
-    for i in sgr_sud.rsvrs.keys():
-        print(sgr_sud.rsvrs[i].x)
-        for k in sgr_sud.rsvrs[i].var:
-            print(k)
-        print('\n')
+    sgr_sud.builder()
     
-    for i in sgr_sud.pumps.keys():
-        print(sgr_sud.pumps[i].x)
-        for k in sgr_sud.pumps[i].var:
-            print(k)
-        sgr_sud.pumps[i].eq_write()
-        for k in sgr_sud.pumps[i].eqs:
-            print(k)
+    # for i in sgr_sud.rsvrs.keys():
+    #     print(sgr_sud.rsvrs[i].x)
+    #     for k in sgr_sud.rsvrs[i].var:
+    #         print(k)
+    #     print('\n')
+    
+    # for i in sgr_sud.pumps.keys():
+    #     print(sgr_sud.pumps[i].x)
+    #     for k in sgr_sud.pumps[i].var:
+    #         print(k)
+    #     sgr_sud.pumps[i].eq_write()
+    #     for k in sgr_sud.pumps[i].eqs:
+    #         print(k)
 
 
 
