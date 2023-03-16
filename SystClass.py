@@ -15,7 +15,8 @@ class system():
         self.rsvrs = dict()
         self.pumps = dict()
         self.pipes = dict()
-        self.id_rs, self.id_pm, self.id_pp = 0, 0, 0
+        self.pvs   = dict()
+        self.id_rs, self.id_pm, self.id_pp, self.id_pv = 0, 0, 0, 0
     
     def add_rsvr(self, W_0, W_max, W_min):
         self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min)
@@ -43,6 +44,10 @@ class system():
             self.pipes[f'{self.id_pp}'].vinculo(self, orig, end)
             self.id_pp += 1
             
+    def add_PV(self, P_plant):
+        self.pvs[f'{self.id_pv}'] = PV(self, self.id_pv, P_plant)
+        self.id_pv += 1
+            
     def builder(self): # , obj_fun
         file_name = 'optimization.py'
         
@@ -53,6 +58,7 @@ class system():
             f.write('model = pyo.AbstractModel()\n\n')
             f.write('n = 5\nl_t = list(range(n))\n')
             f.write('model.t = pyo.Set(initialize=l_t)\n')
+            f.write('model.Dt = pyo.Param(initialize=1.0)\n')
             f.write('\n')
             
             vars_txt = ''
@@ -72,9 +78,9 @@ class system():
             f.close()
     
 class syst_element(): # Superclass
-    def __init__(self, ID):
+    def __init__(self, ID, x):
         self.ID = ID
-        self.x = []
+        self.x = x
         self.var = []
         self.eqs = list()
     
@@ -84,11 +90,10 @@ class syst_element(): # Superclass
 class reservoir(syst_element):
     
     def __init__(self, ID, W_0, W_max, W_min):
-        super().__init__(ID)
+        super().__init__(ID, [f'W_r{ID}'])
         self.W_0 = W_0
         self.W_max = W_max
         self.W_min = W_min
-        self.x = [f'W_r{ID}']
         self.Q_in = list()
         self.Q_out = list()
         self.eqs = list()
@@ -98,13 +103,13 @@ class reservoir(syst_element):
         qin_txt, qout_txt = '',''
         
         if len(self.Q_in)>0:
-            qin_txt = '+ ('
+            qin_txt = '+ m.Dt*('
             for q in self.Q_in:
                 qin_txt += f'm.{q}[t] + '
             qin_txt = qin_txt[0:-3] + ')'
             
         if len(self.Q_out)>0:
-            qout_txt = '- ('
+            qout_txt = '- m.Dt*('
             for q in self.Q_out:
                 qout_txt += f'm.{q}[t] + '
             qout_txt = qout_txt[0:-3] + ')'
@@ -120,7 +125,7 @@ class reservoir(syst_element):
 class pump(syst_element):
     
     def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, rpm_nominal, in_pipe):
-        super().__init__(ID)
+        super().__init__(ID, [f'p_b{ID}', f'Q_b{ID}', f'H_b{ID}', f'rpm_{ID}'])
         self.system = system
         self.rho_g = rho_g
         self.A = A
@@ -130,7 +135,6 @@ class pump(syst_element):
         self.rpm_nominal = rpm_nominal
         self.verification = True
         self.conn = self.conns(in_pipe)
-        self.x = [f'p_b{ID}', f'Q_b{ID}', f'H_b{ID}', f'rpm_{ID}']
         self.eqs = list()
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
@@ -156,14 +160,13 @@ class pump(syst_element):
 class pump_simple(syst_element):
     
     def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe):
-        super().__init__(ID)
+        super().__init__(ID, [f'p_b{ID}', f'Q_b{ID}'])
         self.system = system
         self.p_max = p_max
         self.Q_max = Q_max
         self.efficiency = efficiency
         self.verification = True
         self.conn = self.conns(in_pipe)
-        self.x = [f'p_b{ID}', f'Q_b{ID}']
         self.eqs = list()
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
@@ -187,7 +190,7 @@ class pump_simple(syst_element):
 class pipe(syst_element):
     
     def __init__(self, system, ID, K_i, H_0, orig, end, valve, C_v, alpha):
-        super().__init__(ID)
+        super().__init__(ID, [f'Q_p{ID}', f'H_p{ID}'])
         self.system = system
         self.K_i = K_i
         self.H_0 = H_0
@@ -199,7 +202,6 @@ class pipe(syst_element):
         self.valve = valve
         self.C_v = C_v
         self.alpha = alpha
-        self.x = [f'Q_p{ID}', f'H_p{ID}']
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.H_0)+' for k in range(n)},)',]
         
@@ -234,6 +236,18 @@ class pipe(syst_element):
                             f'\treturn m.{self.x[0]}[t] == '+qb_txt+'\n'
                             f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
     
+    
+class PV(syst_element):
+    
+    def __init__(self, system, ID, P_plant):
+        super().__init__(ID, [f'P_gpv{ID}'])
+        self.P_plant = P_plant
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.P_plant)+'),   initialize={k:'+str(0.5*self.P_plant)+'   for k in range(n)},)',]
+
+    def eq_write(self):
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t):\n'
+                        f'\treturn m.{self.x[0]}[t] <= P_pv{self.ID}[t]\n'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         
 if __name__ == "__main__":
     
