@@ -125,7 +125,7 @@ class pump(syst_element):
         
     def eq_write(self):
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]')
-        self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == (m.{self.x[3]}[t]/{self.rpm_nominal}) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
+        self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
     
     
 class pump_simple(syst_element):
