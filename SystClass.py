@@ -49,23 +49,25 @@ class system():
         with open(file_name, 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n\n')
             f.write('import pyomo.environ as pyo\n')
+            f.write('from pyomo.opt import SolverFactory\n')
             f.write('model = pyo.AbstractModel()\n\n')
-            f.write('n = 24\nl_t = list(range(n))\n')
+            f.write('n = 5\nl_t = list(range(n))\n')
             f.write('model.t = pyo.Set(initialize=l_t)\n')
             f.write('\n')
             
+            vars_txt = ''
+            eqs_txt = ''
             for element_dict in [self.rsvrs, self.pumps, self.pipes]:
                 for ID in element_dict.keys():
                     for v in element_dict[ID].var: # write variables
-                        f.write(v)
-                        f.write('\n')
-                    f.write('\n')
+                        vars_txt = vars_txt + v + '\n'
                     
                     element_dict[ID].eq_write()
                     for eq in element_dict[ID].eqs: # write constraints
-                        f.write(eq)
-                        f.write('\n')
-                    f.write('\n')
+                        eqs_txt = eqs_txt + eq + '\n\n'
+
+            f.write(vars_txt + '\n')
+            f.write(eqs_txt + '\n')
             
             f.close()
     
@@ -108,8 +110,11 @@ class reservoir(syst_element):
             qout_txt = qout_txt[0:-3] + ')'
         
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] '
-                        + qin_txt + qout_txt)
+                        f'\tif t>0:\n'
+                        f'\t\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] ' + qin_txt + qout_txt + '\n'
+                        f'\telse:\n'
+                        f'\t\treturn m.{self.x[0]}[t] == {self.W_0} \n'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
 class pump(syst_element):
@@ -234,7 +239,8 @@ if __name__ == "__main__":
     
     sgr_sud = system()
     sgr_sud.add_rsvr(58, 90, 30)
-    sgr_sud.add_rsvr(34, 50, 20)
+    # sgr_sud.add_rsvr(34, 50, 20)
+    sgr_sud.add_rsvr(5, 50, 20)
     sgr_sud.add_pipe(5, 630, 0, 1)
     # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0)
     sgr_sud.add_pump_simple(25e4, 2, 0.5, 0)
