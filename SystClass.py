@@ -81,7 +81,6 @@ class reservoir(syst_element):
     
     def __init__(self, ID, W_0, W_max, W_min):
         super().__init__(ID)
-        self.id = ID
         self.W_0 = W_0
         self.W_max = W_max
         self.W_min = W_min
@@ -101,7 +100,6 @@ class pump(syst_element):
     def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, in_pipe):
         super().__init__(ID)
         self.system = system
-        self.id = ID
         self.rho_g = rho_g
         self.A = A
         self.B = B
@@ -132,7 +130,6 @@ class pump_simple(syst_element):
     def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe):
         super().__init__(ID)
         self.system = system
-        self.id = ID
         self.p_max = p_max
         self.Q_max = Q_max
         self.efficiency = efficiency
@@ -159,7 +156,6 @@ class pipe(syst_element):
     def __init__(self, system, ID, K_i, H_0, orig, end, valve, C_v, alpha):
         super().__init__(ID)
         self.system = system
-        self.id = ID
         self.K_i = K_i
         self.H_0 = H_0
         self.Q_max = 1e6
