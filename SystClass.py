@@ -91,10 +91,23 @@ class reservoir(syst_element):
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(self.W_min)+', '+str(self.W_max)+'), initialize={k:'+str(self.W_0)+' for k in range(n)},)',]
         
     def eq_write(self):
-        # self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-        #                 '\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] + '
-        #                 'sum(q[t] for q in m.{self.Q_in}) - '
-        #                 'sum(q[t] for q in m.{self.Q_out})')
+        qin_txt, qout_txt = '',''
+        
+        if len(self.Q_in)>0:
+            qin_txt = '+ ('
+            for q in self.Q_in:
+                qin_txt += f'm.{q}[t] + '
+            qin_txt = qin_txt[0:-3] + ')'
+            
+        if len(self.Q_out)>0:
+            qout_txt = '- ('
+            for q in self.Q_out:
+                qout_txt += f'm.{q}[t] + '
+            qout_txt = qout_txt[0:-3] + ')'
+        
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                        f'\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] '
+                        + qin_txt + qout_txt)
 
 
 class pump(syst_element):
