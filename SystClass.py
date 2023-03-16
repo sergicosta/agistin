@@ -40,6 +40,7 @@ class system():
         if self.pipes[f'{self.id_pp}'].verification == False:
             del(self.pipes[f'{self.id_pp}'])
         else:
+            self.pipes[f'{self.id_pp}'].vinculo(self, orig, end)
             self.id_pp += 1
             
     def builder(self): # , obj_fun
@@ -189,6 +190,10 @@ class pipe(syst_element):
         else:
             print('Output reservoir ID does not match any created. Pipe eliminated')
             self.verification *= False
+            
+    def vinculo(self, sys, orig, end):
+        sys.rsvrs[f'{end}'].Q_in.append(self.x[0])
+        sys.rsvrs[f'{orig}'].Q_out.append(self.x[0])
     
         
 if __name__ == "__main__":
@@ -200,7 +205,7 @@ if __name__ == "__main__":
     # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 2, 0)
     sgr_sud.add_pump_simple(25e4, 2, 0.8, 0)
     
-    sgr_sud.builder()
+    # sgr_sud.builder()
     
     # for i in sgr_sud.rsvrs.keys():
     #     print(sgr_sud.rsvrs[i].x)
