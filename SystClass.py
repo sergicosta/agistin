@@ -50,7 +50,9 @@ class system():
             f.write('# -*- coding: utf-8 -*-\n\n')
             f.write('import pyomo.environ as pyo\n')
             f.write('model = pyo.AbstractModel()\n\n')
-            #f.write('model.t = pyo.Set(initialize=l_t)\n')
+            f.write('n = 24\nl_t = list(range(n))\n')
+            f.write('model.t = pyo.Set(initialize=l_t)\n')
+            f.write('\n')
             
             for element_dict in [self.rsvrs, self.pumps, self.pipes]:
                 for ID in element_dict.keys():
@@ -165,7 +167,7 @@ class pump_simple(syst_element):
             self.verification *= False
         
     def eq_write(self):
-        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}\nmodel.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})\n')
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}\nmodel.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
 class pipe(syst_element):
