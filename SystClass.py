@@ -133,14 +133,19 @@ class pump(syst_element):
         
     def conns(self, conn):
         if str(conn) in list(self.system.pipes.keys()):
+            self.system.pipes[str(conn)].parallel_pumps.append(self.ID)
             return conn
         else:
             print('Associated pipe ID does not match any created. Pump eliminated')
             self.verification *= False
         
     def eq_write(self):
-        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]')
-        self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2')
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n'
+                        f'\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2'
+                        f'model.Constraint_{self.x[2]} = pyo.Constraint(model.t, rule=Constraint_{self.x[2]})')
     
     
 class pump_simple(syst_element):
@@ -161,13 +166,17 @@ class pump_simple(syst_element):
         
     def conns(self, conn):
         if str(conn) in list(self.system.pipes.keys()):
+            self.system.pipes[str(conn)].parallel_pumps.append(self.ID)
             return conn
         else:
             print('Associated pipe ID does not match any created. Pump eliminated')
             self.verification *= False
         
     def eq_write(self):
-        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}\nmodel.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                        f'\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] / {self.efficiency}\n'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
 class pipe(syst_element):
@@ -179,6 +188,7 @@ class pipe(syst_element):
         self.H_0 = H_0
         self.Q_max = 1e6
         self.verification = True
+        self.parallel_pumps = list() # list of ID (int) of pumps in parallel
         self.orig = self.inpt(orig)
         self.end = self.outpt(end)
         self.valve = valve
@@ -209,6 +219,15 @@ class pipe(syst_element):
     def vinculo(self, sys, orig, end):
         sys.rsvrs[f'{end}'].Q_in.append(self.x[0])
         sys.rsvrs[f'{orig}'].Q_out.append(self.x[0])
+        
+    def eq_write(self):
+        if len(self.parallel_pumps)>0:
+            qb_txt = ''
+            for b in self.parallel_pumps:
+                qb_txt += f'+ m.Q_b{b}[t]'
+            self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                            f'\treturn m.{self.x[0]}[t] == '+qb_txt+'\n'
+                            f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
     
         
 if __name__ == "__main__":
@@ -218,7 +237,8 @@ if __name__ == "__main__":
     sgr_sud.add_rsvr(34, 50, 20)
     sgr_sud.add_pipe(5, 630, 0, 1)
     # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0)
-    sgr_sud.add_pump_simple(25e4, 2, 0.8, 0)
+    sgr_sud.add_pump_simple(25e4, 2, 0.5, 0)
+    sgr_sud.add_pump_simple(25e4, 2, 0.9, 0)
     
     sgr_sud.builder()
     
