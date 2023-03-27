@@ -22,6 +22,7 @@ class system():
         self.batts = dict()
         self.trbs  = dict()
         self.id_rs, self.id_eb, self.id_pm, self.id_pp, self.id_pv, self.id_bat, self.id_trb = 0, 0, 0, 0, 0, 0, 0
+        self.obj = list()
     
     def add_rsvr(self, W_0, W_max, W_min):
         self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min)
@@ -31,6 +32,14 @@ class system():
         self.EBs[f'{self.id_eb}'] = EB(self.id_eb, p_trafo)
         self.id_eb += 1
     
+    def add_pipe(self, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
+        self.pipes[f'{self.id_pp}'] = pipe(self, self.id_pp, K_i, H_0, orig, end, valve, C_v, alpha)
+        if self.pipes[f'{self.id_pp}'].verification == False:
+            del(self.pipes[f'{self.id_pp}'])
+        else:
+            self.pipes[f'{self.id_pp}'].link_to()
+            self.id_pp += 1
+     
     def add_pump(self, rho_g, A, B, p_max, Q_max, in_pipe, eb_loc):
         self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, rho_g, A, B, p_max, Q_max, in_pipe, eb_loc)
         if self.pumps[f'{self.id_pm}'].verification == False:
@@ -46,17 +55,9 @@ class system():
         else:
             self.pumps[f'{self.id_pm}'].link_to()
             self.id_pm += 1
-    
-    def add_pipe(self, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
-        self.pipes[f'{self.id_pp}'] = pipe(self, self.id_pp, K_i, H_0, orig, end, valve, C_v, alpha)
-        if self.pipes[f'{self.id_pp}'].verification == False:
-            del(self.pipes[f'{self.id_pp}'])
-        else:
-            self.pipes[f'{self.id_pp}'].link_to()
-            self.id_pp += 1
-            
-    def add_PV(self, EB_loc, p_plant):
-        self.pvs[f'{self.id_pv}'] = PV(self, self.id_pv, EB_loc,p_plant)
+       
+    def add_PV(self, EB_loc, p_inst, p_max):
+        self.pvs[f'{self.id_pv}'] = PV(self, self.id_pv, EB_loc, p_inst, p_max)
         if self.pvs[f'{self.id_pv}'].verification == False:
             del(self.pvs[f'{self.id_pv}'])
         else:
@@ -70,18 +71,30 @@ class system():
         else:
             self.batts[f'{self.id_bat}'].link_to()
             self.id_bat += 1
-            
     
     def add_turbine(self, p_max):
         pass
-            
-    def builder(self): # , obj_fun
+    
+    def write_obj(self):
+        p_grid = '('
+        for eb in self.EBs.keys():
+            p_grid += f'm.{self.EBs[eb].x[0]}[t] + '
+        p_grid = p_grid[:-3] + ')'
+        self.obj.append('def obj_fun(m):\n'
+                        f'\treturn sum({p_grid}*m.cost_elec[t] for t in l_t)\n'
+                        'model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)\n')
+        
+    def builder(self, solver): # , obj_fun
+        """ This function collects all the information from the system and 
+        writes a script (optimization.py) that codes the optimization problem 
+        using pyomo formulation."""
+        
         file_name = 'optimization.py'
         
         with open(file_name, 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n\n')
             f.write('import pyomo.environ as pyo\n')
-            f.write('from pyomo.opt import SolverFactory\n')
+            f.write('# from pyomo.opt import SolverFactory\n')
             f.write('model = pyo.AbstractModel()\n\n')
             f.write('n = 5\nl_t = list(range(n))\n')
             f.write('model.t = pyo.Set(initialize=l_t)\n')
@@ -90,6 +103,7 @@ class system():
             
             vars_txt = ''
             eqs_txt = ''
+            
             for element_dict in [self.rsvrs, self.EBs, self.pumps, self.pipes, self.pvs, self.batts, self.trbs]:
                 for ID in element_dict.keys():
                     for v in element_dict[ID].var: # write variables
@@ -98,9 +112,16 @@ class system():
                     element_dict[ID].eq_write()
                     for eq in element_dict[ID].eqs: # write constraints
                         eqs_txt = eqs_txt + eq + '\n\n'
+            
+            self.write_obj()
+            obj_txt = self.obj[0]
 
             f.write(vars_txt + '\n')
             f.write(eqs_txt + '\n')
+            f.write(obj_txt + '\n\n')
+            f.write('instance = model.create_instance()\n')
+            f.write(f"solver = pyo.SolverFactory('{solver}')\n")
+            f.write("solver.solve(instance, mip_solver='glpk', nlp_solver='ipopt', tee=True)\n")
             
             f.close()
     
@@ -108,7 +129,7 @@ class syst_element(): # Superclass
     def __init__(self, ID, x):
         self.ID = ID
         self.x = x
-        self.var = []
+        self.var = list()
         self.eqs = list()
     
     def eq_write(self):
@@ -152,7 +173,7 @@ class EB(syst_element):
     
     def __init__(self, ID, p_max):
         super().__init__(ID, [f'P_g{ID}'])
-        self.P_in = list() # PVs and turbines generated power
+        self.P_in  = list() # PVs and turbines generated power
         self.P_out = list() # pumps demanded power
         self.P_bal = list() # batteries power
         self.p_g_max = p_max
@@ -162,13 +183,16 @@ class EB(syst_element):
         p_in, p_out, p_bal = '','',''
         if len(self.P_in)>0:
             for p in self.P_in:
-                p_in += f' + m.{p}[t]'
+                p_in += f'm.{p}[t] + '
         if len(self.P_out)>0:
             for p in self.P_out:
-                p_out += f' + m.{p}[t]'
+                p_out += f'm.{p}[t] + '
         if len(self.P_bal)>0:
             for p in self.P_bal:
-                p_bal += f' + m.{p}[t]'
+                p_bal += f'm.{p}[t] + '
+        p_in  = p_in[:-3]
+        p_out = p_out[:-3]
+        p_bal = p_bal[:-3]
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
                         f'\treturn m.{self.x[0]}[t] == ('+p_bal+') + ('+p_in+') - ('+p_out+')\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
@@ -246,8 +270,9 @@ class pump_simple(syst_element):
 
 class turbine(syst_element):
     
-    def __init__(self, system, ID, x):
-        super().__init__(ID, x)
+    def __init__(self, system, ID):
+        super().__init__(ID, ['P_trb{ID}'])
+        self.system = system
         
 
 class pipe(syst_element):
@@ -294,7 +319,8 @@ class pipe(syst_element):
         if len(self.parallel_pumps)>0:
             qb_txt = ''
             for b in self.parallel_pumps:
-                qb_txt += f'+ m.Q_b{b}[t]'
+                qb_txt += f'm.Q_b{b}[t] + '
+            qb_txt = qb_txt[:-3]
             self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
                             f'\treturn m.{self.x[0]}[t] == '+qb_txt+'\n'
                             f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
@@ -302,13 +328,15 @@ class pipe(syst_element):
     
 class PV(syst_element):
     
-    def __init__(self, system, ID, EB_loc, P_plant):
-        super().__init__(ID, [f'P_gpv{ID}'])
+    def __init__(self, system, ID, EB_loc, p_inst, p_max):
+        super().__init__(ID, [f'P_pv_g{ID}', f'P_pv_dim{ID}'])
         self.system = system
         self.eb_loc = self.conn(EB_loc)
-        self.P_plant = P_plant
+        self.p_inst = p_inst
+        self.p_max  = p_max
         self.verification = True
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.P_plant)+'),   initialize={k:'+str(0.5*self.P_plant)+'   for k in range(n)},)',]
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals,  initialize={k: 0.0 for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(0.5*self.p_max)+'   for k in range(n)},)',]
 
     def link_to(self):
         self.system.EBs[f'{self.eb_loc}'].P_in.append(self.x[0])
@@ -322,8 +350,11 @@ class PV(syst_element):
 
     def eq_write(self):
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t):\n'
-                        f'\treturn m.{self.x[0]}[t] <= P_pv{self.ID}[t]\n'
+                        f'\treturn m.{self.x[0]}[t] <= ({self.p_inst} + m.{self.x[1]})*m.forecast_pv{self.ID}[t]\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        self.eqs.append(f'def Constraint_{self.x[1]}(m):\n'
+                        f'\treturn m.{self.x[1]} <= {self.p_max}\n'
+                        f'model.Constraint_{self.x[1]} = pyo.Constraint(rule=Constraint_{self.x[1]})')
         
         
 class battery(syst_element):
@@ -358,7 +389,7 @@ if __name__ == "__main__":
     # Reservoirs definition
     sgr_sud.add_rsvr(58, 90, 30)
     # sgr_sud.add_rsvr(34, 50, 20)
-    sgr_sud.add_rsvr(5, 50, 20)
+    sgr_sud.add_rsvr(35, 50, 20)
     
     # EBs definition
     sgr_sud.add_EB(1e6)
@@ -372,12 +403,12 @@ if __name__ == "__main__":
     sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
     
     # PVs difinition
-    sgr_sud.add_PV(0, 5e2)
+    sgr_sud.add_PV(0, 5e2, 1e3)
     
     # Batteries definition
     sgr_sud.add_battery(0, 1e3)
     
-    sgr_sud.builder()
+    sgr_sud.builder(solver='mindtpy')
     
     # for i in sgr_sud.rsvrs.keys():
     #     print(sgr_sud.rsvrs[i].x)
