@@ -214,7 +214,7 @@ class EB(syst_element):
 class pump(syst_element):
     
     def __init__(self, system, ID, rho_g, A, B, p_max, Q_max, rpm_nominal, in_pipe, EB_loc):
-        super().__init__(ID, [f'p_b{ID}_h', f'Q_b{ID}', f'H_b{ID}', f'rpm_{ID}', f'p_b{ID}_e'])
+        super().__init__(ID, [f'Ph_b{ID}', f'Q_b{ID}', f'H_b{ID}', f'rpm_{ID}', f'Pe_b{ID}'])
         self.system = system
         self.rho_g = rho_g
         self.A = A
@@ -241,13 +241,19 @@ class pump(syst_element):
         self.system.EBs[f'{self.loc}'].P_out.append(self.x[0])
     
     def eq_write(self):
-        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]'
-                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        #  H_b = (rpm/n_n)^2*A - B*Q^2
         self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n'
                         f'\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2'
                         f'model.Constraint_{self.x[2]} = pyo.Constraint(model.t, rule=Constraint_{self.x[2]})')
-    
+        #  Ph_b = rho*g*Q*H
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        #  TODO: Pe_b = Ph_b/rend
+        self.eqs.append(f'def Constraint_{self.x[4]}(m, t): \n'
+                        f'\treturn m.{self.x[4]}[t] == {self.x[0]}[t]'
+                        f'model.Constraint_{self.x[4]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]})')
+        
     
 class pump_simple(syst_element):
     
