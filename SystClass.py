@@ -7,7 +7,8 @@ Class system represents the whole system, define elements in the following order
     2. Pump Stations [EB] (electrical power balance)
     3. Pipes (connecting reservoirs)
     4. Pumps (associated to pipes)
-    5. PV, batteries ... linked to EBs
+    5. Turbines (associated to pipes)
+    6. PV, batteries ... linked to EBs
     
 """
 
@@ -74,6 +75,14 @@ class system():
     
     def add_turbine(self, p_max):
         pass
+    
+    def add_turbine_simple(self, p_max, Q_max, efficiency, in_pipe, eb_loc):
+        self.trbs[f'{self.id_trb}'] = turbine_simple(self, self.id_trb, p_max, Q_max, efficiency, in_pipe, eb_loc)
+        if self.trbs[f'{self.id_trb}'].verification == False:
+            del(self.trbs[f'{self.id_trb}'])
+        else:
+            self.trbs[f'{self.id_trb}'].link_to()
+            self.id_trb += 1
     
     def write_obj(self):
         p_grid = '('
@@ -177,24 +186,28 @@ class EB(syst_element):
         self.P_out = list() # pumps demanded power
         self.P_bal = list() # batteries power
         self.p_g_max = p_max
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(-self.p_g_max)+', '+str(self.p_g_max)+'),  initialize={k:0.0 for k in range(n)},)',]
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.Reals, bounds=('+str(-self.p_g_max)+', '+str(self.p_g_max)+'),  initialize={k:0.0 for k in range(n)},)',]
         
     def eq_write(self):
+        eb_txt = ''
         p_in, p_out, p_bal = '','',''
         if len(self.P_in)>0:
             for p in self.P_in:
                 p_in += f'm.{p}[t] + '
+            p_in  = p_in[:-3]
+            eb_txt = eb_txt + '- ('+p_in+')'
         if len(self.P_out)>0:
             for p in self.P_out:
                 p_out += f'm.{p}[t] + '
+            p_out = p_out[:-3]
+            eb_txt = eb_txt + '+ ('+p_out+')'
         if len(self.P_bal)>0:
             for p in self.P_bal:
                 p_bal += f'm.{p}[t] + '
-        p_in  = p_in[:-3]
-        p_out = p_out[:-3]
-        p_bal = p_bal[:-3]
+            p_bal = p_bal[:-3]
+            eb_txt = eb_txt + '+ ('+p_bal+')'
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == ('+p_bal+') + ('+p_in+') - ('+p_out+')\n'
+                        f'\treturn m.{self.x[0]}[t] == '+eb_txt+'\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
@@ -239,7 +252,7 @@ class pump(syst_element):
 class pump_simple(syst_element):
     
     def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe, EB_loc):
-        super().__init__(ID, [f'p_b{ID}', f'Q_b{ID}'])
+        super().__init__(ID, [f'P_b{ID}', f'Q_b{ID}'])
         self.system = system
         self.p_max = p_max
         self.Q_max = Q_max
@@ -271,8 +284,40 @@ class pump_simple(syst_element):
 class turbine(syst_element):
     
     def __init__(self, system, ID):
-        super().__init__(ID, ['P_trb{ID}'])
+        super().__init__(ID, [f'P_trb{ID}', f'Q_trb{ID}'])
         self.system = system
+   
+class turbine_simple(syst_element):
+    
+    def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe, EB_loc):
+        super().__init__(ID, [f'P_trb{ID}', f'Q_trb{ID}'])
+        self.system = system    
+        self.p_max = p_max
+        self.Q_max = Q_max
+        self.efficiency = efficiency
+        self.verification = True
+        self.conn = self.conns(in_pipe)
+        self.loc = EB_loc
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+                    ]
+        
+    def conns(self, conn):
+        if str(conn) in list(self.system.pipes.keys()):
+            self.system.pipes[str(conn)].parallel_trbs.append(self.ID)
+            return conn
+        else:
+            print('Associated pipe ID does not match any created. Pump eliminated')
+            self.verification *= False
+            
+    def link_to(self):
+        self.system.EBs[f'{self.loc}'].P_in.append(self.x[0])
+        
+    def eq_write(self):
+        self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                        f'\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] * {self.efficiency}\n'
+                        f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        
         
 
 class pipe(syst_element):
@@ -285,12 +330,13 @@ class pipe(syst_element):
         self.Q_max = 1e6
         self.verification = True
         self.parallel_pumps = list() # list of ID (int) of pumps in parallel
+        self.parallel_trbs = list() # list of ID (int) of pumps in parallel
         self.orig = self.inpt(orig)
         self.end = self.outpt(end)
         self.valve = valve
         self.C_v = C_v
         self.alpha = alpha
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.Reals, bounds=('+str(-self.Q_max)+', '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.H_0)+' for k in range(n)},)',]
         
     def inpt(self, ins):
@@ -319,12 +365,20 @@ class pipe(syst_element):
         if len(self.parallel_pumps)>0:
             qb_txt = ''
             for b in self.parallel_pumps:
-                qb_txt += f'm.Q_b{b}[t] + '
-            qb_txt = qb_txt[:-3]
+                qb_txt += f'+ m.Q_b{b}[t] '
+            # qb_txt = qb_txt[:-3]
             self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
                             f'\treturn m.{self.x[0]}[t] == '+qb_txt+'\n'
                             f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
     
+        if len(self.parallel_trbs)>0:
+            qt_txt = ''
+            for trb in self.parallel_trbs:
+                qt_txt += f'- m.Q_trb{trb}[t] '
+            # qt_txt = qt_txt[:-3]
+            self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
+                            f'\treturn m.{self.x[0]}[t] == '+qt_txt+'\n'
+                            f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
     
 class PV(syst_element):
     
@@ -396,17 +450,19 @@ if __name__ == "__main__":
     
     # Pipes definition
     sgr_sud.add_pipe(5, 630, 0, 1)
+    sgr_sud.add_pipe(5, 630, 0, 1)
     
     # Pumps definition
     # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0)
-    sgr_sud.add_pump_simple(25e4, 2, 0.5, 0, 0)
-    sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
+    sgr_sud.add_pump_simple(25e4, 50, 0.5, 0, 0)
+    # sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
+    sgr_sud.add_turbine_simple(25e4, 50, 0.5, 1, 0)
     
     # PVs difinition
-    sgr_sud.add_PV(0, 5e2, 1e3)
+    # sgr_sud.add_PV(0, 5e2, 1e3)
     
     # Batteries definition
-    sgr_sud.add_battery(0, 1e3)
+    #sgr_sud.add_battery(0, 1e3)
     
     sgr_sud.builder(solver='mindtpy')
     
