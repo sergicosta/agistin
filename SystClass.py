@@ -174,7 +174,7 @@ class reservoir(syst_element):
                         f'\tif t>0:\n'
                         f'\t\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] ' + qin_txt + qout_txt + '\n'
                         f'\telse:\n'
-                        f'\t\treturn m.{self.x[0]}[t] == {self.W_0} \n'
+                        f'\t\treturn m.{self.x[0]}[t] == {self.W_0}' + qin_txt + qout_txt + ' \n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
