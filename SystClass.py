@@ -24,13 +24,16 @@ class system():
         self.trbs  = dict()
         self.id_rs, self.id_eb, self.id_pm, self.id_pp, self.id_pv, self.id_bat, self.id_trb = 0, 0, 0, 0, 0, 0, 0
         self.obj = list()
+        self.x_s = list()
     
     def add_rsvr(self, W_0, W_max, W_min):
         self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min)
+        self.x_s.extend(self.rsvrs[f'{self.id_rs}'].x)
         self.id_rs += 1
         
     def add_EB(self, p_trafo):
         self.EBs[f'{self.id_eb}'] = EB(self.id_eb, p_trafo)
+        self.x_s.extend(self.EBs[f'{self.id_eb}'].x)
         self.id_eb += 1
     
     def add_pipe(self, K_i, H_0, orig, end, valve=False, C_v=None, alpha=None):
@@ -38,6 +41,7 @@ class system():
         if self.pipes[f'{self.id_pp}'].verification == False:
             del(self.pipes[f'{self.id_pp}'])
         else:
+            self.x_s.extend(self.pipes[f'{self.id_pp}'].x)
             self.pipes[f'{self.id_pp}'].link_to()
             self.id_pp += 1
      
@@ -46,6 +50,7 @@ class system():
         if self.pumps[f'{self.id_pm}'].verification == False:
             del(self.pumps[f'{self.id_pm}'])
         else:
+            self.x_s.extend(self.pumps[f'{self.id_pm}'].x)
             self.pumps[f'{self.id_pm}'].link_to()
             self.id_pm += 1
     
@@ -54,6 +59,7 @@ class system():
         if self.pumps[f'{self.id_pm}'].verification == False:
             del(self.pumps[f'{self.id_pm}'])
         else:
+            self.x_s.extend(self.pumps[f'{self.id_pm}'].x)
             self.pumps[f'{self.id_pm}'].link_to()
             self.id_pm += 1
        
@@ -62,6 +68,7 @@ class system():
         if self.pvs[f'{self.id_pv}'].verification == False:
             del(self.pvs[f'{self.id_pv}'])
         else:
+            self.x_s.extend(self.pvs[f'{self.id_pv}'].x)
             self.pvs[f'{self.id_pv}'].link_to()
             self.id_pv += 1
         
@@ -70,6 +77,7 @@ class system():
         if self.batts[f'{self.id_bat}'].verification == False:
             del(self.batts[f'{self.id_bat}'])
         else:
+            self.x_s.extend(self.batts[f'{self.id_bat}'].x)
             self.batts[f'{self.id_bat}'].link_to()
             self.id_bat += 1
     
@@ -81,6 +89,7 @@ class system():
         if self.trbs[f'{self.id_trb}'].verification == False:
             del(self.trbs[f'{self.id_trb}'])
         else:
+            self.x_s.extend(self.trbs[f'{self.id_trb}'].x)
             self.trbs[f'{self.id_trb}'].link_to()
             self.id_trb += 1
     
@@ -102,12 +111,16 @@ class system():
         
         with open(file_name, 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n\n')
+            f.write('import pyomo\n')
             f.write('import pyomo.environ as pyo\n')
+            f.write('import json\n')
             f.write('# from pyomo.opt import SolverFactory\n')
             f.write('model = pyo.AbstractModel()\n\n')
-            f.write('n = 5\nl_t = list(range(n))\n')
+            f.write('with open("ext_data.json","r") as file:\n\tdata=json.load(file)\n\n')
+            f.write('n = len(data["cost_elec"])\nl_t = list(range(n))\n')
             f.write('model.t = pyo.Set(initialize=l_t)\n')
             f.write('model.Dt = pyo.Param(initialize=1.0)\n')
+            f.write('model.cost_elec = pyo.Param(model.t, initialize=data["cost_elec"])\n')
             f.write('\n')
             
             vars_txt = ''
@@ -131,9 +144,13 @@ class system():
             f.write('instance = model.create_instance()\n')
             f.write(f"solver = pyo.SolverFactory('{solver}')\n")
             f.write("solver.solve(instance, mip_solver='glpk', nlp_solver='ipopt', tee=True)\n")
-            
+            f.write("results = {}\n")
+            for x in self.x_s:
+                f.write(f"results['{x}'] = list(instance.{x}.get_values().values())\n")
+            f.write("with open('results.json', 'w') as jfile:\n\tjson.dump(results, jfile)\n")
             f.close()
-    
+
+
 class syst_element(): # Superclass
     def __init__(self, ID, x):
         self.ID = ID
@@ -143,6 +160,7 @@ class syst_element(): # Superclass
     
     def eq_write(self):
         pass
+
 
 class reservoir(syst_element):
     
@@ -174,7 +192,7 @@ class reservoir(syst_element):
                         f'\tif t>0:\n'
                         f'\t\treturn m.{self.x[0]}[t] == m.{self.x[0]}[t-1] ' + qin_txt + qout_txt + '\n'
                         f'\telse:\n'
-                        f'\t\treturn m.{self.x[0]}[t] == {self.W_0} \n'
+                        f'\t\treturn m.{self.x[0]}[t] == {self.W_0} ' + qin_txt + qout_txt + '\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
 
 
@@ -225,8 +243,8 @@ class pump(syst_element):
         self.verification = True
         self.conn = self.conns(in_pipe)
         self.loc = EB_loc
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',]
         
     def conns(self, conn):
@@ -260,8 +278,8 @@ class pump_simple(syst_element):
         self.verification = True
         self.conn = self.conns(in_pipe)
         self.loc = EB_loc
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     ]
         
     def conns(self, conn):
@@ -286,7 +304,8 @@ class turbine(syst_element):
     def __init__(self, system, ID):
         super().__init__(ID, [f'P_trb{ID}', f'Q_trb{ID}'])
         self.system = system
-   
+
+
 class turbine_simple(syst_element):
     
     def __init__(self, system, ID, p_max, Q_max, efficiency, in_pipe, EB_loc):
@@ -298,8 +317,8 @@ class turbine_simple(syst_element):
         self.verification = True
         self.conn = self.conns(in_pipe)
         self.loc = EB_loc
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(1e-6, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     ]
         
     def conns(self, conn):
@@ -319,7 +338,6 @@ class turbine_simple(syst_element):
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         
         
-
 class pipe(syst_element):
     
     def __init__(self, system, ID, K_i, H_0, orig, end, valve, C_v, alpha):
@@ -380,6 +398,7 @@ class pipe(syst_element):
                             f'\treturn m.{self.x[0]}[t] == '+qt_txt+'\n'
                             f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
     
+    
 class PV(syst_element):
     
     def __init__(self, system, ID, EB_loc, p_inst, p_max):
@@ -437,6 +456,8 @@ class battery(syst_element):
         
 if __name__ == "__main__":
     
+    import runpy
+    
     # System definition
     sgr_sud = system()
     
@@ -458,13 +479,14 @@ if __name__ == "__main__":
     # sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
     sgr_sud.add_turbine_simple(25e4, 50, 0.5, 1, 0)
     
-    # PVs difinition
+    # PVs definition
     # sgr_sud.add_PV(0, 5e2, 1e3)
     
     # Batteries definition
     #sgr_sud.add_battery(0, 1e3)
     
-    sgr_sud.builder(solver='mindtpy')
+    sgr_sud.builder(solver='mindtpy') 
+    runpy.run_path(path_name='optimization.py')
     
     # for i in sgr_sud.rsvrs.keys():
     #     print(sgr_sud.rsvrs[i].x)
