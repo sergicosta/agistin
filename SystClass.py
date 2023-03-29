@@ -45,8 +45,8 @@ class system():
             self.pipes[f'{self.id_pp}'].link_to()
             self.id_pp += 1
      
-    def add_pump(self, rho_g, A, B, p_max, Q_max, in_pipe, eb_loc):
-        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, rho_g, A, B, p_max, Q_max, in_pipe, eb_loc)
+    def add_pump(self, rho_g, A, B, p_max, Q_max, rpm_nominal, in_pipe, eb_loc):
+        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, rho_g, A, B, p_max, Q_max, rpm_nominal, in_pipe, eb_loc)
         if self.pumps[f'{self.id_pm}'].verification == False:
             del(self.pumps[f'{self.id_pm}'])
         else:
@@ -245,7 +245,9 @@ class pump(syst_element):
         self.loc = EB_loc
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
-                    'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',]
+                    'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',
+                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',
+                    'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(self.A)+' for k in range(n)},)'] # TODO: Pel max
         
     def conns(self, conn):
         if str(conn) in list(self.system.pipes.keys()):
@@ -261,15 +263,15 @@ class pump(syst_element):
     def eq_write(self):
         #  H_b = (rpm/n_n)^2*A - B*Q^2
         self.eqs.append(f'def Constraint_{self.x[2]}(m, t): \n'
-                        f'\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2'
+                        f'\treturn m.{self.x[2]}[t] == ((m.{self.x[3]}[t]/{self.rpm_nominal})**2) * {self.A} - {self.B}*(m.{self.x[1]}[t])**2\n'
                         f'model.Constraint_{self.x[2]} = pyo.Constraint(model.t, rule=Constraint_{self.x[2]})')
         #  Ph_b = rho*g*Q*H
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]'
+                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         #  TODO: Pe_b = Ph_b/rend
         self.eqs.append(f'def Constraint_{self.x[4]}(m, t): \n'
-                        f'\treturn m.{self.x[4]}[t] == {self.x[0]}[t]'
+                        f'\treturn m.{self.x[4]}[t] == m.{self.x[0]}[t]\n'
                         f'model.Constraint_{self.x[4]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]})')
         
     
@@ -359,7 +361,7 @@ class pipe(syst_element):
         self.end = self.outpt(end)
         self.valve = valve
         self.C_v = C_v
-        self.alpha = alpha
+        self.alpha = alpha # TODO: alpha es variable, no param
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.Reals, bounds=('+str(-self.Q_max)+', '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.H_0)+' for k in range(n)},)',]
         
@@ -386,11 +388,20 @@ class pipe(syst_element):
         self.system.rsvrs[f'{self.orig}'].Q_out.append(self.x[0])
         
     def eq_write(self):
+        #  Hp = Ho + K*Q^2
+        self.eqs.append(f'def Constraint_{self.x[1]}(m, t): \n'
+                        f'\treturn m.{self.x[1]}[t] == {self.H_0} + {self.K_i}*m.{self.x[0]}[t]\n'
+                        f'model.Constraint_{self.x[1]} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]})')
+
         if len(self.parallel_pumps)>0:
             qb_txt = ''
             for b in self.parallel_pumps:
                 qb_txt += f'+ m.Q_b{b}[t] '
-            # qb_txt = qb_txt[:-3]
+                #  Hp = Hb1 = Hb2...
+                self.eqs.append(f'def Constraint_{self.x[1]}_H_b{b}(m, t): \n'
+                                f'\treturn m.{self.x[1]}[t] == m.H_b{b}[t]\n'
+                                f'model.Constraint_{self.x[1]}_H_b{b} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]}_H_b{b})')
+            # Qp = sum(Qb)
             self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
                             f'\treturn m.{self.x[0]}[t] == '+qb_txt+'\n'
                             f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
@@ -480,8 +491,8 @@ if __name__ == "__main__":
     sgr_sud.add_pipe(5, 630, 0, 1)
     
     # Pumps definition
-    # sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0)
-    sgr_sud.add_pump_simple(25e4, 50, 0.5, 0, 0)
+    sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0, 0)
+    # sgr_sud.add_pump_simple(25e4, 50, 0.5, 0, 0)
     # sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
     sgr_sud.add_turbine_simple(25e4, 50, 0.5, 1, 0)
     
@@ -492,7 +503,7 @@ if __name__ == "__main__":
     #sgr_sud.add_battery(0, 1e3)
     
     sgr_sud.builder(solver='mindtpy') 
-    runpy.run_path(path_name='optimization.py')
+    # runpy.run_path(path_name='optimization.py')
     
     # for i in sgr_sud.rsvrs.keys():
     #     print(sgr_sud.rsvrs[i].x)
