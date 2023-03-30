@@ -111,7 +111,6 @@ class system():
         
         with open(file_name, 'w') as f:
             f.write('# -*- coding: utf-8 -*-\n\n')
-            f.write('import pyomo\n')
             f.write('import pyomo.environ as pyo\n')
             f.write('import json\n')
             f.write('# from pyomo.opt import SolverFactory\n')
@@ -149,6 +148,15 @@ class system():
                 f.write(f"results['{x}'] = list(instance.{x}.get_values().values())\n")
             f.write("with open('results.json', 'w') as jfile:\n\tjson.dump(results, jfile)\n")
             f.close()
+            
+    def run(self):
+        import runpy
+        import json
+        
+        runpy.run_path(path_name='optimization.py')
+        with open('results.json', 'r') as file:
+            res = json.load(file)
+        return res
 
 
 class syst_element(): # Superclass
@@ -246,8 +254,8 @@ class pump(syst_element):
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(0.8*self.Q_max)+'   for k in range(n)},)',
                     'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',
-                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, None),   initialize={k:'+str(self.A)+' for k in range(n)},)',
-                    'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(self.A)+' for k in range(n)},)'] # TODO: Pel max
+                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, None),   initialize={k:'+str(self.rpm_nominal)+' for k in range(n)},)',
+                    'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)'] # TODO: Pel max
         
     def conns(self, conn):
         if str(conn) in list(self.system.pipes.keys()):
@@ -258,7 +266,7 @@ class pump(syst_element):
             self.verification *= False
     
     def link_to(self):
-        self.system.EBs[f'{self.loc}'].P_out.append(self.x[0])
+        self.system.EBs[f'{self.loc}'].P_out.append(self.x[4])
     
     def eq_write(self):
         #  H_b = (rpm/n_n)^2*A - B*Q^2
@@ -342,7 +350,7 @@ class turbine_simple(syst_element):
         
     def eq_write(self):
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == m.{self.x[1]}[t] * {self.efficiency}\n'
+                        f'\treturn m.{self.x[0]}[t] == 9.81e3*m.{self.x[1]}[t] * 20 * {self.efficiency}\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         
         
@@ -484,17 +492,17 @@ if __name__ == "__main__":
     sgr_sud.add_rsvr(35, 50, 20)
     
     # EBs definition
-    sgr_sud.add_EB(1e6)
+    sgr_sud.add_EB(100e6)
     
     # Pipes definition
-    sgr_sud.add_pipe(5, 630, 0, 1)
-    sgr_sud.add_pipe(5, 630, 0, 1)
+    sgr_sud.add_pipe(20, 50, 0, 1)
+    sgr_sud.add_pipe(20, 50, 0, 1)
     
     # Pumps definition
-    sgr_sud.add_pump(9.81e3, 800, 12, 25e4, 1450, 2, 0, 0)
+    sgr_sud.add_pump(9.81e3, 80, 20, 25e6, 1450, 2000, 0, 0)
     # sgr_sud.add_pump_simple(25e4, 50, 0.5, 0, 0)
     # sgr_sud.add_pump_simple(25e4, 2, 0.9, 0, 0)
-    sgr_sud.add_turbine_simple(25e4, 50, 0.5, 1, 0)
+    sgr_sud.add_turbine_simple(25e6, 2000, 0.5, 1, 0)
     
     # PVs definition
     # sgr_sud.add_PV(0, 5e2, 1e3)
@@ -503,7 +511,7 @@ if __name__ == "__main__":
     #sgr_sud.add_battery(0, 1e3)
     
     sgr_sud.builder(solver='mindtpy') 
-    # runpy.run_path(path_name='optimization.py')
+    runpy.run_path(path_name='optimization.py')
     
     # for i in sgr_sud.rsvrs.keys():
     #     print(sgr_sud.rsvrs[i].x)
