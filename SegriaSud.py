@@ -29,7 +29,7 @@ sgr_sud.add_pump(9.81e3, 80, 20, 25e6, 1450, 2000, 0, 0)
 sgr_sud.add_turbine_simple(25e6, 2000, 0.5, 1, 0)
 
 # PVs definition
-# sgr_sud.add_PV(0, 5e2, 1e3)
+sgr_sud.add_PV(0, 5e5, 1e4)
 
 # Batteries definition
 #sgr_sud.add_battery(0, 1e3)

@@ -120,6 +120,7 @@ class system():
             f.write('model.t = pyo.Set(initialize=l_t)\n')
             f.write('model.Dt = pyo.Param(initialize=1.0)\n')
             f.write('model.cost_elec = pyo.Param(model.t, initialize=data["cost_elec"])\n')
+            f.write('model.forecast_pv0 = pyo.Param(model.t, initialize=data["weather"])\n')
             f.write('\n')
             
             vars_txt = ''
@@ -434,7 +435,7 @@ class PV(syst_element):
         self.p_max  = p_max
         self.verification = True
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals,  initialize={k: 0.0 for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(0.5*self.p_max)+'   for k in range(n)},)',]
+                    'model.'+self.x[1]+' = pyo.Var(within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize='+str(0.5*self.p_max)+',)',]
 
     def link_to(self):
         self.system.EBs[f'{self.eb_loc}'].P_in.append(self.x[0])
