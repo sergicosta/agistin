@@ -120,7 +120,8 @@ class system():
             f.write('model.t = pyo.Set(initialize=l_t)\n')
             f.write('model.Dt = pyo.Param(initialize=1.0)\n')
             f.write('model.cost_elec = pyo.Param(model.t, initialize=data["cost_elec"])\n')
-            f.write('model.forecast_pv0 = pyo.Param(model.t, initialize=data["weather"])\n')
+            for k in range(self.id_pv):
+                f.write(f'model.forecast_pv{k} = pyo.Param(model.t, initialize=data["weather_{k}"])\n')
             f.write('\n')
             
             vars_txt = ''
