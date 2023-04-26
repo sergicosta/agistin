@@ -340,16 +340,16 @@ class new_pump(syst_element):
         self.verification = True
         self.conn = self.conns(in_pipe)
         self.loc = EB_loc
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:'+str(0.0)+' for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:'+str(0.0)+' for k in range(n)},)',
-                    'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:'+str(0.0)+' for k in range(n)},)',
-                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:'+str(0.0)+' for k in range(n)},)',
-                    'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:'+str(0.0)+' for k in range(n)},)',
-                    'model.'+self.x[5]+' = pyo.Var(within=pyo.NonNegativeReals, initialize='+str(0.0)+',)',
-                    'model.'+self.x[6]+' = pyo.Var(within=pyo.NonNegativeReals, initialize='+str(0.0)+',)',
-                    'model.'+self.x[7]+' = pyo.Var(within=pyo.NonNegativeReals, initialize='+str(0.0)+',)',
-                    'model.'+self.x[8]+' = pyo.Var(within=pyo.NonNegativeReals, initialize='+str(0.0)+',)',
-                    'model.'+self.x[9]+' = pyo.Var(within=pyo.NonNegativeReals, initialize='+str(0.0)+',)',
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:0.0 for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:0.0 for k in range(n)},)',
+                    'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:0.0 for k in range(n)},)',
+                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:0.0 for k in range(n)},)',
+                    'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, initialize={k:0.0 for k in range(n)},)',
+                    'model.'+self.x[5]+' = pyo.Var(within=pyo.NonNegativeReals, initialize=0.0,)',
+                    'model.'+self.x[6]+' = pyo.Var(within=pyo.NonNegativeReals, initialize=0.0,)',
+                    'model.'+self.x[7]+' = pyo.Var(within=pyo.NonNegativeReals, initialize=0.0,)',
+                    'model.'+self.x[8]+' = pyo.Var(within=pyo.NonNegativeReals, initialize=0.0,)',
+                    'model.'+self.x[9]+' = pyo.Var(within=pyo.NonNegativeReals, initialize=0.0,)',
                     ]
     
     def conns(self, conn):
@@ -396,6 +396,10 @@ class new_pump(syst_element):
         self.eqs.append(f'def Constraint_{self.x[4]}{self.x[7]}(m, t): \n'
                         f'\treturn m.{self.x[4]}[t] <= m.{self.x[7]}\n'
                         f'model.Constraint_{self.x[4]}{self.x[7]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]}{self.x[7]})')
+        #  Ph_b_max = rho*g*Q_max*A (max version)
+        self.eqs.append(f'def Constraint_{self.x[7]}(m, t): \n'
+                        f'\treturn m.{self.x[7]} == {self.rho_g} * m.{self.x[5]} * m.{self.x[8]}\n'
+                        f'model.Constraint_{self.x[7]} = pyo.Constraint(model.t, rule=Constraint_{self.x[7]})')
 
 
 class turbine(syst_element):
