@@ -27,8 +27,8 @@ class system():
         self.x_s = list()
         self.rho_g = rho_g
     
-    def add_rsvr(self, W_0, W_max, W_min):
-        self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min)
+    def add_rsvr(self, W_0, W_max, W_min, z_max, z_min):
+        self.rsvrs[f'{self.id_rs}'] = reservoir(self.id_rs, W_0, W_max, W_min, z_max, z_min)
         self.x_s.extend(self.rsvrs[f'{self.id_rs}'].x)
         self.id_rs += 1
         
@@ -198,15 +198,22 @@ class syst_element(): # Superclass
 
 class reservoir(syst_element):
     
-    def __init__(self, ID, W_0, W_max, W_min):
-        super().__init__(ID, [f'W_r{ID}'])
+    def __init__(self, ID, W_0, W_max, W_min, z_max, z_min):
+        super().__init__(ID, [f'W_r{ID}', f'z_r{ID}'])
         self.W_0 = W_0
-        self.W_max = W_max
+        self.W_max = W_max # Capacity (m3)
         self.W_min = W_min
+        self.z_max = z_max # Height amsl (m)
+        self.z_min = z_min
         self.Q_in = list()
         self.Q_out = list()
-        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(self.W_min)+', '+str(self.W_max)+'), initialize={k:'+str(self.W_0)+' for k in range(n)},)',]
+        self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(self.W_min)+', '+str(self.W_max)+'), initialize={k:'+str(self.W_0)+' for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=('+str(self.z_min)+', '+str(self.z_max)+'), initialize={k:'+self.z_r(str(self.W_0))+' for k in range(n)},)',]
         
+
+    def z_r(self, wr):
+        return '('+wr+'-'+str(self.W_min)+')/('+str(self.W_max-self.W_min)+')*('+str(self.z_max-self.z_min)+')+'+str(self.z_min)
+    
     def eq_write(self):
         qin_txt, qout_txt = '',''
         
@@ -229,6 +236,9 @@ class reservoir(syst_element):
                         f'\telse:\n'
                         f'\t\treturn m.{self.x[0]}[t] == {self.W_0} ' + qin_txt + qout_txt + '\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        self.eqs.append(f'def Constraint_{self.x[1]}(m, t): \n'
+                        f'\treturn m.{self.x[1]}[t] == ' + self.z_r(f'm.{self.x[0]}[t]') + '\n'
+                        f'model.Constraint_{self.x[1]} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]})')
 
 
 class EB(syst_element):
@@ -462,7 +472,7 @@ class pipe(syst_element):
         self.Q_max = 1e6
         self.verification = True
         self.parallel_pumps = list() # list of ID (int) of pumps in parallel
-        self.parallel_trbs = list() # list of ID (int) of pumps in parallel
+        self.parallel_trbs = list() # list of ID (int) of turbines in parallel
         self.orig = self.inpt(orig)
         self.end = self.outpt(end)
         self.valve = valve
