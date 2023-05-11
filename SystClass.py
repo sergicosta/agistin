@@ -114,8 +114,18 @@ class system():
         for eb in self.EBs.keys():
             p_grid += f'm.{self.EBs[eb].x[0]}[t] + '
         p_grid = p_grid[:-3] + ')'
+        
+        opex = f'sum({p_grid}*m.cost_elec[t] for t in l_t)'
+        
+        p_inst = '('
+        for pv in self.pvs.keys():
+            p_inst += f' + m.{self.pvs[pv].x[1]}*m.cost_pv_inst[0]'
+        capex = p_inst + ')'
+        if capex=='()':
+            capex='0'
+        
         self.obj.append('def obj_fun(m):\n'
-                        f'\treturn sum({p_grid}*m.cost_elec[t] for t in l_t)\n'
+                        f'\treturn ' + opex + ' + ' + capex + '\n'
                         'model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)\n')
         
     def builder(self, solver): # , obj_fun
@@ -136,6 +146,7 @@ class system():
             f.write('model.t = pyo.Set(initialize=l_t)\n')
             f.write('model.Dt = pyo.Param(initialize=1.0)\n')
             f.write('model.cost_elec = pyo.Param(model.t, initialize=data["cost_elec"])\n')
+            f.write('model.cost_pv_inst = pyo.Param(model.t, initialize=data["cost_pv_inst"])\n')
             for k in range(self.id_rs):
                 f.write(f'model.gamma_{k} = pyo.Param(model.t, initialize=data["gamma_{k}"])\n')
                 f.write(f'model.q_irr_{k} = pyo.Param(model.t, initialize=data["q_irr_{k}"])\n')
@@ -300,7 +311,7 @@ class pump(syst_element):
                         f'model.Constraint_{self.x[2]} = pyo.Constraint(model.t, rule=Constraint_{self.x[2]})')
         #  Ph_b = rho*g*Q*H
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]\n'
+                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]/3600\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         #  DONE: Pe_b*rend = Ph_b
         self.eqs.append(f'def Constraint_{self.x[4]}(m, t): \n'
@@ -549,7 +560,7 @@ class pipe(syst_element):
     def eq_write(self):
         #  Hp = Ho + K*Q^2
         self.eqs.append(f'def Constraint_{self.x[1]}(m, t): \n'
-                        f'\treturn m.{self.x[1]}[t] == {self.H_0} + {self.K_i}*m.{self.x[0]}[t]\n'
+                        f'\treturn m.{self.x[1]}[t] == {self.H_0} + {self.K_i}*m.{self.x[0]}[t]**2\n'
                         f'model.Constraint_{self.x[1]} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]})')
 
         if len(self.parallel_pumps)>0:
