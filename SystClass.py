@@ -570,7 +570,7 @@ class pipe(syst_element):
     def eq_write(self):
         #  Hp = Ho + K*Q^2
         self.eqs.append(f'def Constraint_{self.x[1]}(m, t): \n'
-                        f'\treturn m.{self.x[1]}[t] == {self.H_0} + {self.K_i}*m.{self.x[0]}[t]**2\n'
+                        f'\treturn m.{self.x[1]}[t] == m.z_r{self.end}[t]-m.z_r{self.orig}[t] + {self.K_i}*m.{self.x[0]}[t]**2\n'
                         f'model.Constraint_{self.x[1]} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]})')
 
         if len(self.parallel_pumps)>0:
