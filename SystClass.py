@@ -125,7 +125,7 @@ class system():
             capex='0'
         
         self.obj.append('def obj_fun(m):\n'
-                        f'\treturn ' + opex + ' + ' + capex + '\n'
+                        '\treturn ' + opex + ' + ' + capex + '\n'
                         'model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)\n')
         
     def builder(self, solver): # , obj_fun
