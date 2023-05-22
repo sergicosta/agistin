@@ -299,7 +299,7 @@ class pump(syst_element):
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
                     'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(2*self.Q_nominal)+'),   initialize={k:'+str(0.8*self.Q_nominal)+'   for k in range(n)},)',
                     'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None), initialize={k:'+str(self.A)+' for k in range(n)},)',
-                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, None), initialize={k:'+str(1.1*self.rpm_nominal)+' for k in range(n)},)',
+                    'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(1*self.rpm_nominal)+'), initialize={k:'+str(0.8*self.rpm_nominal)+' for k in range(n)},)',
                     'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)', # TODO: Pel max
                     'model.'+self.x[5]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.nu_nominal)+'), initialize={k:0.85 for k in range(n)},)',]
         
@@ -522,7 +522,7 @@ class turbine_simple(syst_element):
         
     def eq_write(self):
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == {self.system.rho_g}*m.{self.x[1]}[t] * 20 * {self.efficiency}\n'
+                        f'\treturn m.{self.x[0]}[t] == {self.system.rho_g}*m.{self.x[1]}[t] * 10 * {self.efficiency}\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         
         
