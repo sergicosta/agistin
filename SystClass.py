@@ -329,7 +329,7 @@ class pump(syst_element):
                         f'model.Constraint_{self.x[4]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]})')
         #  Efficiency
         self.eqs.append(f'def Constraint_{self.x[5]}(m, t): \n'
-                        f'\treturn m.{self.x[5]}[t] == 1.0 - (1.0 - {self.nu_nominal})*((m.{self.x[3]}[t]/{self.rpm_nominal})**0.1)\n'
+                        f'\treturn m.{self.x[5]}[t] == 1.0 - (1.0 - {self.nu_nominal})*(({self.rpm_nominal}/m.{self.x[3]}[t])**0.1)\n'
                         f'model.Constraint_{self.x[5]} = pyo.Constraint(model.t, rule=Constraint_{self.x[5]})')
         
     
