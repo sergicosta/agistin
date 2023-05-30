@@ -46,8 +46,8 @@ class system():
             self.pipes[f'{self.id_pp}'].link_to()
             self.id_pp += 1
      
-    def add_pump(self, A, B, p_max, Q_max, rpm_nominal, nu_nominal, in_pipe, eb_loc):
-        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, self.rho_g, A, B, p_max, Q_max, rpm_nominal, nu_nominal, in_pipe, eb_loc)
+    def add_pump(self, A, B, p_max, Q_min_d_max, rpm_nominal, nu_nominal, in_pipe, eb_loc):
+        self.pumps[f'{self.id_pm}'] = pump(self, self.id_pm, self.rho_g, A, B, p_max, Q_min_d_max, rpm_nominal, nu_nominal, in_pipe, eb_loc)
         if self.pumps[f'{self.id_pm}'].verification == False:
             del(self.pumps[f'{self.id_pm}'])
         else:
@@ -283,25 +283,27 @@ class EB(syst_element):
 
 class pump(syst_element):
     
-    def __init__(self, system, ID, rho_g, A, B, p_max, Q_nominal, rpm_nominal, nu_nominal, in_pipe, EB_loc):
+    def __init__(self, system, ID, rho_g, A, B, p_max, Q_min_d_max, rpm_nominal, nu_nominal, in_pipe, EB_loc):
         super().__init__(ID, [f'Ph_b{ID}', f'Q_b{ID}', f'H_b{ID}', f'rpm_{ID}', f'Pe_b{ID}', f'nu_b{ID}'])
         self.system = system
         self.rho_g = rho_g
         self.A = A
         self.B = B
         self.p_max = p_max
-        self.Q_nominal = Q_nominal
+        self.Q_min = Q_min_d_max[0]
+        self.Q_max = Q_min_d_max[2]
+        self.Q_nominal = Q_min_d_max[1]
         self.rpm_nominal = rpm_nominal
         self.nu_nominal = nu_nominal
         self.verification = True
         self.conn = self.conns(in_pipe)
         self.loc = EB_loc
         self.var = ['model.'+self.x[0]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),  initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)',
-                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(2*self.Q_nominal)+'),   initialize={k:'+str(0.8*self.Q_nominal)+'   for k in range(n)},)',
+                    'model.'+self.x[1]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.Q_max)+'),   initialize={k:'+str(self.Q_nominal)+'   for k in range(n)},)',
                     'model.'+self.x[2]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(None, None), initialize={k:'+str(self.A)+' for k in range(n)},)',
                     'model.'+self.x[3]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(1*self.rpm_nominal)+'), initialize={k:'+str(0.8*self.rpm_nominal)+' for k in range(n)},)',
                     'model.'+self.x[4]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.p_max)+'),   initialize={k:'+str(0.8*self.p_max)+' for k in range(n)},)', # TODO: Pel max
-                    'model.'+self.x[5]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.nu_nominal)+'), initialize={k:0.85 for k in range(n)},)',]
+                    'model.'+self.x[5]+' = pyo.Var(model.t, within=pyo.NonNegativeReals, bounds=(0.0, '+str(self.nu_nominal)+'), initialize={k:'+str(self.nu_nominal)+' for k in range(n)},)',]
         
     def conns(self, conn):
         if str(conn) in list(self.system.pipes.keys()):
@@ -321,7 +323,7 @@ class pump(syst_element):
                         f'model.Constraint_{self.x[2]} = pyo.Constraint(model.t, rule=Constraint_{self.x[2]})')
         #  Ph_b = rho*g*Q*H
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t): \n'
-                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]/3600\n'
+                        f'\treturn m.{self.x[0]}[t] == {self.rho_g} * m.{self.x[1]}[t] * m.{self.x[2]}[t]\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         #  DONE: Pe_b*rend = Ph_b
         self.eqs.append(f'def Constraint_{self.x[4]}(m, t): \n'
@@ -329,6 +331,7 @@ class pump(syst_element):
                         f'model.Constraint_{self.x[4]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]})')
         #  Efficiency
         self.eqs.append(f'def Constraint_{self.x[5]}(m, t): \n'
+                        # f'\treturn m.{self.x[5]}[t] == {self.nu_nominal}\n'
                         f'\treturn m.{self.x[5]}[t] == 1.0 - (1.0 - {self.nu_nominal})*(({self.rpm_nominal}/m.{self.x[3]}[t])**0.1)\n'
                         f'model.Constraint_{self.x[5]} = pyo.Constraint(model.t, rule=Constraint_{self.x[5]})')
         
