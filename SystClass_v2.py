@@ -180,10 +180,9 @@ model.Constraint_Wmin_Res = pyo.Constraint(model.t, rule=Constraint_Wmin_Res)
 #TODO
 def Constraint_W_Res(m, i_res, t): 
 	if t>0:
-        # TODO: Qin i Qout amb id_in i id_out
-		return m.res_W[i_res, t] == m.res_W[i_res, t-1] + sum(m.pipes_Q[pipe_id, t] for pipe_id in m.res_id_in[i_res]) - m.res_Q_cons[i_res, t]
+		return m.res_W[i_res, t] == m.res_W[i_res, t-1] + sum(m.pipes_Q[pipe, t] for pipe in m.res_id_in[i_res]) - sum(m.pipes_Q[pipe, t] for pipe in m.res_id_out[i_res]) - m.res_Q_cons[i_res, t]
 	else:
-		return m.W_r0[t] == 142869 - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
+		return m.res_W[i_res, t] == m.res_W_0[i_res] + sum(m.pipes_Q[pipe, t] for pipe in m.res_id_in[i_res]) - sum(m.pipes_Q[pipe, t] for pipe in m.res_id_out[i_res]) - m.res_Q_cons[i_res, t]
    	# TODO: add gamma, Dt
     # if t>0:
    	# 	return m.res_W[i_res, t] == m.res_W[i_res, t-1]*(1 -m.gamma_0[t]) - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
