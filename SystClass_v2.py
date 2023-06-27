@@ -95,12 +95,17 @@ class Pipes(Elements):
         self.end = {}
         
         # init variables
-        self.Ho = {} # --> {(id,t):val}
-        self.Qo = {} # --> {(id,t):val}
+        self.init_H = {} # --> {(id,t):val}
+        self.init_Q = {} # --> {(id,t):val}
         
         
-    def add(self, id_elem, K, Qmax=1e6):
+    def add(self, id_elem, K, id_in, id_out, Qmax=1e6):
         super().add(id_elem)
+        
+        self.K[id_elem] = K
+        self.Qmax[id_elem] = Qmax
+        self.id_in[id_elem] = id_in
+        self.id_out[id_elem] = id_out
     
 
 
