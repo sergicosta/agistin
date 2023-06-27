@@ -125,7 +125,7 @@ class system():
             capex='0'
         
         self.obj.append('def obj_fun(m):\n'
-                        f'\treturn ' + opex + ' + ' + capex + '\n'
+                        '\treturn ' + opex + ' + ' + capex + '\n'
                         'model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)\n')
         
     def builder(self, solver): # , obj_fun
@@ -243,6 +243,7 @@ class reservoir(syst_element):
                         f'\telse:\n'
                         f'\t\treturn m.{self.x[0]}[t] == {self.W_0} ' + qin_txt + qout_txt + '\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        
         self.eqs.append(f'def Constraint_{self.x[1]}(m, t): \n'
                         f'\treturn m.{self.x[1]}[t] == ' + self.z_r(f'm.{self.x[0]}[t]') + '\n'
                         f'model.Constraint_{self.x[1]} = pyo.Constraint(model.t, rule=Constraint_{self.x[1]})')
@@ -485,15 +486,15 @@ class turbine(syst_element):
                         f'model.Constraint_{self.x[3]} = pyo.Constraint(model.t, rule=Constraint_{self.x[3]})')
         # nu_trb[t] = A2*q_trb[t]**2 + A1*q_trb[t] + A0
         self.eqs.append(f'def Constraint_{self.x[7]}(m, t):\n'
-                        f'\treturn m.{self.x[7]}[t] == -1.4519*{self.x[2]}[t]**2 + 2.4466*{self.x[2]}[t] - 0.1065\n'
+                        f'\treturn m.{self.x[7]}[t] == -1.4519*m.{self.x[2]}[t]**2 + 2.4466*m.{self.x[2]}[t] - 0.1065\n'
                         f'model.Constraint_{self.x[7]} = pyo.Constraint(model.t, rule=Constraint_{self.x[7]})')
-        # Pe_trb[t]*nu_trb[t] = Ph_trb[t]
+        # Pe_trb[t] = Ph_trb[t]*nu_trb[t]
         self.eqs.append(f'def Constraint_{self.x[4]}(m, t):\n'
-                        f'\treturn m.{self.x[4]}[t]*{self.x[7]}[t] == {self.x[3]}[t]\n'
+                        f'\treturn m.{self.x[4]}[t] == {self.x[3]}[t]*m.{self.x[7]}[t]\n'
                         f'model.Constraint_{self.x[4]} = pyo.Constraint(model.t, rule=Constraint_{self.x[4]})')
         # Pd_trb >= Pe_trb[t]
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t):\n'
-                        f'\treturn m.{self.x[0]} >= {self.x[4]}[t]\n'
+                        f'\treturn m.{self.x[0]} >= m.{self.x[4]}[t]\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
         
 
@@ -625,6 +626,7 @@ class PV(syst_element):
         self.eqs.append(f'def Constraint_{self.x[0]}(m, t):\n'
                         f'\treturn m.{self.x[0]}[t] <= ({self.p_inst} + m.{self.x[1]})*m.forecast_pv{self.ID}[t]\n'
                         f'model.Constraint_{self.x[0]} = pyo.Constraint(model.t, rule=Constraint_{self.x[0]})')
+        
         self.eqs.append(f'def Constraint_{self.x[1]}(m):\n'
                         f'\treturn m.{self.x[1]} <= {self.p_max}\n'
                         f'model.Constraint_{self.x[1]} = pyo.Constraint(rule=Constraint_{self.x[1]})')
