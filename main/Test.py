@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import pyomo.environ as pyo
-from ReservoirsClass import Reservoirs
-from PumpsClass import Pumps
-from Construct import Builder
+from Devices.ReservoirsClass import Reservoirs
+from Devices.PumpsClass import Pumps
+from Functionalities.Construct import Builder
 
 l_t = list(range(5))
 
