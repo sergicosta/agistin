@@ -57,3 +57,40 @@ class Reservoirs(Elements):
         model.res_Q_cons = pyo.Param(model.i_res, model.t, initialize=self.Q_cons, within=pyo.NonNegativeReals)
         # VARIABLES
         model.res_W = pyo.Var(model.i_res, model.t, initialize=self.init_W, within=pyo.NonNegativeReals)
+        
+        
+    def builderConstr(self, model):
+        model.Constraint_Wmax_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_Wmax_Res)
+        model.Constraint_Wmin_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_Wmin_Res)
+        model.Constraint_W_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_W_Res)
+        model.Constraint_Q_in = pyo.Constraint(model.i_res, model.t, rule=Constraint_Q_in)
+    
+# CONSTRAINTS
+
+def Constraint_Wmax_Res(m, i_res, t):
+    return m.res_W[i_res, t] <= m.res_W_max[i_res]
+
+def Constraint_Wmin_Res(m, i_res, t):
+    return m.res_W[i_res, t] >= m.res_W_min[i_res]
+
+def Constraint_W_Res(m, i_res, t): 
+	if t>0:
+		return m.res_W[i_res, t] == m.res_W[i_res, t-1] + m.res_Q[i_res, t]**2 - m.res_Q_loss[i_res, t]
+	else:
+		return m.res_W[i_res, t] == m.res_W_0[i_res] + m.res_Q[i_res, t]**2 - m.res_Q_loss[i_res, t]
+   	# TODO: add gamma, Dt
+    # if t>0:
+   	# 	return m.res_W[i_res, t] == m.res_W[i_res, t-1]*(1 -m.gamma_0[t]) - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
+   	# else:
+   	# 	return m.W_r0[t] == 142869 - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
+
+list_q = [model.src_Q]
+def aux_Q_in(m, i_res ,t):
+    aux_q = 0
+    for q in list_q:
+        aux_q += sum(q[e_id, t] for e_id in m.res_id_in[i_res]) 
+    return aux_q
+    
+def Constraint_Q_in(m, i_res, t):
+    return m.res_Q[i_res, t] == aux_Q_in(m, i_res, t)
+

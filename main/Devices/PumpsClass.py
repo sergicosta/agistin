@@ -50,3 +50,16 @@ class Pumps(Elements):
         model.pumps_H = pyo.Var(model.i_pumps, model.t, initialize=self.init_H, within=pyo.NonNegativeReals)
         model.pumps_Q = pyo.Var(model.i_pumps, model.t, initialize=self.init_Q, within=pyo.NonNegativeReals)
         model.pumps_n = pyo.Var(model.i_pumps, model.t, initialize=self.init_n, within=pyo.NonNegativeReals)
+        
+        
+    def builderConstr(self, model):
+        model.Constraint_Qmax_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_Qmax_Pumps)
+        model.Constraint_H_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_H_Pumps)
+    
+# CONSTRAINTS
+
+def Constraint_Qmax_Pumps(m, i_pumps, t):
+    return m.pumps_Q[i_pumps, t] <= m.pumps_Qmax[i_pumps, t]
+
+def Constraint_H_Pumps(m, i_pumps, t): 
+ 	return m.pumps_H[i_pumps, t] == ((m.pumps_n[i_pumps, t]/m.pumps_rpm_nom[i_pumps])**2) * m.pumps_A[i_pumps] - m.pumps_B[i_pumps]*(m.pumps_Q[i_pumps,t])**2
