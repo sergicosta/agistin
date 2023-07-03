@@ -7,7 +7,7 @@ AGISTIN project
 Class Pumps contains characteristics of a pump.
 """
 
-from Devices.Elements import Elements
+from Devices.ElementsClass import Elements
 import pyomo.environ as pyo
 
 class Pumps(Elements):
