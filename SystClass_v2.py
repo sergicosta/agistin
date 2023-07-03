@@ -1,7 +1,7 @@
 import pyomo.environ as pyo
 
 
-l_t = list(range(5))
+l_t = list(range(1))
 
 
 class Elements():
@@ -60,13 +60,14 @@ class Reservoirs(Elements):
         self.z_max = {}
         self.id_in = {}
         self.id_out = {}
-        self.Q_cons = {} # --> {(id,t):val}
+        self.Q_loss = {} # --> {(id,t):val}
         
         # init variables
         self.init_W = {} # --> {(id,t):val}
+        self.init_Q = {} # --> {(id,t):val}
         
         
-    def add(self, id_elem, id_in, id_out, W_0, W_min, W_max, z_min, z_max, init_W, Q_cons):
+    def add(self, id_elem, id_in, id_out, W_0, W_min, W_max, z_min, z_max, init_W, init_Q, Q_loss):
         super().add(id_elem)
         
         self.W_0[id_elem] = W_0
@@ -76,10 +77,11 @@ class Reservoirs(Elements):
         self.z_max[id_elem] = z_max
         self.id_in[id_elem] = id_in
         self.id_out[id_elem] = id_out
-        self.Q_cons.update({(id_elem,t): Q_cons[t] for t in l_t}) # --> {(id,t):val}
+        self.Q_loss.update({(id_elem,t): Q_loss for t in l_t})
 
         # init variables
         self.init_W.update({(id_elem,t): init_W for t in l_t})
+        self.init_Q.update({(id_elem,t): init_Q[t] for t in l_t})
         
         
           
@@ -107,31 +109,45 @@ class Pipes(Elements):
         self.id_in[id_elem] = id_in
         self.id_out[id_elem] = id_out
     
+    
+class Sources(Elements):
+    def __init__(self):
+        super().__init__()
+        
+        self.Q = {} # --> {(id,t):val}
+        
+        
+    def add(self, id_elem, Q):
+        super().add(id_elem)
+        self.Q.update({(id_elem,t): Q[t] for t in l_t})
 
 
 pumps_set = Pumps()
 res_set = Reservoirs()
+src_set = Sources()
 
-pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
-pumps_set.add('Bomba2', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
-pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
+# pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
+# pumps_set.add('Bomba2', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
+# pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
 
-res_set.add('Bassa1', [], ['Pipe1'], 142869*0.5, 142869, 142869*0.5, 328, 335.50, 142869*0.5, [0,0,0,0,0])
-res_set.add('Bassa3', ['Pipe1'], [], 85268*0.5, 85268, 85268*0.5, 414, 423.50, 85268*0.5, [0,0,0,0,0])
+# res_set.add('Bassa1', [], ['Src1'], 142869*0.5, 142869, 142869*0.5, 328, 335.50, 142869*0.5, 0, 0)
+res_set.add('Bassa3', ['Src1'], [], 85268*0.5, 85268*0.1, 85268*0.8, 414, 423.50, 85268*0.5, [1], 0)
 
+src_set.add('Src1', [1])
 
-model = pyo.AbstractModel()
+model = pyo.ConcreteModel()
 model.t = pyo.Set(initialize=l_t)
 
-l_Pump = pumps_set.id
+# l_Pump = pumps_set.id
 l_Res = res_set.id
+l_Src = src_set.id
 
 # PARAMS
 #pumps
-model.i_pumps = pyo.Set(initialize=l_Pump)
-model.pumps_A = pyo.Param(model.i_pumps, initialize=pumps_set.A, within=pyo.NonNegativeReals)
-model.pumps_B = pyo.Param(model.i_pumps, initialize=pumps_set.B, within=pyo.NonNegativeReals)
-model.pumps_rpm_nom = pyo.Param(model.i_pumps, initialize=pumps_set.rpm_nom, within=pyo.NonNegativeReals)
+# model.i_pumps = pyo.Set(initialize=l_Pump)
+# model.pumps_A = pyo.Param(model.i_pumps, initialize=pumps_set.A, within=pyo.NonNegativeReals)
+# model.pumps_B = pyo.Param(model.i_pumps, initialize=pumps_set.B, within=pyo.NonNegativeReals)
+# model.pumps_rpm_nom = pyo.Param(model.i_pumps, initialize=pumps_set.rpm_nom, within=pyo.NonNegativeReals)
 
 #reservoirs
 model.i_res = pyo.Set(initialize=l_Res)
@@ -140,30 +156,35 @@ model.res_W_min = pyo.Param(model.i_res, initialize=res_set.W_min, within=pyo.No
 model.res_W_max = pyo.Param(model.i_res, initialize=res_set.W_max, within=pyo.NonNegativeReals)
 model.res_z_min = pyo.Param(model.i_res, initialize=res_set.z_min, within=pyo.NonNegativeReals)
 model.res_z_max = pyo.Param(model.i_res, initialize=res_set.z_max, within=pyo.NonNegativeReals)
-model.res_id_in = pyo.Param(model.i_res, initialize=res_set.id_in, within=pyo.NonNegativeReals)
-model.res_id_out = pyo.Param(model.i_res, initialize=res_set.id_out, within=pyo.NonNegativeReals)
-model.res_Q_cons = pyo.Param(model.i_res, model.t, initialize=res_set.Q_cons, within=pyo.NonNegativeReals)
+model.res_id_in = pyo.Param(model.i_res, initialize=res_set.id_in)
+model.res_id_out = pyo.Param(model.i_res, initialize=res_set.id_out)
+model.res_Q_loss = pyo.Var(model.i_res, model.t, initialize=res_set.Q_loss, within=pyo.NonNegativeReals)
+
+#sources
+model.i_src = pyo.Set(initialize=l_Src)
+model.src_Q = pyo.Var(model.i_src, model.t, initialize=src_set.Q, within=pyo.NonNegativeReals)
 
 # VARIABLES
-#pumps
-model.pumps_H = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_H, within=pyo.NonNegativeReals)
-model.pumps_Q = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_Q, within=pyo.NonNegativeReals)
-model.pumps_n = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_n, within=pyo.NonNegativeReals)
+# #pumps
+# model.pumps_H = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_H, within=pyo.NonNegativeReals)
+# model.pumps_Q = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_Q, within=pyo.NonNegativeReals)
+# model.pumps_n = pyo.Var(model.i_pumps, model.t, initialize=pumps_set.init_n, within=pyo.NonNegativeReals)
 
 #reservoirs
 model.res_W = pyo.Var(model.i_res, model.t, initialize=res_set.init_W, within=pyo.NonNegativeReals)
+model.res_Q = pyo.Var(model.i_res, model.t, initialize=res_set.init_W, within=pyo.NonNegativeReals)
 
 
 # CONSTRAINTS
-#pumps
-def Constraint_Qmax_Pumps(m, i_pumps, t):
-    return m.pumps_Q[i_pumps, t] <= m.pumps_Qmax[i_pumps, t]
-model.Constraint_Qmax_Pumps = pyo.Constraint(model.t, rule=Constraint_Qmax_Pumps)
+# #pumps
+# def Constraint_Qmax_Pumps(m, i_pumps, t):
+#     return m.pumps_Q[i_pumps, t] <= m.pumps_Qmax[i_pumps, t]
+# model.Constraint_Qmax_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_Qmax_Pumps)
 
 
-def Constraint_H_Pumps(m, i_pumps, t): 
-	return m.pumps_H[i_pumps, t] == ((m.pumps_n[i_pumps, t]/m.pumps_rpm_nom[i_pumps])**2) * m.pumps_A[i_pumps] - m.pumps_B[i_pumps]*(m.pumps_Q[i_pumps,t])**2
-model.Constraint_H_Pumps = pyo.Constraint(model.t, rule=Constraint_H_Pumps)
+# def Constraint_H_Pumps(m, i_pumps, t): 
+# 	return m.pumps_H[i_pumps, t] == ((m.pumps_n[i_pumps, t]/m.pumps_rpm_nom[i_pumps])**2) * m.pumps_A[i_pumps] - m.pumps_B[i_pumps]*(m.pumps_Q[i_pumps,t])**2
+# model.Constraint_H_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_H_Pumps)
 
 
 # TODO: Pipes
@@ -174,33 +195,59 @@ model.Constraint_H_Pumps = pyo.Constraint(model.t, rule=Constraint_H_Pumps)
 
 #reservoirs
 def Constraint_Wmax_Res(m, i_res, t):
-    return m.res_W[i_res, t] <= m.res_W_max[i_res, t]
-model.Constraint_Wmax_Res = pyo.Constraint(model.t, rule=Constraint_Wmax_Res)
+    return m.res_W[i_res, t] <= m.res_W_max[i_res]
+model.Constraint_Wmax_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_Wmax_Res)
 def Constraint_Wmin_Res(m, i_res, t):
-    return m.res_W[i_res, t] >= m.res_W_min[i_res, t]
-model.Constraint_Wmin_Res = pyo.Constraint(model.t, rule=Constraint_Wmin_Res)
+    return m.res_W[i_res, t] >= m.res_W_min[i_res]
+model.Constraint_Wmin_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_Wmin_Res)
 
 
 
 #TODO
 def Constraint_W_Res(m, i_res, t): 
 	if t>0:
-		return m.res_W[i_res, t] == m.res_W[i_res, t-1] + sum(m.pipes_Q[pipe, t] for pipe in m.res_id_in[i_res]) - sum(m.pipes_Q[pipe, t] for pipe in m.res_id_out[i_res]) - m.res_Q_cons[i_res, t]
+		return m.res_W[i_res, t] == m.res_W[i_res, t-1] + m.res_Q[i_res, t]**2 - m.res_Q_loss[i_res, t]
 	else:
-		return m.res_W[i_res, t] == m.res_W_0[i_res] + sum(m.pipes_Q[pipe, t] for pipe in m.res_id_in[i_res]) - sum(m.pipes_Q[pipe, t] for pipe in m.res_id_out[i_res]) - m.res_Q_cons[i_res, t]
+		return m.res_W[i_res, t] == m.res_W_0[i_res] + m.res_Q[i_res, t]**2 - m.res_Q_loss[i_res, t]
    	# TODO: add gamma, Dt
     # if t>0:
    	# 	return m.res_W[i_res, t] == m.res_W[i_res, t-1]*(1 -m.gamma_0[t]) - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
    	# else:
    	# 	return m.W_r0[t] == 142869 - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
-model.Constraint_W_Res = pyo.Constraint(model.t, rule=Constraint_W_Res)
+model.Constraint_W_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_W_Res)
 
 
+list_q = [model.src_Q]
+def aux_Q_in(m, i_res ,t):
+    aux_q = 0
+    for q in list_q:
+        aux_q += sum(q[e_id, t] for e_id in m.res_id_in[i_res]) 
+    return aux_q
+    
+def Constraint_Q_in(m, i_res, t):
+    return m.res_Q[i_res, t] == aux_Q_in(m, i_res, t)
+model.Constraint_Q_in = pyo.Constraint(model.i_res, model.t, rule=Constraint_Q_in)
+    
 
 
+def obj_fun(m):
+	return 0#sum((m.P_g0[t])*m.cost_elec[t] for t in l_t) + ( + m.P_pv_dim0*m.cost_pv_inst[0])
+model.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
+instance = model.create_instance()
+solver = pyo.SolverFactory('mindtpy')
+solver.solve(instance, mip_solver='glpk', nlp_solver='ipopt', tee=True)
+# def prova(m,t):
+#     a = m.Q_b0[t]
+#     a += m.Q_b1[t]
+#     a += m.Q_b2[t]
+#     return a
 
-
+# def Constraint_Q_p0(m, t): 
+#     list_test = [m.Q_b0, m.Q_b1, m.Q_b2]
+#     # return m.Q_p0[t] == sum(x[t] for x in list_test)
+#     return m.Q_p0[t] == prova(m,t)
+# model.Constraint_Q_p0 = pyo.Constraint(model.t, rule=Constraint_Q_p0)
 
 
 
