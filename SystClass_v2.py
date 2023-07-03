@@ -1,7 +1,7 @@
 import pyomo.environ as pyo
 
 
-l_t = list(range(1))
+l_t = list(range(5))
 
 
 class Elements():
@@ -131,9 +131,9 @@ src_set = Sources()
 # pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0) 
 
 # res_set.add('Bassa1', [], ['Src1'], 142869*0.5, 142869, 142869*0.5, 328, 335.50, 142869*0.5, 0, 0)
-res_set.add('Bassa3', ['Src1'], [], 85268*0.5, 85268*0.1, 85268*0.8, 414, 423.50, 85268*0.5, [1], 0)
+res_set.add('Bassa3', ['Src1'], [], 1, 0, 100, 414, 423.50, 1, [1,1,2,2,3], 0)
 
-src_set.add('Src1', [1])
+src_set.add('Src1', [1,1,2,2,3])
 
 model = pyo.ConcreteModel()
 model.t = pyo.Set(initialize=l_t)
@@ -158,7 +158,7 @@ model.res_z_min = pyo.Param(model.i_res, initialize=res_set.z_min, within=pyo.No
 model.res_z_max = pyo.Param(model.i_res, initialize=res_set.z_max, within=pyo.NonNegativeReals)
 model.res_id_in = pyo.Param(model.i_res, initialize=res_set.id_in)
 model.res_id_out = pyo.Param(model.i_res, initialize=res_set.id_out)
-model.res_Q_loss = pyo.Var(model.i_res, model.t, initialize=res_set.Q_loss, within=pyo.NonNegativeReals)
+model.res_Q_loss = pyo.Param(model.i_res, model.t, initialize=res_set.Q_loss, within=pyo.NonNegativeReals)
 
 #sources
 model.i_src = pyo.Set(initialize=l_Src)
