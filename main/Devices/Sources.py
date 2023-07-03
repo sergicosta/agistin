@@ -7,7 +7,7 @@ AGISTIN project
 Class Reservoirs contains characteristics of a reservoir.
 """
 
-from Devices.ElementsClass import Elements
+from Devices.Elements import Elements
 import pyomo.environ as pyo
 
 class Sources(Elements):
