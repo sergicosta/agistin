@@ -85,7 +85,7 @@ def Constraint_W_Res(m, i_res, t):
    	# 	return m.W_r0[t] == 142869 - m.Dt*(m.Q_p0[t] + m.q_irr_0[t])
 
 list_q = [model.src_Q]
-def aux_Q_in(m, i_res ,t):
+def aux_Q_in(m, i_res, t):
     aux_q = 0
     for q in list_q:
         aux_q += sum(q[e_id, t] for e_id in m.res_id_in[i_res]) 
