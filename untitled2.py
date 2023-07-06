@@ -18,8 +18,8 @@ m.t = Set(initialize=l_t)
 
 def source_block(b, t, a):
     # b.t = Set(initialize=lt)
-    b.p_out = Var(t, initialize=l_t)
-    b.p_out2 = Var(t, initialize=l_t)
+    b.p_out = Var(t, initialize=l_t, within=Reals)
+    # b.p_out2 = Var(t, initialize=l_t)
     # b.p2 = Var(t)
     b.outlet = Port(initialize={'p': (b.p_out, Port.Extensive)})
     
@@ -29,7 +29,7 @@ def source_block(b, t, a):
 
 def load_block(b, t):
     # b.t = Set(initialize=lt)
-    b.p_in = Var(t)
+    b.p_in = Var(t, within=Reals)
     
     b.inlet = Port(initialize={'p': (b.p_in, Port.Extensive)})
     
@@ -45,7 +45,7 @@ m.b1 = Block()
 m.b2 = Block()
 m.b3 = Block()
 
-source_block(m.b1, m.t, 1)
+source_block(m.b1, m.t, 1j)
 source_block(m.b2, m.t, 2)
 # load_block(m.b2, m.t)
 load_block(m.b3, m.t)
@@ -156,4 +156,6 @@ class Reservoirs(Elements):
         model.Constraint_W_Res = pyo.Constraint(model.i_res, model.t, rule=Constraint_W_Res)
         model.Constraint_Q_in = pyo.Constraint(model.i_res, model.t, rule=Constraint_Q_in)
 
+
+#%%
 

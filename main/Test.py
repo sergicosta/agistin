@@ -1,25 +1,45 @@
-# -*- coding: utf-8 -*-
-
 import pyomo.environ as pyo
-from Devices.Reservoirs import Reservoirs
-from Devices.Pumps import Pumps
-from Devices.Sources import Sources
-from Functionalities.Construct import Builder
+from pyomo.network import *
+from Devices.Reservoirs import Reservoir
+from Devices.Sources import Source
 
 l_t = list(range(5))
 
-model = pyo.AbstractModel()
+m = pyo.ConcreteModel()
 
-pumps_set = Pumps()
-res_set = Reservoirs()
-src_set = Sources()
+m.t = Set(initialize=l_t)
 
-pumps_set.add('Bomba1', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0, l_t=l_t) 
-pumps_set.add('Bomba2', A=106.3,B=(2e-5)*3600**2,rpm_nom=1450, init_Q=0,init_H=0, l_t=l_t) 
 
-res_set.add('Bassa1', [], ['Pipe1'], 142869*0.5, 142869, 142869*0.5, 328, 335.50, 142869*0.5, [0,0,0,0,0], l_t=l_t)
-res_set.add('Bassa3', ['Pipe1'], [], 85268*0.5, 85268, 85268*0.5, 414, 423.50, 85268*0.5, [0,0,0,0,0], l_t=l_t)
+m.Source1 = Block()
+m.Source2 = Block()
+m.Reservoir1 = Block()
 
-src_set.add('Src1', [1,1,2,2,3])
+data_s1 = {'Q':[1,1,1,1,1]}
+data_r1 = {'W0':5, 'Wmin':0, 'Wmax':20}
 
-Builder(model, l_t, res_set, pumps_set)
+i_data_r1 = {'Qin':[0,0,0,0,0], 'W':[5,5,5,5,5]}
+
+Source(m.Source1, m.t, data_s1)
+Source(m.Source2, m.t, data_s1)
+Reservoir(m.Reservoir1, m.t, data_r1, i_data_r1)
+
+m.s1r1 = Arc(source=m.Source1.outlet, destination=m.Reservoir1.inlet)
+m.s2r1 = Arc(source=m.Source2.outlet, destination=m.Reservoir1.inlet)
+
+TransformationFactory("network.expand_arcs").apply_to(m)
+
+m.pprint()
+
+
+def obj_fun(m):
+	return 0#sum((m.P_g0[t])*m.cost_elec[t] for t in l_t) + ( + m.P_pv_dim0*m.cost_pv_inst[0])
+m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+
+instance = m.create_instance()
+solver = pyo.SolverFactory('ipopt')
+solver.solve(instance, tee=True)
+
+instance.Source1.Q.pprint()
+instance.Source2.Q.pprint()
+instance.Reservoir1.Qin.pprint()
+instance.Reservoir1.W.pprint()
