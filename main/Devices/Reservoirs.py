@@ -13,7 +13,7 @@ from pyomo.network import *
 
 
 # data: W0, Wmin, Wmax
-# init_data: Qin(t), W(t)
+# init_data: Qin(t), Qout(t), W(t)
 
 def Reservoir(b, t, data, init_data):
     
@@ -22,15 +22,17 @@ def Reservoir(b, t, data, init_data):
     
     # Variables
     b.Qin = pyo.Var(t, initialize=init_data['Qin'], within=pyo.NonNegativeReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Qout'], within=pyo.NonNegativeReals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
     
     # Ports
     b.inlet = Port(initialize={'Q': (b.Qin, Port.Extensive)})
+    b.outlet = Port(initialize={'Q': (b.Qout, Port.Extensive)})
 
     # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
-            return _b.W[_t] == _b.W[_t-1] + _b.Qin[_t] # TODO: - Qout - Qloss - gamma
+            return _b.W[_t] == _b.W[_t-1] + _b.Qin[_t] - _b.Qout[_t] # TODO: - Qloss - gamma
         else:
-            return _b.W[_t] == _b.W0 + _b.Qin[_t]
+            return _b.W[_t] == _b.W0 + _b.Qin[_t] - _b.Qout[_t]
     b.c_W = pyo.Constraint(t, rule = Constraint_W)
