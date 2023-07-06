@@ -11,19 +11,20 @@ from pyomo.dae import *
 
 l_t = list(range(5))
 
-m = AbstractModel()
+m = ConcreteModel()
 
 m.t = Set(initialize=l_t)
 
 
-def source_block(b, t):
+def source_block(b, t, a):
     # b.t = Set(initialize=lt)
     b.p_out = Var(t, initialize=l_t)
+    b.p_out2 = Var(t, initialize=l_t)
     # b.p2 = Var(t)
     b.outlet = Port(initialize={'p': (b.p_out, Port.Extensive)})
     
     def Constraint_p2(b, t):
-        return b.p_out[t] == 1
+        return b.p_out[t] == a
     b.c_p2 = Constraint(t, rule = Constraint_p2)
 
 def load_block(b, t):
@@ -32,9 +33,9 @@ def load_block(b, t):
     
     b.inlet = Port(initialize={'p': (b.p_in, Port.Extensive)})
     
-    def Constraint_inlet(b, t):
-        return b.p_in == sum(b.inlet)
-    b.c_inlet = Constraint(t, rule = Constraint_inlet)
+    # def Constraint_inlet(b, t):
+    #     return b.p_in == sum(b.inlet)
+    # b.c_inlet = Constraint(t, rule = Constraint_inlet)
 
 # m.loads = Set()
 # m.loads['Load1'] = Block()
@@ -44,18 +45,18 @@ m.b1 = Block()
 m.b2 = Block()
 m.b3 = Block()
 
-source_block(m.b1, m.t)
-# source_block(m.b2, m.t)
+source_block(m.b1, m.t, 1)
+source_block(m.b2, m.t, 2)
 # load_block(m.b2, m.t)
 load_block(m.b3, m.t)
 
 # m.b12 = Arc(source=m.b1.outlet, destination=m.b2.inlet)
 # m.b13 = Arc(source=m.b1.outlet, destination=m.b3.inlet)
 
-m.b12 = Arc(source=m.b1.outlet, destination=m.b3.inlet)
-# m.b23 = Arc(source=m.b2.outlet, destination=m.b3.inlet)
+m.b13 = Arc(source=m.b1.outlet, destination=m.b3.inlet)
+m.b23 = Arc(source=m.b2.outlet, destination=m.b3.inlet)
 
-TransformationFactory('dae.finite_difference').apply_to(m, nfe=1)
+# TransformationFactory('dae.finite_difference').apply_to(m, nfe=1)
 TransformationFactory("network.expand_arcs").apply_to(m)
 
 m.pprint()
@@ -70,7 +71,7 @@ solver = SolverFactory('ipopt')
 solver.solve(instance, tee=True)
 
 instance.b1.p_out.pprint()
-# instance.b2.p_out.pprint()
+instance.b2.p_out.pprint()
 instance.b3.p_in.pprint()
 #%%
 
@@ -79,10 +80,9 @@ import pyomo.environ as pyo
 
 l_t = list(range(5))
 
-model = pyo.AbstractModel()
+model = pyo.ConcreteModel()
 
 model.t = Set(initialize=l_t)
-
 
 
 def Reservoir_block(b, t):
