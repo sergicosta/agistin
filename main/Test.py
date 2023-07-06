@@ -2,6 +2,7 @@ import pyomo.environ as pyo
 from pyomo.network import *
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
+from Devices.Pipes import Pipe
 
 l_t = list(range(5))
 
@@ -12,19 +13,25 @@ m.t = Set(initialize=l_t)
 
 m.Source1 = Block()
 m.Source2 = Block()
+m.Pipe1 = Block()
 m.Reservoir1 = Block()
 
 data_s1 = {'Q':[1,1,1,1,1]}
-data_r1 = {'W0':5, 'Wmin':0, 'Wmax':20}
 
+data_p1 = {'H0':20, 'K':0.05, 'Qmax':50}
+i_data_p1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
+
+data_r1 = {'W0':5, 'Wmin':0, 'Wmax':20}
 i_data_r1 = {'Qin':[0,0,0,0,0], 'W':[5,5,5,5,5]}
 
 Source(m.Source1, m.t, data_s1)
 Source(m.Source2, m.t, data_s1)
+Pipe(m.Pipe1, m.t, data_p1, i_data_p1)
 Reservoir(m.Reservoir1, m.t, data_r1, i_data_r1)
 
-m.s1r1 = Arc(source=m.Source1.outlet, destination=m.Reservoir1.inlet)
-m.s2r1 = Arc(source=m.Source2.outlet, destination=m.Reservoir1.inlet)
+m.s1p1 = Arc(source=m.Source1.outlet, destination=m.Pipe1.inlet)
+m.s2p1 = Arc(source=m.Source2.outlet, destination=m.Pipe1.inlet)
+m.p1r1 = Arc(source=m.Pipe1.outlet, destination=m.Reservoir1.inlet)
 
 TransformationFactory("network.expand_arcs").apply_to(m)
 
@@ -43,3 +50,5 @@ instance.Source1.Q.pprint()
 instance.Source2.Q.pprint()
 instance.Reservoir1.Qin.pprint()
 instance.Reservoir1.W.pprint()
+instance.Pipe1.Q.pprint()
+instance.Pipe1.H.pprint()

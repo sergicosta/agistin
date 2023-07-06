@@ -2,43 +2,34 @@
 """
 AGISTIN project 
 
-./Devices/PipesClass.py
+./Devices/Pipes.py
 
-Class Pipes contains characteristics of a pipe.
+Pipe pyomo block contains characteristics of a pipe.
 """
 
-from Devices.Elements import Elements
-import pyomo.environ as pyo
 
-class Pipes(Elements):
+import pyomo.environ as pyo
+from pyomo.network import *
+
+
+# data: H0, K, Qmax
+# init_data: Q(t), H(t)
+
+def Pipe(b, t, data, init_data):
     
-    def __init__(self):
-        super().__init__()
-        
-        self.K = {}
-        self.Qmax = {}
-        self.orig = {}
-        self.end = {}
-        
-        # init variables
-        self.init_H = {} # --> {(id,t):val}
-        self.init_Q = {} # --> {(id,t):val}
-        
-        
-    def add(self, id_elem, K, id_in, id_out, Qmax=1e6):
-        super().add(id_elem)
-        
-        self.K[id_elem] = K
-        self.Qmax[id_elem] = Qmax
-        self.id_in[id_elem] = id_in
-        self.id_out[id_elem] = id_out
-        
-        
-    def builder(self, model):
-        model.i_pipe = pyo.Set(initialize=self.id)
-        # PARAMS
-        model.pipes_K = pyo.Param(model.i_pipe, initialize=self.K, within=pyo.NonNegativeReals)
-        model.pipes_Qmax = pyo.Param(model.i_pipe, initialize=self.Qmax, within=pyo.NonNegativeReals)
-        # VARIABLES
-        model.pipes_Q = pyo.Var(model.i_pipe, model.t, initialize=self.init_Q, within=pyo.NonNegativeReals)
-        model.pipes_H = pyo.Var(model.i_pipe, model.t, initialize=self.init_H, within=pyo.NonNegativeReals)
+    # Parameters
+    b.H0 = pyo.Param(initialize=data['H0'])
+    b.K = pyo.Param(initialize=data['K'])
+    
+    # Variables
+    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
+    
+    # Ports
+    b.inlet = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.outlet = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    
+    # Constraints
+    def Constraint_H(_b, _t):
+        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2
+    b.c_H = pyo.Constraint(t, rule = Constraint_H)

@@ -2,7 +2,7 @@
 """
 AGISTIN project 
 
-...\Devices\Sources.py
+.\Devices\Sources.py
 
 Source pyomo block contains characteristics of a source.
 """

@@ -2,7 +2,7 @@
 """
 AGISTIN project 
 
-...\Devices\Reservoirs.py
+.\Devices\Reservoirs.py
 
 Reservoir pyomo block contains characteristics of a reservoir.
 """
@@ -27,7 +27,7 @@ def Reservoir(b, t, data, init_data):
     # Ports
     b.inlet = Port(initialize={'Q': (b.Qin, Port.Extensive)})
 
-    # Constraints    
+    # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
             return _b.W[_t] == _b.W[_t-1] + _b.Qin[_t] # TODO: - Qout - Qloss - gamma
