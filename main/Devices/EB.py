@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 AGISTIN project 
 
@@ -10,6 +9,10 @@ EB pyomo block contains characteristics of a pumping station.
 
 import pyomo.environ as pyo
 from pyomo.network import *
+
+
+# data: None
+# init_data: None
 
 def EB(b, t, data, init_data):
     

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 AGISTIN project 
 
@@ -10,6 +9,10 @@ Pump pyomo block contains characteristics of a pump.
 
 import pyomo.environ as pyo
 from pyomo.network import *
+
+
+# data: A, B, Pmax, Qmin, Qmax, Qnom, rpm_nom, nu_num
+# init_data: P, H, Q, n
 
 def Pump(b, t, data, init_data):
     

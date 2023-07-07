@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 AGISTIN project 
 
@@ -10,6 +9,10 @@ MainGrid pyomo block contains characteristics of the point of connection.
 
 import pyomo.environ as pyo
 from pyomo.network import *
+
+
+# data: Pmax
+# init_data: None
 
 def grid(b, t, data, init_data):
     
