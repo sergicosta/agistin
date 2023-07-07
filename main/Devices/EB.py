@@ -1,7 +1,7 @@
 """
 AGISTIN project 
 
-.\Devices\Reservoirs.py
+.\Devices\EB.py
 
 EB pyomo block contains characteristics of a pumping station.
 """

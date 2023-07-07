@@ -1,7 +1,7 @@
 """
 AGISTIN project 
 
-.\Devices\Reservoirs.py
+.\Devices\MainGrid.py
 
 MainGrid pyomo block contains characteristics of the point of connection.
 """
