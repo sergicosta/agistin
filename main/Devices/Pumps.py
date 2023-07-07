@@ -1,65 +1,49 @@
-# -*- coding: utf-8 -*-
 """
 AGISTIN project 
 
-...\Devices\PumpsClass.py
+.\Devices\Pumps.py
 
-Class Pumps contains characteristics of a pump.
+Pump pyomo block contains characteristics of a pump.
 """
 
-from Devices.Elements import Elements
+
 import pyomo.environ as pyo
+from pyomo.network import *
 
-class Pumps(Elements):
+
+# data: A, B, n_n, eff, Pmax
+# init_data: Q(t), H(t), n(t), Pe(t)
+
+def Pump(b, t, data, init_data):
     
-    def __init__(self):
-        super().__init__()
-        
-        self.A = {} # --> {id:val}
-        self.B = {}
-        self.rpm_nom = {}
-        
-        # init variables
-        self.init_H = {} # --> {(id,t):val}
-        self.init_Q = {} # --> {(id,t):val}
-        self.init_n = {} # --> {(id,t):val}
-        
-        
-    def add(self, id_elem, A, B, rpm_nom, init_H, init_Q, l_t, init_n=None):
-        super().add(id_elem)
-        
-        self.A[id_elem] = A
-        self.B[id_elem] = B
-        self.rpm_nom[id_elem] = rpm_nom
-        
-        # init variables
-        self.init_H.update({(id_elem,t): init_Q for t in l_t})
-        self.init_Q.update({(id_elem,t): init_H for t in l_t})
-        if init_n==None:
-            init_n = rpm_nom
-        self.init_n.update({(id_elem,t): init_n for t in l_t})
-        
-        
-    def builder(self, model):
-        model.i_pumps = pyo.Set(initialize=self.id)
-        # PARAMS
-        model.pumps_A = pyo.Param(model.i_pumps, initialize=self.A, within=pyo.NonNegativeReals)
-        model.pumps_B = pyo.Param(model.i_pumps, initialize=self.B, within=pyo.NonNegativeReals)
-        model.pumps_rpm_nom = pyo.Param(model.i_pumps, initialize=self.rpm_nom, within=pyo.NonNegativeReals)
-        # VARIABLES
-        model.pumps_H = pyo.Var(model.i_pumps, model.t, initialize=self.init_H, within=pyo.NonNegativeReals)
-        model.pumps_Q = pyo.Var(model.i_pumps, model.t, initialize=self.init_Q, within=pyo.NonNegativeReals)
-        model.pumps_n = pyo.Var(model.i_pumps, model.t, initialize=self.init_n, within=pyo.NonNegativeReals)
-        
-        
-    def builderConstr(self, model):
-        model.Constraint_Qmax_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_Qmax_Pumps)
-        model.Constraint_H_Pumps = pyo.Constraint(model.i_pumps, model.t, rule=Constraint_H_Pumps)
+    # Parameters
+    b.A = pyo.Param(initialize=data['A'])
+    b.B = pyo.Param(initialize=data['B'])
+    b.n_n = pyo.Param(initialize=data['n_n'])
+    b.eff = pyo.Param(initialize=data['eff'])
     
-# CONSTRAINTS
-
-def Constraint_Qmax_Pumps(m, i_pumps, t):
-    return m.pumps_Q[i_pumps, t] <= m.pumps_Qmax[i_pumps, t]
-
-def Constraint_H_Pumps(m, i_pumps, t): 
- 	return m.pumps_H[i_pumps, t] == ((m.pumps_n[i_pumps, t]/m.pumps_rpm_nom[i_pumps])**2) * m.pumps_A[i_pumps] - m.pumps_B[i_pumps]*(m.pumps_Q[i_pumps,t])**2
+    # Variables
+    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
+    b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals) 
+    b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pe']), within=pyo.NonNegativeReals)
+    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pe']), within=pyo.NonNegativeReals)
+    
+    # Ports
+    b.inlet_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.outlet_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.outlet_H = Port(initialize={'H': (b.H, Port.Equality)})
+    b.inlet_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
+    
+    # Constraints
+    def Constraint_H(_b, _t):
+        return _b.H[_t] == (_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Q[_t]**2
+    b.c_H = pyo.Constraint(t, rule = Constraint_H)
+    
+    def Constraint_Ph(_b, _t):
+        return _b.Ph[_t] == 9810*_b.H[_t]*_b.Q[_t]
+    b.c_Ph = pyo.Constraint(t, rule = Constraint_Ph)
+    
+    def Constraint_Pe(_b, _t):
+        return _b.Pe[_t] == _b.Ph[_t]/_b.eff
+    b.c_Ph = pyo.Constraint(t, rule = Constraint_Ph)
