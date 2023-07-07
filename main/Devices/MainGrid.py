@@ -20,9 +20,9 @@ def grid(b, t, data, init_data):
     b.Pmax = pyo.Param(initialize=data['P_max'])
     
     # Variables
-    b.p = pyo.Var(t, initialize={k:0.0 for k in range(1,len(t)+1)}, bounds=(-b.Pmax, b.Pmax), domain=pyo.Reals)
+    b.P = pyo.Var(t, initialize={k:0.0 for k in range(1,len(t)+1)}, bounds=(-b.Pmax, b.Pmax), domain=pyo.Reals)
     
     # Ports
-    b.outlet = Port(initialize={'p': (b.p, Port.Extensive)})
+    b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
     
     # Constraints

@@ -25,12 +25,12 @@ def Pipe(b, t, data, init_data):
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     
     # Ports
-    b.inlet_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
-    b.outlet_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
-    b.inlet_H = Port(initialize={'H': (b.H, Port.Equality)})
-    b.outlet_H = Port(initialize={'H': (b.H, Port.Equality)})
+    b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
     
     # Constraints
     def Constraint_H(_b, _t):
         return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
+    
+    # TODO: add H0=deltaZ

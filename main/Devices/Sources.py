@@ -22,7 +22,7 @@ def Source(b, t, data):
     
     
     # Ports
-    b.outlet = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
     
     # Constraints
     
