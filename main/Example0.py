@@ -75,3 +75,19 @@ solver.solve(instance, tee=False)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
+
+# RESULTS:
+    # W : Size=5, Index=t
+    #     Key : Lower : Value : Upper : Fixed : Stale : Domain
+    #       0 :     0 :   6.0 :    20 : False : False : NonNegativeReals
+    #       1 :     0 :   7.0 :    20 : False : False : NonNegativeReals
+    #       2 :     0 :   8.0 :    20 : False : False : NonNegativeReals
+    #       3 :     0 :   9.0 :    20 : False : False : NonNegativeReals
+    #       4 :     0 :  10.0 :    20 : False : False : NonNegativeReals
+    # W : Size=5, Index=t
+    #     Key : Lower : Value : Upper : Fixed : Stale : Domain
+    #       0 :     0 :   9.0 :    20 : False : False : NonNegativeReals
+    #       1 :     0 :   8.0 :    20 : False : False : NonNegativeReals
+    #       2 :     0 :   7.0 :    20 : False : False : NonNegativeReals
+    #       3 :     0 :   6.0 :    20 : False : False : NonNegativeReals
+    #       4 :     0 :   5.0 :    20 : False : False : NonNegativeReals
