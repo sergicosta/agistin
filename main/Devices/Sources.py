@@ -19,10 +19,18 @@ def Source(b, t, data):
     b.Q = pyo.Param(t, initialize=data['Q'])
     
     # Variables
-    
+    b.Qin = pyo.Var(t, initialize=data['Q'])
+    b.Qout = pyo.Var(t, initialize=data['Q'])
     
     # Ports
-    b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
+    b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
     
     # Constraints
+    def Constraint_Qin(_b, _t):
+        return _b.Qin[_t] == _b.Q[_t]
+    b.c_Qin = pyo.Constraint(t, rule=Constraint_Qin)
+    def Constraint_Qout(_b, _t):
+        return _b.Qout[_t] == _b.Q[_t]
+    b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
     
