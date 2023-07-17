@@ -14,7 +14,7 @@ from pyomo.network import *
 # data: None
 # init_data: None
 
-def EB(b, t):
+def EB(b, t, data=None, init_data=None):
     
     # Parameters
     
