@@ -5,8 +5,17 @@
         {"type":"Grid","Pmax":100e3},
     "init_data":
         {"P":0},
-    "to":
-        ["Pump1","Pump2"]
+    "conns":
+        {"P":["EB1","P"]}
+    },
+"Reservoir0":
+    {
+    "data":
+        {"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20},
+    "init_data":
+        {"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
+    "conns":
+        {}
     },
 "Reservoir1":
     {
@@ -14,17 +23,8 @@
         {"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20},
     "init_data":
         {"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
-    "to":
-        ["Pump1","Pump2"]
-    },
-"Reservoir2":
-    {
-    "data":
-        {"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20},
-    "init_data":
-        {"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
-    "to":
-        ["Irrigation"]
+    "conns":
+        {}
     },
 "Pipe1":
     {
@@ -32,8 +32,8 @@
         {"type":"Pipe","H0":20,"K":0.05,"Qmax":50},
     "init_data":
         {"H":[20,20,20,20,20],"Q":[0,0,0,0,0]},
-    "to":
-        ["Reservoir2"]
+    "conns":
+        {"Q":["Reservoir1","Qin"]}
     },
 "Pump1":
     {
@@ -41,8 +41,8 @@
         {"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
     "init_data":
         {"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
-    "to":
-        ["Pipe1"]
+    "conns":
+        {"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
     },
 "Pump2":
     {
@@ -50,8 +50,8 @@
         {"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
     "init_data":
         {"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
-    "to":
-        ["Pipe1"]
+    "conns":
+        {"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
     },
 "Irrigation":
     {
@@ -59,8 +59,8 @@
         {"type":"Source","Q":[2,1,1,1,1]},
     "init_data":
         {},
-    "to":
-        []
+    "conns":
+        {"Qin":["Reservoir1","Qout"]}
     },
 "Source0":
     {
@@ -68,7 +68,25 @@
         {"type":"Source","Q":0},
     "init_data":
         {},
-    "to":
-        ["Reservoir1"]
+    "conns":
+        {"Qout":["Reservoir0","Qin"]}
+    },
+"EB1":
+    {
+    "data":
+        {"type":"EB"},
+    "init_data":
+        {},
+    "conns":
+        {}
+    },
+"PV":
+    {
+    "data":
+        {"type":"SolarPV","Pinst":50e3,"Pmax":100e3,"forecast":[1.0,0.0,0.5,0.2,0.8]},
+    "init_data":
+        {},
+    "conns":
+        {"P":["EB1","P"]}
     }
 }
