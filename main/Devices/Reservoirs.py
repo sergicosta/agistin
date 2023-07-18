@@ -27,10 +27,11 @@ def Reservoir(b, t, data, init_data):
     b.zmax = pyo.Param(initialize=data['zmax'])
     
     # Variables
-    b.Qin = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.Qin  = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
     b.z = pyo.Var(t, initialize={k: z(b,init_data['W'][k]) for k in range(len(t))}, bounds=(data['zmin'], data['zmax']), within=pyo.NonNegativeReals) 
+
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})

@@ -18,10 +18,8 @@ from Devices.Pipes import Pipe
 from Devices.Pumps import Pump
 from Devices.MainGrid import Grid
 
-
 # model
 m = pyo.ConcreteModel()
-
 
 # time
 l_t = list(range(5))
@@ -31,9 +29,7 @@ m.t = pyo.Set(initialize=l_t)
 l_cost = [10,5,1,5,10]
 m.cost = pyo.Param(m.t, initialize=l_cost)
 
-
 # ===== Create the system =====
-
 m.Source0 = pyo.Block()
 m.Reservoir1 = pyo.Block()
 m.Reservoir0 = pyo.Block()
@@ -45,10 +41,10 @@ m.Grid = pyo.Block()
 
 
 data_smain = {'Q':[0,0,0,0,0]}
-Source(m.Source0, m.t, data_smain)
+Source(m.Source0, m.t, data_smain, None)
 
 data_irr = {'Q':[2,1,1,1,1]} # irrigation
-Source(m.Irrigation1, m.t, data_irr)
+Source(m.Irrigation1, m.t, data_irr, None)
 
 data_res = {'W0':5, 'Wmin':0, 'Wmax':20} # reservoirs (both equal)
 init_res = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
@@ -64,9 +60,7 @@ init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450],
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
-Grid(m.Grid, m.t, {'P_max':100e3}) # grid
-
-
+Grid(m.Grid, m.t, {'Pmax':100e3}, None) # grid
 
 # Connections
 m.p1r0 = Arc(ports=(m.Pump1.port_Qin, m.Reservoir0.port_Qout), directed=True)
@@ -98,6 +92,13 @@ solver.solve(instance, tee=False)
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
 instance.Grid.P.pprint()
+
+#%%
+
+from pyomo.util.model_size import build_model_size_report
+report = build_model_size_report(m)
+print('Num constraints: ', report.activated.constraints)
+print('Num variables: ', report.activated.variables)
 
 # RESULTS
     # W : Size=5, Index=t
