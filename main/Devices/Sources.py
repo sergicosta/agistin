@@ -13,7 +13,7 @@ from pyomo.network import *
 
 # data: Q(t)
 
-def Source(b, t, data):
+def Source(b, t, data, init_data=None):
     
     # Parameters
     b.Q = pyo.Param(t, initialize=data['Q'])
