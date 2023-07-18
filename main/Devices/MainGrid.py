@@ -17,7 +17,7 @@ from pyomo.network import *
 def Grid(b, t, data, init_data=None):
     
     # Parameters
-    b.Pmax = pyo.Param(initialize=data['P_max'])
+    b.Pmax = pyo.Param(initialize=data['Pmax'])
     
     # Variables
     b.P = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds=(-b.Pmax, b.Pmax), domain=pyo.Reals)

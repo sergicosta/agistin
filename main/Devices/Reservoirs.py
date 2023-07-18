@@ -20,9 +20,9 @@ def Reservoir(b, t, data, init_data):
     b.W0 = pyo.Param(initialize=data['W0'])
     
     # Variables
-    b.Qin = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.Qin  = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
-    b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
+    b.W    = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
