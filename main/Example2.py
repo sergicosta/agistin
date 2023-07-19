@@ -51,10 +51,10 @@ m.EB = pyo.Block()
 
 
 data_smain = {'Q':[0,0,0,0,0]}
-Source(m.Source0, m.t, data_smain)
+Source(m.Source0, m.t, data_smain, {})
 
 data_irr = {'Q':[2,1,1,1,1]} # irrigation
-Source(m.Irrigation1, m.t, data_irr)
+Source(m.Irrigation1, m.t, data_irr, {})
 
 data_res = {'W0':5, 'Wmin':0, 'Wmax':20} # reservoirs (both equal)
 init_res = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
@@ -73,7 +73,7 @@ Pump(m.Pump2, m.t, data_p, init_p)
 data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1.0,0.0,0.5,0.2,0.8]} # irrigation
 SolarPV(m.PV, m.t, data_pv)
 
-Grid(m.Grid, m.t, {'P_max':100e3}) # grid
+Grid(m.Grid, m.t, {'Pmax':100e3}) # grid
 
 EB(m.EB, m.t)
 
