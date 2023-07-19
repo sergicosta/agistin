@@ -1,92 +1,52 @@
 {
-"MainGrid":
-    {
-    "data":
-        {"type":"Grid","Pmax":100e3},
-    "init_data":
-        {"P":0},
-    "conns":
-        {"P":["EB1","P"]}
+"MainGrid":{
+    "data":{"type":"Grid","Pmax":100e3},
+    "init_data":{"P":0},
+    "conns":{"P":["EB1","P"]}
     },
-"Reservoir0":
-    {
-    "data":
-        {"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20},
-    "init_data":
-        {"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
-    "conns":
-        {}
+"Reservoir0":{
+    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":420,"zmax":480,"dt":3600},
+    "init_data":{"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
+    "conns":{"z":["Pipe1","zlow"]}
     },
-"Reservoir1":
-    {
-    "data":
-        {"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20},
-    "init_data":
-        {"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
-    "conns":
-        {}
+"Reservoir1":{
+    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":450,"zmax":510,"dt":3600},
+    "init_data":{"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
+    "conns":{"z":["Pipe1","zhigh"]}
     },
-"Pipe1":
-    {
-    "data":
-        {"type":"Pipe","H0":20,"K":0.05,"Qmax":50},
-    "init_data":
-        {"H":[20,20,20,20,20],"Q":[0,0,0,0,0]},
-    "conns":
-        {"Q":["Reservoir1","Qin"]}
+"Pipe1":{
+    "data":{"type":"Pipe","H0":20,"K":0.05,"Qmax":50},
+    "init_data":{"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"zlow":[450,450,450,450,450],"zhigh":[480,480,480,480,480],"H0":[30,30,30,30,30]},
+    "conns":{"Q":["Reservoir1","Qin"]}
     },
-"Pump1":
-    {
-    "data":
-        {"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
-    "init_data":
-        {"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
-    "conns":
-        {"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
+"Pump1":{
+    "data":{"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
+    "init_data":{"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
+    "conns":{"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
     },
-"Pump2":
-    {
-    "data":
-        {"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
-    "init_data":
-        {"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
-    "conns":
-        {"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
+"Pump2":{
+    "data":{"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
+    "init_data":{"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
+    "conns":{"P":["EB1","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Qout"]}
     },
-"Irrigation":
-    {
-    "data":
-        {"type":"Source","Q":[2,1,1,1,1]},
-    "init_data":
-        {},
-    "conns":
-        {"Qin":["Reservoir1","Qout"]}
+"Irrigation":{
+    "data":{"type":"Source","Q":[2,1,1,1,1]},
+    "init_data":{},
+    "conns":{"Qin":["Reservoir1","Qout"]}
     },
-"Source0":
-    {
-    "data":
-        {"type":"Source","Q":0},
-    "init_data":
-        {},
-    "conns":
-        {"Qout":["Reservoir0","Qin"]}
+"Source0":{
+    "data":{"type":"Source","Q":0},
+    "init_data":{},
+    "conns":{"Qout":["Reservoir0","Qin"]}
     },
-"EB1":
-    {
-    "data":
-        {"type":"EB"},
-    "init_data":
-        {},
-    "conns":
-        {}
+"EB1":{
+    "data":{"type":"EB"},
+    "init_data":{},
+    "conns":{}
     },
-"PV":
-    {
-    "data":
-        {"type":"SolarPV","Pinst":50e3,"Pmax":100e3,"forecast":[1.0,0.0,0.5,0.2,0.8]},
-    "init_data":
-        {},
-    "conns":
-        {"P":["EB1","P"]}
+"PV":{
+    "data":{"type":"SolarPV","Pinst":50e3,"Pmax":100e3,"forecast":[1.0,0.0,0.5,0.2,0.8]},
+    "init_data":{},
+    "conns":{"P":["EB1","P"]}
     }
 }
