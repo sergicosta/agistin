@@ -11,13 +11,15 @@ import pyomo.environ as pyo
 from pyomo.network import *
 
 
-# data: W0, Wmin, Wmax, zmin, zmax
+# data: dt, W0, Wmin, Wmax, zmin, zmax
 # init_data: Q(t), W(t)
 
 def Reservoir(b, t, data, init_data):
     
     def z(_b, w):
         return (w-_b.Wmin)/(_b.Wmax-_b.Wmin)*(_b.zmax-_b.zmin) + _b.zmin
+    
+    b.dt = data['dt']
     
     # Parameters
     b.W0 = pyo.Param(initialize=data['W0'])
@@ -41,9 +43,9 @@ def Reservoir(b, t, data, init_data):
     # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
-            return _b.W[_t] == _b.W[_t-1] + _b.Qin[_t] - _b.Qout[_t] # TODO: - Qloss - gamma
+            return _b.W[_t] == _b.W[_t-1] + _b.dt*(_b.Qin[_t] - _b.Qout[_t]) # TODO: - Qloss - gamma
         else:
-            return _b.W[_t] == _b.W0 + _b.Qin[_t] - _b.Qout[_t]
+            return _b.W[_t] == _b.W0 + _b.dt*(_b.Qin[_t] - _b.Qout[_t])
     b.c_W = pyo.Constraint(t, rule = Constraint_W)
     
     def Constraint_z(_b, _t):
