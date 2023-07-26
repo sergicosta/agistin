@@ -29,5 +29,5 @@ def SolarPV(b, t, data, init_data=None):
     
     # Constraints
     def Constraint_P(_b, _t):
-        return _b.P[_t] == -(b.Pinst+b.Pdim)*b.forecast[_t]
+        return _b.P[_t] >= -(b.Pinst+b.Pdim)*b.forecast[_t]
     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P)
