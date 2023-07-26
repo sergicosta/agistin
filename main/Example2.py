@@ -13,9 +13,9 @@ import pyomo.environ as pyo
 from pyomo.network import *
 
 # Import devices
-from Devices.Reservoirs import Reservoir
+from Devices.Reservoirs import Reservoir_Ex0
 from Devices.Sources import Source
-from Devices.Pipes import Pipe
+from Devices.Pipes import Pipe_Ex0
 from Devices.Pumps import Pump
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
@@ -58,12 +58,12 @@ Source(m.Irrigation1, m.t, data_irr, {})
 
 data_res = {'W0':5, 'Wmin':0, 'Wmax':20} # reservoirs (both equal)
 init_res = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
-Reservoir(m.Reservoir1, m.t, data_res, init_res)
-Reservoir(m.Reservoir0, m.t, data_res, init_res)
+Reservoir_Ex0(m.Reservoir1, m.t, data_res, init_res)
+Reservoir_Ex0(m.Reservoir0, m.t, data_res, init_res)
 
 data_c1 = {'H0':20, 'K':0.05, 'Qmax':50} # canal
 init_c1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
-Pipe(m.Pipe1, m.t, data_c1, init_c1)
+Pipe_Ex0(m.Pipe1, m.t, data_c1, init_c1)
 
 data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
 init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
