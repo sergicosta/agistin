@@ -75,7 +75,7 @@ def Reservoir_Ex0(b, t, data, init_data):
     # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
-            return _b.W[_t] == _b.W[_t-1] + _b.dt*(_b.Qin[_t] - _b.Qout[_t]) # TODO: - Qloss - gamma
+            return _b.W[_t] == _b.W[_t-1] + (_b.Qin[_t] - _b.Qout[_t]) # TODO: - Qloss - gamma
         else:
-            return _b.W[_t] == _b.W0 + _b.dt*(_b.Qin[_t] - _b.Qout[_t])
+            return _b.W[_t] == _b.W0 + (_b.Qin[_t] - _b.Qout[_t])
     b.c_W = pyo.Constraint(t, rule = Constraint_W)

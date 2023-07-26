@@ -49,7 +49,7 @@ def Pipe(b, t, data, init_data):
 def Pipe_Ex0(b, t, data, init_data):
     
     # Parameters
-    b.H0 = pyo.Param(initialize=init_data['H0'])
+    b.H0 = pyo.Param(initialize=data['H0'])
     b.K = pyo.Param(initialize=data['K'])
     
     # Variables
