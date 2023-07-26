@@ -40,3 +40,27 @@ def Pipe(b, t, data, init_data):
     def Constraint_H0(_b, _t):
         return _b.H0[_t] == _b.zhigh[_t] - _b.zlow[_t]
     b.c_H0 = pyo.Constraint(t, rule = Constraint_H0)
+
+
+
+# data: H0, K, Qmax
+# init_data: Q(t), H(t)
+
+def Pipe_Ex0(b, t, data, init_data):
+    
+    # Parameters
+    b.H0 = pyo.Param(initialize=init_data['H0'])
+    b.K = pyo.Param(initialize=data['K'])
+    
+    # Variables
+    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
+    
+    # Ports
+    b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
+    b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
+    
+    # Constraints
+    def Constraint_H(_b, _t):
+        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2
+    b.c_H = pyo.Constraint(t, rule = Constraint_H)
