@@ -25,8 +25,13 @@
     "conns":{"Qout":["Pipe1","Q"]}
     },
 "Pump1":{
-    "data":{"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9},
+    "data":{"type":"Pump","A":50,"B":0.1,"Pmax":1e7,"Qmax":10,"Qnom":8,"n_n":1450,"eff":0.9},
     "init_data":{"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0],"n":[1450,1450,1450,1450,1450]},
+    "conns":{"P":["EB1","P"],"Qout":["HySw1","Qin0"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"]}
+    },
+"PumpNew":{
+    "data":{"type":"NewPump","eff":0.9},
+    "init_data":{"Pe":[1e6,1e6,1e6,1e6,1e6],"H":[20,20,20,20,20],"Q":[0,0,0,0,0]},
     "conns":{"P":["EB1","P"],"Qout":["HySw1","Qin0"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"]}
     },
 "Turb1":{
@@ -40,7 +45,7 @@
     "conns":{"Qout":["Reservoir1","Q"]}
     },
 "R1_OUT":{
-    "data":{"type":"Source","Q":[0,0,5,5,5]},
+    "data":{"type":"Source","Q":[0,0,6,6,6]},
     "init_data":{},
     "conns":{"Qin":["Reservoir1","Q"]}
     },
