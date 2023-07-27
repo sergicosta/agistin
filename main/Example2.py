@@ -1,7 +1,7 @@
 """
     AGISTIN - EXAMPLE 2
     
-    Optimization usage example of two reservoirs, considering irragtion consumption,
+    Optimization usage example of two reservoirs, considering irrigation consumption,
     and two pumps. The pumping station gathers the pumps' power consumption, a solar
     PV plant and a connection point to the public grid.
     
@@ -70,7 +70,7 @@ init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450],
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1.0,0.0,0.5,0.2,0.8]} # irrigation
+data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1.0,0.0,0.5,0.2,0.8]} # PV
 SolarPV(m.PV, m.t, data_pv)
 
 Grid(m.Grid, m.t, {'Pmax':100e3}) # grid
@@ -101,7 +101,7 @@ pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to mod
 
 # Objective function
 def obj_fun(m):
-	return sum(-m.Grid.P[t]*m.cost[t] for t in l_t) + m.PV.Pdim*cost_new_pv
+	return sum((m.Grid.Pbuy[t]-m.Grid.Psell[t])*m.cost[t] for t in l_t ) + m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
