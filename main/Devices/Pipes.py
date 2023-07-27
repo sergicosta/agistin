@@ -20,7 +20,7 @@ def Pipe(b, t, data, init_data):
     b.K = pyo.Param(initialize=data['K'])
     
     # Variables
-    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.NonNegativeReals)
+    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.zlow = pyo.Var(t, initialize=init_data['zlow'], within=pyo.NonNegativeReals) 
     b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], within=pyo.NonNegativeReals) 

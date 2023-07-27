@@ -5,12 +5,12 @@
     "conns":{"P":["EB1","P"]}
     },
 "Reservoir0":{
-    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":420,"zmax":480,"dt":3600},
+    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":420,"zmax":480,"dt":1},
     "init_data":{"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
     "conns":{"z":["Pipe1","zlow"]}
     },
 "Reservoir1":{
-    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":450,"zmax":510,"dt":3600},
+    "data":{"type":"Reservoir","W0":5,"Wmin":0,"Wmax":20,"zmin":450,"zmax":510,"dt":1},
     "init_data":{"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
     "conns":{"z":["Pipe1","zhigh"]}
     },

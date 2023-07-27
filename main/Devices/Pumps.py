@@ -24,7 +24,7 @@ def Pump(b, t, data, init_data):
     b.eff = pyo.Param(initialize=data['eff'])
     
     # Variables
-    b.Qin  = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']), within=pyo.NonNegativeReals)
+    b.Qin  = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], 0), within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']), within=pyo.NonNegativeReals)
     b.H    = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.n    = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals) 
@@ -39,7 +39,7 @@ def Pump(b, t, data, init_data):
     
     # Constraints
     def Constraint_Q(_b, _t):
-        return _b.Qin[_t] == _b.Qout[_t]
+        return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
     
     def Constraint_H(_b, _t):

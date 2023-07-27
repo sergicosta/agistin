@@ -13,12 +13,16 @@ import json
 def builder(m, test_case):
   
     from Devices.EB import EB
+    from Devices.HydroSwitch import HydroSwitch
     from Devices.MainGrid import Grid
+    from Devices.NewPumps import NewPump
     from Devices.Pipes import Pipe
     from Devices.Pumps import Pump
     from Devices.Reservoirs import Reservoir
     from Devices.SolarPV import SolarPV
     from Devices.Sources import Source
+    from Devices.Switch import Switch
+    from Devices.Turbines import Turbine
 
     with open(f'Cases\{test_case}.json', 'r') as jfile:
         system = json.load(jfile)
@@ -50,24 +54,25 @@ if __name__ == '__main__':
     m.t = pyo.Set(initialize=l_t)
     
     # electricity cost
-    l_cost = [10,5,1,5,10]
+    l_cost = [1,1,1,1,1]
     m.cost = pyo.Param(m.t, initialize=l_cost)
-    cost_new_pv = 10
+    cost_new_turb = 1
     
-    builder(m,'TestCase')
+    builder(m,'TestTurbine')
     
     def obj_fun(m):
-     	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.PV.Pdim*cost_new_pv
+     	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb
     m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
     
-    with open('model','w') as f:
-        m.pprint(f)
+    # with open('model','w') as f:
+    #     m.pprint(f)
     
-    # instance = m.create_instance()
-    # solver = pyo.SolverFactory('ipopt')
-    # solver.solve(instance, tee=False)
+    instance = m.create_instance()
+    solver = pyo.SolverFactory('ipopt')
+    solver.solve(instance, tee=False)
     
-    # instance.Reservoir0.W.pprint()
-    # instance.Reservoir1.W.pprint()
-    # instance.MainGrid.P.pprint()
-    # instance.PV.Pdim.pprint()
+    instance.Turb1.Qin.pprint()
+    instance.Pump1.Qout.pprint()
+    instance.Reservoir0.W.pprint()
+    instance.Reservoir1.W.pprint()
+    instance.Pipe1.Q.pprint()
