@@ -12,9 +12,9 @@ import pyomo.environ as pyo
 from pyomo.network import *
 
 # Import devices
-from Devices.Reservoirs import Reservoir
+from Devices.Reservoirs import Reservoir_Ex0
 from Devices.Sources import Source
-from Devices.Pipes import Pipe
+from Devices.Pipes import Pipe_Ex0
 from Devices.Pumps import Pump
 from Devices.MainGrid import Grid
 
@@ -30,7 +30,6 @@ l_cost = [10,5,1,5,10]
 m.cost = pyo.Param(m.t, initialize=l_cost)
 
 # ===== Create the system =====
-m.Source0 = pyo.Block()
 m.Reservoir1 = pyo.Block()
 m.Reservoir0 = pyo.Block()
 m.Irrigation1 = pyo.Block()
@@ -40,20 +39,18 @@ m.Pipe1 = pyo.Block()
 m.Grid = pyo.Block()
 
 
-data_smain = {'Q':[0,0,0,0,0]}
-Source(m.Source0, m.t, data_smain, None)
 
 data_irr = {'Q':[2,1,1,1,1]} # irrigation
 Source(m.Irrigation1, m.t, data_irr, None)
 
 data_res = {'W0':5, 'Wmin':0, 'Wmax':20} # reservoirs (both equal)
 init_res = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
-Reservoir(m.Reservoir1, m.t, data_res, init_res)
-Reservoir(m.Reservoir0, m.t, data_res, init_res)
+Reservoir_Ex0(m.Reservoir1, m.t, data_res, init_res)
+Reservoir_Ex0(m.Reservoir0, m.t, data_res, init_res)
 
 data_c1 = {'H0':20, 'K':0.05, 'Qmax':50} # canal
 init_c1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
-Pipe(m.Pipe1, m.t, data_c1, init_c1)
+Pipe_Ex0(m.Pipe1, m.t, data_c1, init_c1)
 
 data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
 init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
@@ -63,15 +60,14 @@ Pump(m.Pump2, m.t, data_p, init_p)
 Grid(m.Grid, m.t, {'Pmax':100e3}, None) # grid
 
 # Connections
-m.p1r0 = Arc(ports=(m.Pump1.port_Qin, m.Reservoir0.port_Qout), directed=True)
+m.p1r0 = Arc(ports=(m.Pump1.port_Qin, m.Reservoir0.port_Q), directed=True)
 m.p1c1_Q = Arc(ports=(m.Pump1.port_Qout, m.Pipe1.port_Q), directed=True)
 m.p1c1_H = Arc(ports=(m.Pump1.port_H, m.Pipe1.port_H), directed=True)
-m.p2r0 = Arc(ports=(m.Pump2.port_Qin, m.Reservoir0.port_Qout), directed=True)
+m.p2r0 = Arc(ports=(m.Pump2.port_Qin, m.Reservoir0.port_Q), directed=True)
 m.p2c1_Q = Arc(ports=(m.Pump2.port_Qout, m.Pipe1.port_Q), directed=True)
 m.p2c1_H = Arc(ports=(m.Pump2.port_H, m.Pipe1.port_H), directed=True)
-m.c1r1 = Arc(ports=(m.Pipe1.port_Q, m.Reservoir1.port_Qin), directed=True)
-m.r0s0 = Arc(ports=(m.Source0.port_Qout, m.Reservoir0.port_Qin), directed=True)
-m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Qout), directed=True)
+m.c1r1 = Arc(ports=(m.Pipe1.port_Q, m.Reservoir1.port_Q), directed=True)
+m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Q), directed=True)
 m.gridp1 = Arc(ports=(m.Pump1.port_P, m.Grid.port_P), directed=True)
 m.gridp2 = Arc(ports=(m.Pump2.port_P, m.Grid.port_P), directed=True)
 
@@ -93,12 +89,6 @@ instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
 instance.Grid.P.pprint()
 
-#%%
-
-from pyomo.util.model_size import build_model_size_report
-report = build_model_size_report(m)
-print('Num constraints: ', report.activated.constraints)
-print('Num variables: ', report.activated.variables)
 
 # RESULTS
     # W : Size=5, Index=t

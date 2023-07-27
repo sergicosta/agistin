@@ -11,7 +11,7 @@ import pyomo.environ as pyo
 from pyomo.network import *
 
 # Import devices
-from Devices.Reservoirs import Reservoir
+from Devices.Reservoirs import Reservoir_Ex0
 from Devices.Sources import Source
 
 
@@ -26,11 +26,6 @@ m.t = pyo.Set(initialize=l_t)
 
 # ===== Create the system =====
 
-# Source 0
-m.Source0 = pyo.Block()
-data_smain = {'Q':[0,0,0,0,0]}
-Source(m.Source0, m.t, data_smain)
-
 # Source 1
 m.Source1 = pyo.Block()
 data_s1 = {'Q':[1,1,1,1,1]}
@@ -40,20 +35,18 @@ Source(m.Source1, m.t, data_s1)
 m.Reservoir0 = pyo.Block()
 data_r0 = {'W0':10, 'Wmin':0, 'Wmax':20}
 init_r0 = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
-Reservoir(m.Reservoir0, m.t, data_r0, init_r0)
+Reservoir_Ex0(m.Reservoir0, m.t, data_r0, init_r0)
 
 # Reservoir1
 m.Reservoir1 = pyo.Block()
 data_r1 = {'W0':5, 'Wmin':0, 'Wmax':20}
 init_r1 = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
-Reservoir(m.Reservoir1, m.t, data_r1, init_r1)
+Reservoir_Ex0(m.Reservoir1, m.t, data_r1, init_r1)
 
 
 # Connections
-m.s1r0 = Arc(ports=(m.Source1.port_Qin, m.Reservoir0.port_Qout), directed=True)
-m.s1r1 = Arc(ports=(m.Source1.port_Qout, m.Reservoir1.port_Qin), directed=True)
-m.s0r0 = Arc(ports=(m.Source0.port_Qout, m.Reservoir0.port_Qin), directed=True)
-m.s0r1 = Arc(ports=(m.Source0.port_Qin, m.Reservoir1.port_Qout), directed=True)
+m.s1r0 = Arc(ports=(m.Source1.port_Qin, m.Reservoir0.port_Q), directed=True)
+m.s1r1 = Arc(ports=(m.Source1.port_Qout, m.Reservoir1.port_Q), directed=True)
 
 pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
