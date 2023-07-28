@@ -37,6 +37,7 @@ m.Pump1 = pyo.Block()
 m.Pump2 = pyo.Block()
 m.Pipe1 = pyo.Block()
 m.Grid = pyo.Block()
+m.EB = pyo.Block()
 
 
 
@@ -58,6 +59,7 @@ Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
 Grid(m.Grid, m.t, {'Pmax':100e3}, None) # grid
+EB(m.EB, m.t, None, None) # node
 
 # Connections
 m.p1r0 = Arc(ports=(m.Pump1.port_Qin, m.Reservoir0.port_Q), directed=True)
@@ -68,8 +70,9 @@ m.p2c1_Q = Arc(ports=(m.Pump2.port_Qout, m.Pipe1.port_Q), directed=True)
 m.p2c1_H = Arc(ports=(m.Pump2.port_H, m.Pipe1.port_H), directed=True)
 m.c1r1 = Arc(ports=(m.Pipe1.port_Q, m.Reservoir1.port_Q), directed=True)
 m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Q), directed=True)
-m.gridp1 = Arc(ports=(m.Pump1.port_P, m.Grid.port_P), directed=True)
-m.gridp2 = Arc(ports=(m.Pump2.port_P, m.Grid.port_P), directed=True)
+m.EBp1 = Arc(ports=(m.Pump1.port_P, m.EB.port_P), directed=True)
+m.EBp2 = Arc(ports=(m.Pump2.port_P, m.EB.port_P), directed=True)
+m.EBgrid = Arc(ports=(m.Grid.port_P, m.EB.port_P), directed=True)
 
 pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
@@ -78,7 +81,7 @@ pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to mod
 
 # Objective function
 def obj_fun(m):
-	return sum(m.Grid.P[t]*m.cost[t] for t in l_t)
+	return sum(-m.Grid.P[t]*m.cost[t] for t in l_t)
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
