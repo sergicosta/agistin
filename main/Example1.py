@@ -96,22 +96,22 @@ instance.Grid.P.pprint()
 # RESULTS
     # W : Size=5, Index=t
     #     Key : Lower : Value              : Upper : Fixed : Stale : Domain
-    #       0 :     0 : 2.9999999999999103 :    20 : False : False : NonNegativeReals
-    #       1 :     0 : 2.2707626582039224 :    20 : False : False : NonNegativeReals
-    #       2 :     0 : 1.7292373317963907 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 0.9999999900000922 :    20 : False : False : NonNegativeReals
+    #       0 :     0 :  2.999999999999957 :    20 : False : False : NonNegativeReals
+    #       1 :     0 :  2.270762658203932 :    20 : False : False : NonNegativeReals
+    #       2 :     0 : 1.7292373317963943 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 0.9999999900000451 :    20 : False : False : NonNegativeReals
     #       4 :     0 :                0.0 :    20 : False : False : NonNegativeReals
     # W : Size=5, Index=t
     #     Key : Lower : Value             : Upper : Fixed : Stale : Domain
-    #       0 :     0 :  5.00000000000009 :    20 : False : False : NonNegativeReals
-    #       1 :     0 : 4.729237341796077 :    20 : False : False : NonNegativeReals
-    #       2 :     0 : 4.270762668203609 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 4.000000009999908 :    20 : False : False : NonNegativeReals
-    #       4 :     0 : 4.000000009999998 :    20 : False : False : NonNegativeReals
+    #       0 :     0 : 5.000000000000043 :    20 : False : False : NonNegativeReals
+    #       1 :     0 : 4.729237341796067 :    20 : False : False : NonNegativeReals
+    #       2 :     0 : 4.270762668203605 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 4.000000009999955 :    20 : False : False : NonNegativeReals
+    #       4 :     0 : 4.000000009999997 :    20 : False : False : NonNegativeReals
     # P : Size=5, Index=t
-    #     Key : Lower     : Value                   : Upper    : Fixed : Stale : Domain
-    #       0 : -100000.0 : -1.9496166613012406e-08 : 100000.0 : False : False :  Reals
-    #       1 : -100000.0 :       59037.07788286004 : 100000.0 : False : False :  Reals
-    #       2 : -100000.0 :                100000.0 : 100000.0 : False : False :  Reals
-    #       3 : -100000.0 :       59037.07788279228 : 100000.0 : False : False :  Reals
-    #       4 : -100000.0 :  -1.958746603332127e-08 : 100000.0 : False : False :  Reals
+    #     Key : Lower     : Value                 : Upper    : Fixed : Stale : Domain
+    #       0 : -100000.0 :  9.31716873473775e-09 : 100000.0 : False : False :  Reals
+    #       1 : -100000.0 :    -59037.07788285201 : 100000.0 : False : False :  Reals
+    #       2 : -100000.0 :             -100000.0 : 100000.0 : False : False :  Reals
+    #       3 : -100000.0 :   -59037.077882781225 : 100000.0 : False : False :  Reals
+    #       4 : -100000.0 : 9.317168818435555e-09 : 100000.0 : False : False :  Reals
