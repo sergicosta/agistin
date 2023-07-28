@@ -56,12 +56,12 @@ if __name__ == '__main__':
     # electricity cost
     l_cost = [1,1,1,1,1]
     m.cost = pyo.Param(m.t, initialize=l_cost)
-    cost_new_turb = 1
+    cost_new_turb, cost_new_pump = 2, 2
     
-    builder(m,'TestTurbine')
+    builder(m,'TestAll')
     
     def obj_fun(m):
-     	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb
+     	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb + m.PumpNew.Pdim*cost_new_pump
     m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
     
     # with open('model','w') as f:
@@ -71,8 +71,13 @@ if __name__ == '__main__':
     solver = pyo.SolverFactory('ipopt')
     solver.solve(instance, tee=False)
     
-    instance.Turb1.Qin.pprint()
-    instance.Pump1.Qout.pprint()
-    instance.Reservoir0.W.pprint()
+    # instance.Turb1.Qin.pprint()
+    # instance.Pump1.Qout.pprint()
+    # instance.PumpNew.Qout.pprint()
+    # instance.Reservoir0.W.pprint()
     instance.Reservoir1.W.pprint()
-    instance.Pipe1.Q.pprint()
+    # instance.Pipe1.Q.pprint()
+    instance.MainGrid.P.pprint()
+    print('---------------------------------------------------')
+    instance.Turb1.Pdim.pprint()
+    instance.PumpNew.Pdim.pprint()
