@@ -1,0 +1,9 @@
+/__pycache__
+/main/__pycache__
+/main/Devices/__pycache__
+
+# Model debug txt
+/main/model
+
+# Documentation builds
+/main/docs/_build
