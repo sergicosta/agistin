@@ -1,9 +1,9 @@
+# AGISTIN project 
+# .\Devices\EB.py
 """
-AGISTIN project 
+EB pyomo block containing the characteristics of a pumping station.
 
-.\Devices\EB.py
-
-EB pyomo block contains characteristics of a pumping station.
+It is meant to act as a node for power balance.
 """
 
 
@@ -15,6 +15,34 @@ from pyomo.network import *
 # init_data: None
 
 def EB(b, t, data=None, init_data=None):
+
+    """
+    Basic EB.
+    
+    Captures the powers linked to it and sets their sum to 0:
+    
+    .. math::
+        \sum_{i} P_i = 0 
+    
+    Block parameters
+    ----------------
+    - t: time set
+    - data: *None*
+    - init_data: *None*
+    
+    Pyomo declarations
+    ------------------
+    
+    - **Parameters**: 
+        - *None*
+    - **Variables**: 
+        - P_bal
+    - **Ports**: 
+        - port_P
+    - **Constraints**: 
+        - balance
+    """
+
     
     # Parameters
     
