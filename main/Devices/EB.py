@@ -26,21 +26,21 @@ def EB(b, t, data=None, init_data=None):
     
     Block parameters
     ----------------
-    - t: time set
+    - t: pyomo Set() referring to time
     - data: *None*
     - init_data: *None*
     
     Pyomo declarations
     ------------------
     
-    - **Parameters**: 
+    - Parameters: 
         - *None*
-    - **Variables**: 
-        - P_bal
-    - **Ports**: 
-        - port_P
-    - **Constraints**: 
-        - balance
+    - Variables: 
+        - P_bal (t)
+    - Ports: 
+        - port_P @ P_bal (Extensive)
+    - Constraints: 
+        - balance: :math:`P_{bal} = 0`
     """
 
     
