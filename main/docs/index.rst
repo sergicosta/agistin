@@ -5,10 +5,12 @@
 
 AGISTIN Optimization Tool documentation
 =======================================
-Hola
+
+| Welcome to the AGISTIN Optimization Tool documentation.
+| Here you will find all the documentation relating to the tool, how it works and how you can use it yourself.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
    
    Devices
