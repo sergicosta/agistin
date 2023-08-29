@@ -9,6 +9,8 @@ AGISTIN Optimization Tool documentation
 | Welcome to the AGISTIN Optimization Tool documentation.
 | Here you will find all the documentation relating to the tool, how it works and how you can use it yourself.
 
+| This tool is based in `Pyomo <http://www.pyomo.org/>`_:cite:empty:`bynum2021pyomo`:cite:empty:`hart2011pyomo`, a Python open-source optimization library.
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
@@ -24,3 +26,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+References
+==========
+.. bibliography:: references.bib

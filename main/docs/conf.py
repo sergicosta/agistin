@@ -23,13 +23,18 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode", 
     "sphinx.ext.autodoc",
-    "sphinx.ext.mathjax"
+    "sphinx.ext.mathjax",
+    "sphinxcontrib.bibtex"
     ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-
+bibtex_bibfiles = ['references.bib']
+bibtex_default_style = 'unsrt'
+bibtex_reference_style = 'author_year'
+autodoc_default_options = {
+    'members': True,
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
