@@ -1,20 +1,36 @@
 Devices
 ===============
 
-The following are the devices currently implemented in the tool.
+| The following are the devices currently implemented in the tool.
 
-Devices are defined as python functions which apply Pyomo ``Param``, ``Var``, ``Port`` and ``Constraint`` to a ``Block``.
+
+| Devices are defined as python functions which apply Pyomo ``Param``, ``Var``, ``Port`` and ``Constraint`` to a ``Block``.
+| These functions are structured as follows:
 
 .. testcode::
 
-	def PQ_Load(b, data, init_data=None):
+	def Name(b, [t], data, init_data):
+		
+		# Parameters. Values set by `data`
+		
+		# Variables. Values initialized by `init_data`
+		
+		# Ports
+		
+		# Constraints
+
+| Here is an example of the definition of a *PQ load* device:
+
+.. testcode::
+
+	def PQ_Load(b, data, init_data):
 		
 		# Parameters
 		b.P = pyo.Param(initialize=data['P'])
 		b.Q = pyo.Param(initialize=data['Q'])
 		
 		# Variables
-		b.S = pyo.Var(initialize=data['S'], within=pyo.Reals)
+		b.S = pyo.Var(initialize=init_data['S'], within=pyo.Reals)
 		
 		# Ports
 		b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
@@ -31,10 +47,22 @@ They are meant to be called after defining a ``Block`` object as follows:
 
 .. testcode::
 
-	a_load = pyo.Block()
+	some_load = pyo.Block()
 	data = {'P':10e6, 'Q':2e6}
-	PQ_Load(a_load, data)
-	
+	init_data = {'S':0}
+	PQ_Load(some_load, data, init_data)
+
+.. note::
+   It is required to import the pyomo libraries and the corresponding devices' files:
+   
+	.. testcode::
+   
+		# Import pyomo
+		import pyomo.environ as pyo
+		from pyomo.network import *
+
+		# Import devices
+		from Devices.Loads import PQ_Load
 
 One may find a need to add **time dependent** variables and relations. In such case a ``Set`` is defined:
 
@@ -47,14 +75,14 @@ and a ``t`` argument is added to the function as well as to the call
 
 .. testcode::
 
-	def PQ_Load(b, t, data, init_data=None):
+	def PQ_Load(b, t, data, init_data):
 		
 		# Parameters
 		b.P = pyo.Param(t, initialize=data['P'])
 		b.Q = pyo.Param(t, initialize=data['Q'])
 		
 		# Variables
-		b.S = pyo.Var(t, initialize=data['S'], within=pyo.Reals)
+		b.S = pyo.Var(t, initialize=init_data['S'], within=pyo.Reals)
 		
 		# Ports
 		b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
@@ -67,22 +95,13 @@ and a ``t`` argument is added to the function as well as to the call
 		b.c_S = pyo.Constraint(t, rule=Constraint_S)
 
 
-	a_load = pyo.Block()
+	some_load = pyo.Block()
 	data = {'P':[10e6,10e6,0,0,5e6] , 'Q':[2e6,1e6,0,0,0.5e6]}
-	PQ_Load(a_load, t, data)
+	init_data = {'S':[0, 0, 0, 0, 0]}
+	PQ_Load(some_load, t, data, init_data)
 
 
-.. note::
-   It is required to import the pyomo libraries and the devices files (if they are to be in a different file):
-   
-	.. testcode::
-   
-		# Import pyomo
-		import pyomo.environ as pyo
-		from pyomo.network import *
 
-		# Import devices
-		from Devices.Loads import PQ_Load
    
 Hydro devices
 -------------
