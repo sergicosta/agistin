@@ -24,7 +24,8 @@ extensions = [
     "sphinx.ext.viewcode", 
     "sphinx.ext.autodoc",
     "sphinx.ext.mathjax",
-    "sphinxcontrib.bibtex"
+    "sphinxcontrib.bibtex",
+    "sphinx.ext.doctest"
     ]
 
 templates_path = ['_templates']
