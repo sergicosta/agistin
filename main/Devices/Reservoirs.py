@@ -1,11 +1,8 @@
+# AGISTIN project 
+# .\Devices\Reservoirs.py
 """
-AGISTIN project 
-
-.\Devices\Reservoirs.py
-
-Reservoir pyomo block contains characteristics of a reservoir.
+Reservoir pyomo block containing the characteristics of a reservoir.
 """
-
 
 import pyomo.environ as pyo
 from pyomo.network import *
@@ -15,6 +12,49 @@ from pyomo.network import *
 # init_data: Q(t), W(t)
 
 def Reservoir(b, t, data, init_data):
+    
+    """
+    Simple Reservoir.
+    
+    Modifies its volume state :math:`W(t)` and height :math:`z(t)` from an initial state :math:`W_0` according to 
+    the aggregated input flows :math:`Q(t)`
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+    
+    data
+         - 'W0': Initial volume :math:`W_0`
+         - 'Wmin': Minimum allowed volume :math:`W_{min}`
+         - 'Wmax': Maximum allowed volume :math:`W_{max}`
+         - 'zmin': Height for minimum volume :math:`z_{min}`
+         - 'zmax': Height for maximum volume :math:`z_{max}`
+    
+    init_data
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'W': Volume :math:`W(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - W0
+            - Wmin
+            - Wmax
+            - zmin
+            - zmax
+        - Variables: 
+            - Q (t)
+            - W (t)
+            - z (t)
+        - Ports: 
+            - port_Q @ Q as ``Extensive``
+            - port_z @ z as ``Equality``
+        - Constraints:
+            - c_W: 
+                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t>0`
+                - :math:`W(t) = W_0 + Q(t) \quad` otherwise
+            - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`
+    """
     
     def z(_b, w):
         return (w-_b.Wmin)/(_b.Wmax-_b.Wmin)*(_b.zmax-_b.zmin) + _b.zmin
@@ -57,6 +97,41 @@ def Reservoir(b, t, data, init_data):
     
 def Reservoir_Ex0(b, t, data, init_data):
     
+    """
+    Simple Reservoir for testing and example purposes.
+    It is utilised in Example0.
+    
+    Modifies its volume state :math:`W(t)` from an initial state :math:`W_0` according to 
+    the aggregated input flows :math:`Q(t)`
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+    
+    data
+         - 'W0': Initial volume :math:`W_0`
+         - 'Wmin': Minimum allowed volume :math:`W_{min}`
+         - 'Wmax': Maximum allowed volume :math:`W_{max}`
+         
+    init_data
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'W': Volume :math:`W(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - W0
+        - Variables: 
+            - Q (t)
+            - W (t)
+        - Ports: 
+            - port_Q @ Q (Extensive)
+        - Constraints:
+            - c_W: 
+                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t>0`
+                - :math:`W(t) = W_0 + Q(t) \quad` otherwise
+    """
+    
     # Parameters
     b.W0 = pyo.Param(initialize=data['W0'])
     
@@ -64,7 +139,6 @@ def Reservoir_Ex0(b, t, data, init_data):
     b.Q  = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
 
-    
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
 
