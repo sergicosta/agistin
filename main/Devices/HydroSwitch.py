@@ -31,9 +31,9 @@ def HydroSwitch(b, t, data=None, init_data=None):
             - Qin1 (t)
             - Qout (t)
         - Ports: 
-            - port_Qin0 @ Qin0 (Extensive)
-            - port_Qin1 @ Qin1 (Extensive)
-            - port_Qout @ Qout (Extensive)
+            - port_Qin0 @ Qin0 as ``Extensive``
+            - port_Qin1 @ Qin1 as ``Extensive``
+            - port_Qout @ Qout as ``Extensive``
         - Constraints: 
             - c_State: :math:`Q_{in,0}(t) \cdot Q_{in,1}(t) = 0`
             - c_Qout: :math:`Q_{out}(t) + Q_{in,0}(t) + Q_{in,1}(t) = 0`

@@ -31,9 +31,9 @@ def Switch(b, t, data=None, init_data=None):
             - Pin1 (t)
             - Pout (t)
         - Ports: 
-            - port_Pin0 @ Pin0 (Extensive)
-            - port_Pin1 @ Pin1 (Extensive)
-            - port_Pout @ Pout (Extensive)
+            - port_Pin0 @ Pin0 as ``Extensive``
+            - port_Pin1 @ Pin1 as ``Extensive``
+            - port_Pout @ Pout as ``Extensive``
         - Constraints: 
             - c_State: :math:`P_{in,0}(t) \cdot P_{in,1}(t) = 0`
             - c_Pout: :math:`P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0`
