@@ -33,8 +33,8 @@ def Source(b, t, data, init_data=None):
             - Qin (t)
             - Qout (t)
         - Ports: 
-            - port_Qin @ Qin (Extensive)
-            - port_Qout @ Qout (Extensive)
+            - port_Qin @ Qin as ``Extensive``
+            - port_Qout @ Qout as ``Extensive``
         - Constraints: 
             - c_Qin: :math:`Q_{in}(t) = -Q(t)`
             - c_Qout: :math:`Q_{out}(t) = Q(t)`
