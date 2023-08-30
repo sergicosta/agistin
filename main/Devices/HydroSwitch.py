@@ -1,11 +1,8 @@
+#AGISTIN project 
+#.\Devices\HydroSwitch.py
 """
-AGISTIN project 
-
-.\Devices\HydroSwitch.py
-
 HydroSwitch pyomo block contains characteristics of a switch for pipe commutation.
 """
-
 
 import pyomo.environ as pyo
 from pyomo.network import *
@@ -15,6 +12,32 @@ from pyomo.network import *
 # init_data: None
 
 def HydroSwitch(b, t, data=None, init_data=None):
+   
+    """
+    Hydraulic switch.
+    
+    Commutes the output :math:`Q_{out}(t)` between 2 inputs of water flow :math:`Q_{in,0}(t)` and :math:`Q_{in,1}(t)` , analogous of an electrical switch
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: ``None``
+    :param init_data: ``None``
+    
+    Pyomo declarations    
+        - Parameters:
+            - `None`
+        - Variables: 
+            - Qin0 (t)
+            - Qin1 (t)
+            - Qout (t)
+        - Ports: 
+            - port_Qin0 @ Qin0 (Extensive)
+            - port_Qin1 @ Qin1 (Extensive)
+            - port_Qout @ Qout (Extensive)
+        - Constraints: 
+            - c_State: :math:`Q_{in,0}(t) \cdot Q_{in,1}(t) = 0`
+            - c_Qout: :math:`Q_{out}(t) + Q_{in,0}(t) + Q_{in,1}(t) = 0`
+    """
     
     # Parameters
     

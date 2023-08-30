@@ -1,11 +1,8 @@
+# AGISTIN project 
+# .\Devices\Switch.py
 """
-AGISTIN project 
-
-.\Devices\Switch.py
-
 Switch pyomo block contains characteristics of a switch for line commutation.
 """
-
 
 import pyomo.environ as pyo
 from pyomo.network import *
@@ -15,6 +12,32 @@ from pyomo.network import *
 # init_data: None
 
 def Switch(b, t, data=None, init_data=None):
+   
+    """
+    Electrical switch.
+    
+    Commutes the output :math:`P_{out}(t)` between 2 inputs of water flow :math:`P_{in,0}(t)` and :math:`P_{in,1}(t)`
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: ``None``
+    :param init_data: ``None``
+    
+    Pyomo declarations    
+        - Parameters:
+            - `None`
+        - Variables: 
+            - Pin0 (t)
+            - Pin1 (t)
+            - Pout (t)
+        - Ports: 
+            - port_Pin0 @ Pin0 (Extensive)
+            - port_Pin1 @ Pin1 (Extensive)
+            - port_Pout @ Pout (Extensive)
+        - Constraints: 
+            - c_State: :math:`P_{in,0}(t) \cdot P_{in,1}(t) = 0`
+            - c_Pout: :math:`P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0`
+    """
     
     # Parameters
     

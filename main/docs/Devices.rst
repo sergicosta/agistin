@@ -100,16 +100,14 @@ Source
    ⚠️ Ojo
    🚧 WIP
 
-.. seealso::
-	:doc:`Builder`
-
-
 
 .. automodule:: Devices.Sources
    :members:
    :undoc-members:
    :show-inheritance:
 
+
+.. _HydroSwitch:
 
 Hydro Switch
 ```````````````````
@@ -123,6 +121,8 @@ Hydro Switch
    :undoc-members:
    :show-inheritance:
    
+.. seealso::
+	`Switch`_
    
 New Pump
 ```````````````````
@@ -227,6 +227,8 @@ Solar PV
    :undoc-members:
    :show-inheritance:
 
+
+.. _Switch:
 
 Switch
 ```````````````````
