@@ -1,19 +1,44 @@
+# AGISTIN project 
+# .\Devices\Sources.py
 """
-AGISTIN project 
-
-.\Devices\Sources.py
-
 Source pyomo block contains characteristics of a source.
 """
-
 
 import pyomo.environ as pyo
 from pyomo.network import *
 
 
 # data: Q(t)
+# init_data: None
 
 def Source(b, t, data, init_data=None):
+    
+    """
+    Basic Source.
+    
+    Injects a given flow :math:`Q(t)`, behaving as the hydro analogous of a current source
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: ``None``
+        
+    data
+         - 'Q': Injected flow :math:`Q(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - Q (t)
+        - Variables: 
+            - Qin (t)
+            - Qout (t)
+        - Ports: 
+            - port_Qin @ Qin (Extensive)
+            - port_Qout @ Qout (Extensive)
+        - Constraints: 
+            - c_Qin: :math:`Q_{in}(t) = -Q(t)`
+            - c_Qout: :math:`Q_{out}(t) = Q(t)`
+    """
     
     # Parameters
     b.Q = pyo.Param(t, initialize=data['Q'])
