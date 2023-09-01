@@ -20,6 +20,7 @@ AGISTIN Optimization Tool documentation
    Devices
    Builder
    Examples
+   References
 
 
 Indices and tables
@@ -28,7 +29,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-References
-==========
-.. bibliography:: references.bib
