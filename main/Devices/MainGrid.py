@@ -1,8 +1,7 @@
+# AGISTIN project 
+# .\Devices\MainGrid.py
+
 """
-AGISTIN project 
-
-.\Devices\MainGrid.py
-
 MainGrid pyomo block contains characteristics of the point of connection.
 """
 
@@ -15,6 +14,34 @@ from pyomo.network import *
 # init_data: None
 
 def Grid(b, t, data, init_data=None):
+
+    """
+    Point of connection to the grid.
+    
+    Delivers or consumes the required power up to a set maximum.
+    It also defines whether the power is consumed from the grid :math:`P_{buy}` or delivered to :math:`P_{sell}`.
+
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: ``None``
+        
+    data
+         - 'Pmax': Maximum allowed power :math:`P(t) \in (-P_{max}, P_{max})`
+    
+    Pyomo declarations    
+        - Parameters: 
+            - Pmax
+        - Variables: 
+            - P (t)
+            - Psell (t)
+            - Pbuy (t)
+        - Ports: 
+            - port_P @ P as ``Extensive``
+        - Constraints: 
+            - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`
+            - c_P0: :math:`0 = P_{sell}(t) \cdot  P_{buy}(t)`
+    """
     
     # Parameters
     b.Pmax = pyo.Param(initialize=data['Pmax'])

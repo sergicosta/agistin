@@ -1,8 +1,7 @@
+# AGISTIN project 
+# .\Devices\SolarPV.py
+
 """
-AGISTIN project 
-
-.\Devices\SolarPV.py
-
 SolarPV pyomo block contains characteristics of a solar PV plant.
 """
 
@@ -15,6 +14,35 @@ from pyomo.network import *
 # init_data: None
 
 def SolarPV(b, t, data, init_data=None):
+
+    """
+    Expandable solar PV plant.
+    
+    Delivers power subject to a forecast :math:`f(t)` and its installed power :math:`P_{inst}`.
+    The plant will be able to expand up to a :math:`P_{max}`.
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: ``None``
+        
+    data
+         - 'Pinst': Installed power :math:`P_{inst}`
+         - 'Pmax': Maximum allowed power to be installed :math:`P_{max}`
+         - 'forecast': Forecast as power in p.u. :math:`f(t) \in [0,1]` as a ``list``
+    
+    Pyomo declarations
+        - Parameters: 
+            - Pinst
+            - forecast
+        - Variables: 
+            - P (t) :math:`\in [-P_{max}, 0]`
+            - Pdim :math:`\in [0, P_{max}-P_{inst}]`
+        - Ports: 
+            - port_P @ P as ``Extensive``
+        - Constraints: 
+            - c_P: :math:`P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)`
+    """
     
     # Parameters
     b.Pinst = pyo.Param(initialize=data['Pinst'])
@@ -29,5 +57,5 @@ def SolarPV(b, t, data, init_data=None):
     
     # Constraints
     def Constraint_P(_b, _t):
-        return _b.P[_t] >= -(b.Pinst+b.Pdim)*b.forecast[_t]
+        return _b.P[_t] >= -(_b.Pinst+_b.Pdim)*_b.forecast[_t]
     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P)
