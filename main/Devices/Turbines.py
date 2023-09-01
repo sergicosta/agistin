@@ -16,6 +16,39 @@ from pyomo.network import *
 
 def Turbine(b, t, data, init_data):
     
+    """
+    Turbine.
+    
+    Sizes a new turbine.
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+        
+    data
+         - 'Q': Injected flow :math:`Q(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - Q (t)
+        - Variables: 
+            - Pdim
+            - Qin (t)
+            - Qout (t)
+            - H (t)
+            - Ph (t)
+            - Pe (t)
+        - Ports: 
+            - port_Qin @ Qin as ``Extensive``
+            - port_Qout @ Qout as ``Extensive``
+            - port_P @ P as ``Extensive``
+            - port_H @ H as ``Equality``
+        - Constraints: 
+            - c_Qin: :math:`Q_{in}(t) = -Q(t)`
+            - c_Qout: :math:`Q_{out}(t) = Q(t)`
+    """
+    
     # Parameters
     b.eff = pyo.Param(initialize=data['eff'])
     
