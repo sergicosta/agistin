@@ -115,11 +115,6 @@ Source
    :scale: 100 %
    :alt: Source block
 
-.. note::
-   ⚠️ Ojo
-   🚧 WIP
-
-
 .. automodule:: Devices.Sources
    :members:
    :undoc-members:
@@ -159,6 +154,10 @@ Pipes
    :scale: 100 %
    :alt: Source block
    
+.. image:: img/Block_Pipe_full.svg
+   :scale: 100 %
+   :alt: Source block
+   
 .. automodule:: Devices.Pipes
    :members:
    :undoc-members:
@@ -194,6 +193,9 @@ Reservoirs
 Turbines
 ```````````````````
 
+.. note::
+   🚧 WIP
+   
 .. image:: img/Block_Turbine.svg
    :scale: 100 %
    :alt: Source block
