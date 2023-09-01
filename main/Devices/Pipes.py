@@ -1,8 +1,7 @@
+# AGISTIN project 
+# .\Devices\Pipes.py
+
 """
-AGISTIN project 
-
-.\Devices\Pipes.py
-
 Pipe pyomo block contains characteristics of a pipe.
 """
 
@@ -15,6 +14,50 @@ from pyomo.network import *
 # init_data: H0(t), Q(t), H(t)
 
 def Pipe(b, t, data, init_data):
+
+    """
+    Simple Pipe for testing and example purposes.
+    It is utilised in Example0.
+    
+    Acts as a flow transportation device which also applies an energy loss to the fluid as:
+    
+    .. math::
+        H(t) = H_0 + K \cdot Q(t)^2
+    
+    where :math:`H_0` is the static height and is computed as the difference of heights between both pipe extremes.
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+        
+    data
+         - 'K': Linear pressure loss coefficient of the pipe :math:`K`
+         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
+         
+    init_data
+         - 'H0': Static height :math:`H_0` as a ``list``
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'H': Head :math:`H(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - K
+        - Variables: 
+            - Q (t)
+            - H (t)
+            - zlow (t)
+            - zhigh (t)
+            - H0 (t)
+        - Ports: 
+            - port_Q @ Q as ``Extensive``
+            - port_H @ H as ``Equality``
+            - port_zlow @ zlow as ``Equality``
+            - port_zhigh @ zhigh as ``Equality``
+        - Constraints: 
+            - c_H: :math:`H(t) = H_0(t) + K \cdot Q(t)^2`
+            - c_H0: :math:`H_0(t) = z_{high}(t) - z_{low}(t)`
+    """
     
     # Parameters
     b.K = pyo.Param(initialize=data['K'])
@@ -47,6 +90,45 @@ def Pipe(b, t, data, init_data):
 # init_data: Q(t), H(t)
 
 def Pipe_Ex0(b, t, data, init_data):
+    
+    """
+    Simple Pipe for testing and example purposes.
+    It is utilised in Example0.
+    
+    Acts as a flow transportation device which also applies an energy loss to the fluid as:
+    
+    .. math::
+        H(t) = H_0 + K \cdot Q(t)^2
+    
+    where :math:`H_0` is the static height and is constant and defined by the user.
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+        
+    data
+         - 'H0': Static height :math:`H_0`
+         - 'K': Linear pressure loss coefficient of the pipe :math:`K`
+         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
+         
+    init_data
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'H': Head :math:`H(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters: 
+            - H0 
+            - K
+        - Variables: 
+            - Q (t)
+            - H (t)
+        - Ports: 
+            - port_Q @ Q as ``Extensive``
+            - port_H @ H as ``Equality``
+        - Constraints: 
+            - c_H: :math:`H(t) = H_0 + K \cdot Q(t)^2`
+    """
     
     # Parameters
     b.H0 = pyo.Param(initialize=data['H0'])
