@@ -64,14 +64,14 @@ They are meant to be called after defining a ``Block`` object as follows:
 		# Import devices
 		from Devices.Loads import PQ_Load
 
-One may find a need to add **time dependent** variables and relations. In such case a ``Set`` is defined:
+One may find the need to add **time dependent** variables and relations. In such case a ``Set`` is defined:
 
 .. testcode::
 
 	time_list = [1, 2, 3, 4, 5] # 5 time steps
 	t = pyo.Set(initialize=time_list)
 
-and a ``t`` argument is added to the function as well as to the call
+and a ``t`` argument is added to the function as well as to its call
 
 .. testcode::
 
