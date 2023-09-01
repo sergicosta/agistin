@@ -28,8 +28,8 @@ def Reservoir(b, t, data, init_data):
          - 'W0': Initial volume :math:`W_0`
          - 'Wmin': Minimum allowed volume :math:`W_{min}`
          - 'Wmax': Maximum allowed volume :math:`W_{max}`
-         - 'zmin': Height for minimum volume :math:`z_{min}`
-         - 'zmax': Height for maximum volume :math:`z_{max}`
+         - 'zmin': Height at minimum volume :math:`z_{min}`
+         - 'zmax': Height at maximum volume :math:`z_{max}`
     
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
