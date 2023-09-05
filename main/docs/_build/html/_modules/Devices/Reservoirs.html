@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devices.Reservoirs &mdash; AGISTIN 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AGISTIN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Devices.html">Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Builder.html">Builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AGISTIN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Devices.Reservoirs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Devices.Reservoirs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># AGISTIN project </span>
+<span class="c1"># .\Devices\Reservoirs.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Reservoir pyomo block containing the characteristics of a reservoir.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="c1"># data: dt, W0, Wmin, Wmax, zmin, zmax</span>
+<span class="c1"># init_data: Q(t), W(t)</span>
+
+<div class="viewcode-block" id="Reservoir">
+<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir">[docs]</a>
+<span class="k">def</span> <span class="nf">Reservoir</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple Reservoir.</span>
+<span class="sd">    </span>
+<span class="sd">    Modifies its volume state :math:`W(t)` and height :math:`z(t)` from an initial state :math:`W_0` according to </span>
+<span class="sd">    the aggregated input flows :math:`Q(t)`</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">    </span>
+<span class="sd">    data</span>
+<span class="sd">         - &#39;W0&#39;: Initial volume :math:`W_0`</span>
+<span class="sd">         - &#39;Wmin&#39;: Minimum allowed volume :math:`W_{min}`</span>
+<span class="sd">         - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
+<span class="sd">         - &#39;zmin&#39;: Height at minimum volume :math:`z_{min}`</span>
+<span class="sd">         - &#39;zmax&#39;: Height at maximum volume :math:`z_{max}`</span>
+<span class="sd">    </span>
+<span class="sd">    init_data</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
+<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list``</span>
+<span class="sd">    </span>
+<span class="sd">    Pyomo declarations    </span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - W0</span>
+<span class="sd">            - Wmin</span>
+<span class="sd">            - Wmax</span>
+<span class="sd">            - zmin</span>
+<span class="sd">            - zmax</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - Q (t)</span>
+<span class="sd">            - W (t)</span>
+<span class="sd">            - z (t)</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_Q @ Q as ``Extensive``</span>
+<span class="sd">            - port_z @ z as ``Equality``</span>
+<span class="sd">        - Constraints:</span>
+<span class="sd">            - c_W: </span>
+<span class="sd">                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`W(t) = W_0 + Q(t) \quad` otherwise</span>
+<span class="sd">            - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">zmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">zmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">zmin</span>
+    
+    <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">W0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;W0&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Wmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Wmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">zmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmin&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmax&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">z</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
+
+    
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_z</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Equality</span><span class="p">)})</span>
+
+    <span class="c1"># Constraints</span>
+    <span class="k">def</span> <span class="nf">Constraint_W</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span> <span class="c1"># TODO: - Qloss - gamma</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W0</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_W</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_z</span><span class="p">)</span></div>
+
+    
+    
+
+<span class="c1"># data: W0, Wmin, Wmax</span>
+<span class="c1"># init_data: Q(t), W(t)</span>
+    
+<div class="viewcode-block" id="Reservoir_Ex0">
+<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir_Ex0">[docs]</a>
+<span class="k">def</span> <span class="nf">Reservoir_Ex0</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple Reservoir for testing and example purposes.</span>
+<span class="sd">    It is utilised in Example0.</span>
+<span class="sd">    </span>
+<span class="sd">    Modifies its volume state :math:`W(t)` from an initial state :math:`W_0` according to </span>
+<span class="sd">    the aggregated input flows :math:`Q(t)`</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">    </span>
+<span class="sd">    data</span>
+<span class="sd">         - &#39;W0&#39;: Initial volume :math:`W_0`</span>
+<span class="sd">         - &#39;Wmin&#39;: Minimum allowed volume :math:`W_{min}`</span>
+<span class="sd">         - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
+<span class="sd">         </span>
+<span class="sd">    init_data</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
+<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list``</span>
+<span class="sd">    </span>
+<span class="sd">    Pyomo declarations    </span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - W0</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - Q (t)</span>
+<span class="sd">            - W (t)</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_Q @ Q (Extensive)</span>
+<span class="sd">        - Constraints:</span>
+<span class="sd">            - c_W: </span>
+<span class="sd">                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`W(t) = W_0 + Q(t) \quad` otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">W0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;W0&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+
+    <span class="c1"># Constraints</span>
+    <span class="k">def</span> <span class="nf">Constraint_W</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span> <span class="c1"># TODO: - Qloss - gamma</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W0</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_W</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CITCEA-UPC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

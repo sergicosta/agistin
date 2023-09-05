@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devices &mdash; AGISTIN 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Builder module" href="Builder.html" />
+    <link rel="prev" title="AGISTIN Optimization Tool documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AGISTIN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Devices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hydro-devices">Hydro devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source">Source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Sources.Source"><code class="docutils literal notranslate"><span class="pre">Source()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydro-switch">Hydro Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.HydroSwitch.HydroSwitch"><code class="docutils literal notranslate"><span class="pre">HydroSwitch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-Devices.NewPumps">New Pump</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.NewPumps.NewPump"><code class="docutils literal notranslate"><span class="pre">NewPump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pipes">Pipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe_Ex0"><code class="docutils literal notranslate"><span class="pre">Pipe_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pumps">Pumps</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.Pump"><code class="docutils literal notranslate"><span class="pre">Pump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#reservoirs">Reservoirs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Reservoirs.Reservoir"><code class="docutils literal notranslate"><span class="pre">Reservoir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Reservoirs.Reservoir_Ex0"><code class="docutils literal notranslate"><span class="pre">Reservoir_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#turbines">Turbines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Turbines.Turbine"><code class="docutils literal notranslate"><span class="pre">Turbine()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#electrical-devices">Electrical devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#eb-pumping-station">EB (Pumping Station)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.EB.EB"><code class="docutils literal notranslate"><span class="pre">EB()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main-grid">Main Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.MainGrid.Grid"><code class="docutils literal notranslate"><span class="pre">Grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solar-pv">Solar PV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.SolarPV.SolarPV"><code class="docutils literal notranslate"><span class="pre">SolarPV()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#switch">Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Switch.Switch"><code class="docutils literal notranslate"><span class="pre">Switch()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AGISTIN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Devices</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Devices.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="devices">
+<h1>Devices<a class="headerlink" href="#devices" title="Link to this heading"></a></h1>
+<div class="line-block">
+<div class="line">The following are the devices currently implemented in the tool.</div>
+</div>
+<div class="line-block">
+<div class="line">Devices are defined as python functions which apply Pyomo <code class="docutils literal notranslate"><span class="pre">Param</span></code>, <code class="docutils literal notranslate"><span class="pre">Var</span></code>, <code class="docutils literal notranslate"><span class="pre">Port</span></code> and <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> to a <code class="docutils literal notranslate"><span class="pre">Block</span></code>.</div>
+<div class="line">These functions are structured as follows:</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+
+        <span class="c1"># Parameters. Values set by `data`</span>
+
+        <span class="c1"># Variables. Values initialized by `init_data`</span>
+
+        <span class="c1"># Ports</span>
+
+        <span class="c1"># Constraints</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Here is an example of the definition of a <em>PQ load</em> device:</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+
+        <span class="c1"># Parameters</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Variables</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+
+        <span class="c1"># Ports</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_P</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_S</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+
+        <span class="c1"># Constraints</span>
+        <span class="k">def</span> <span class="nf">Constraint_S</span><span class="p">(</span><span class="n">_b</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">S</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">c_S</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">rule</span><span class="o">=</span><span class="n">Constraint_S</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>They are meant to be called after defining a <code class="docutils literal notranslate"><span class="pre">Block</span></code> object as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">some_load</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Block</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="mf">10e6</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">:</span><span class="mf">2e6</span><span class="p">}</span>
+<span class="n">init_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+<span class="n">PQ_Load</span><span class="p">(</span><span class="n">some_load</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is required to import the pyomo libraries and the corresponding devices’ files:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import pyomo</span>
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Import devices</span>
+<span class="kn">from</span> <span class="nn">Devices.Loads</span> <span class="kn">import</span> <span class="n">PQ_Load</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<p>One may find the need to add <strong>time dependent</strong> variables and relations. In such case a <code class="docutils literal notranslate"><span class="pre">Set</span></code> is defined:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">time_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 5 time steps</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">time_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and a <code class="docutils literal notranslate"><span class="pre">t</span></code> argument is added to the function as well as to its call</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+
+        <span class="c1"># Parameters</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Variables</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+
+        <span class="c1"># Ports</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_P</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">port_S</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+
+        <span class="c1"># Constraints</span>
+        <span class="k">def</span> <span class="nf">Constraint_S</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">S</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">c_S</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_S</span><span class="p">)</span>
+
+
+<span class="n">some_load</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Block</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:[</span><span class="mf">10e6</span><span class="p">,</span><span class="mf">10e6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">5e6</span><span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">:[</span><span class="mf">2e6</span><span class="p">,</span><span class="mf">1e6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5e6</span><span class="p">]}</span>
+<span class="n">init_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
+<span class="n">PQ_Load</span><span class="p">(</span><span class="n">some_load</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="hydro-devices">
+<h2>Hydro devices<a class="headerlink" href="#hydro-devices" title="Link to this heading"></a></h2>
+<p>This lists the devices related to hydro</p>
+<section id="source">
+<h3>Source<a class="headerlink" href="#source" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Source.svg"><img alt="Source block" height="107" src="_images/Block_Source.svg" width="181" /></a>
+<p id="module-Devices.Sources">Source pyomo block contains characteristics of a source.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Sources.Source">
+<span class="sig-prename descclassname"><span class="pre">Devices.Sources.</span></span><span class="sig-name descname"><span class="pre">Source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Sources.html#Source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Sources.Source" title="Link to this definition"></a></dt>
+<dd><p>Basic Source.</p>
+<p>Injects a given flow <span class="math notranslate nohighlight">\(Q(t)\)</span>, behaving as the hydro analogous of a current source</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Q’: Injected flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Qin (t)</p></li>
+<li><p>Qout (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Qin &#64; Qin as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_Qin: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q(t)\)</span></p></li>
+<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) = Q(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="hydro-switch">
+<span id="hydroswitch"></span><h3>Hydro Switch<a class="headerlink" href="#hydro-switch" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_HydroSwitch.svg"><img alt="Source block" height="123" src="_images/Block_HydroSwitch.svg" width="191" /></a>
+<p id="module-Devices.HydroSwitch">HydroSwitch pyomo block contains characteristics of a switch for pipe commutation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.HydroSwitch.HydroSwitch">
+<span class="sig-prename descclassname"><span class="pre">Devices.HydroSwitch.</span></span><span class="sig-name descname"><span class="pre">HydroSwitch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/HydroSwitch.html#HydroSwitch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.HydroSwitch.HydroSwitch" title="Link to this definition"></a></dt>
+<dd><p>Hydraulic switch.</p>
+<p>Commutes the output <span class="math notranslate nohighlight">\(Q_{out}(t)\)</span> between 2 inputs of water flow <span class="math notranslate nohighlight">\(Q_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(Q_{in,1}(t)\)</span> , analogous of an electrical switch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p><cite>None</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Qin0 (t)</p></li>
+<li><p>Qin1 (t)</p></li>
+<li><p>Qout (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Qin0 &#64; Qin0 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qin1 &#64; Qin1 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_State: <span class="math notranslate nohighlight">\(Q_{in,0}(t) \cdot Q_{in,1}(t) = 0\)</span></p></li>
+<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) + Q_{in,0}(t) + Q_{in,1}(t) = 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#switch">Switch</a></p>
+</div>
+</section>
+<section id="module-Devices.NewPumps">
+<span id="new-pump"></span><h3>New Pump<a class="headerlink" href="#module-Devices.NewPumps" title="Link to this heading"></a></h3>
+<p>AGISTIN project</p>
+<p>.DevicesPumps.py</p>
+<p>Pump pyomo block contains characteristics of a pump.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.NewPumps.NewPump">
+<span class="sig-prename descclassname"><span class="pre">Devices.NewPumps.</span></span><span class="sig-name descname"><span class="pre">NewPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/NewPumps.html#NewPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.NewPumps.NewPump" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="pipes">
+<h3>Pipes<a class="headerlink" href="#pipes" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Pipe.svg"><img alt="Source block" height="113" src="_images/Block_Pipe.svg" width="137" /></a>
+<a class="reference internal image-reference" href="_images/Block_Pipe_full.svg"><img alt="Source block" height="113" src="_images/Block_Pipe_full.svg" width="183" /></a>
+<p id="module-Devices.Pipes">Pipe pyomo block contains characteristics of a pipe.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pipes.Pipe">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe" title="Link to this definition"></a></dt>
+<dd><p>Simple Pipe for testing and example purposes.
+It is utilised in Example0.</p>
+<p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
+<div class="math notranslate nohighlight">
+\[H(t) = H_0 + K \cdot Q(t)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(H_0\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘K’: Linear pressure loss coefficient of the pipe <span class="math notranslate nohighlight">\(K\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘H0’: Static height <span class="math notranslate nohighlight">\(H_0\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>K</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+<li><p>H (t)</p></li>
+<li><p>zlow (t)</p></li>
+<li><p>zhigh (t)</p></li>
+<li><p>H0 (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Q &#64; Q as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+<li><p>port_zlow &#64; zlow as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+<li><p>port_zhigh &#64; zhigh as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K \cdot Q(t)^2\)</span></p></li>
+<li><p>c_H0: <span class="math notranslate nohighlight">\(H_0(t) = z_{high}(t) - z_{low}(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pipes.Pipe_Ex0">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe_Ex0" title="Link to this definition"></a></dt>
+<dd><p>Simple Pipe for testing and example purposes.
+It is utilised in Example0.</p>
+<p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
+<div class="math notranslate nohighlight">
+\[H(t) = H_0 + K \cdot Q(t)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(H_0\)</span> is the static height and is constant and defined by the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘H0’: Static height <span class="math notranslate nohighlight">\(H_0\)</span></p></li>
+<li><p>‘K’: Linear pressure loss coefficient of the pipe <span class="math notranslate nohighlight">\(K\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>H0</p></li>
+<li><p>K</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+<li><p>H (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Q &#64; Q as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0 + K \cdot Q(t)^2\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pumps">
+<h3>Pumps<a class="headerlink" href="#pumps" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Pump.svg"><img alt="Source block" height="126" src="_images/Block_Pump.svg" width="189" /></a>
+<p id="module-Devices.Pumps">Pump pyomo block contains characteristics of a pump.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pumps.Pump">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">Pump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#Pump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.Pump" title="Link to this definition"></a></dt>
+<dd><p>Frequency controllable hydraulic pump.</p>
+<p>Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:</p>
+<p>with <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> the characteristic coefficients that define the behaviour of the pump (i.e its curve).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘A’: Constant characteristic coefficient of the pump <span class="math notranslate nohighlight">\(A\)</span></p></li>
+<li><p>‘B’: Quadratic characteristic coefficient of the pump <span class="math notranslate nohighlight">\(B\)</span></p></li>
+<li><p>‘n_n’: Nominal rotational speed <span class="math notranslate nohighlight">\(n_n\)</span></p></li>
+<li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
+<li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘n’: Rotational speed <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p>A</p></li>
+<li><p>B</p></li>
+<li><p>Qnom</p></li>
+<li><p>n_n</p></li>
+<li><p>eff</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables:</dt><dd><ul>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}, 0]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}]\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>n (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports:</dt><dd><ul>
+<li><p>port_Qin &#64; Qin with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; Pe with ‘P’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H with ‘H’ as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = - Q_{out}(t)\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{out}(t)^2\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\cdot H(t)\cdot Q_{out}\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)/\eta\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="reservoirs">
+<h3>Reservoirs<a class="headerlink" href="#reservoirs" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Source block" height="107" src="_images/Block_Reservoir.svg" width="130" /></a>
+<p id="module-Devices.Reservoirs">Reservoir pyomo block containing the characteristics of a reservoir.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir">
+<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir" title="Link to this definition"></a></dt>
+<dd><p>Simple Reservoir.</p>
+<p>Modifies its volume state <span class="math notranslate nohighlight">\(W(t)\)</span> and height <span class="math notranslate nohighlight">\(z(t)\)</span> from an initial state <span class="math notranslate nohighlight">\(W_0\)</span> according to 
+the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘W0’: Initial volume <span class="math notranslate nohighlight">\(W_0\)</span></p></li>
+<li><p>‘Wmin’: Minimum allowed volume <span class="math notranslate nohighlight">\(W_{min}\)</span></p></li>
+<li><p>‘Wmax’: Maximum allowed volume <span class="math notranslate nohighlight">\(W_{max}\)</span></p></li>
+<li><p>‘zmin’: Height at minimum volume <span class="math notranslate nohighlight">\(z_{min}\)</span></p></li>
+<li><p>‘zmax’: Height at maximum volume <span class="math notranslate nohighlight">\(z_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>W0</p></li>
+<li><p>Wmin</p></li>
+<li><p>Wmax</p></li>
+<li><p>zmin</p></li>
+<li><p>zmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+<li><p>W (t)</p></li>
+<li><p>z (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Q &#64; Q as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_z &#64; z as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><dl class="simple">
+<dt>c_W: </dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + Q(t) \quad\)</span> otherwise</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>c_z: <span class="math notranslate nohighlight">\(z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir_Ex0">
+<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir_Ex0" title="Link to this definition"></a></dt>
+<dd><p>Simple Reservoir for testing and example purposes.
+It is utilised in Example0.</p>
+<p>Modifies its volume state <span class="math notranslate nohighlight">\(W(t)\)</span> from an initial state <span class="math notranslate nohighlight">\(W_0\)</span> according to 
+the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘W0’: Initial volume <span class="math notranslate nohighlight">\(W_0\)</span></p></li>
+<li><p>‘Wmin’: Minimum allowed volume <span class="math notranslate nohighlight">\(W_{min}\)</span></p></li>
+<li><p>‘Wmax’: Maximum allowed volume <span class="math notranslate nohighlight">\(W_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>W0</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+<li><p>W (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Q &#64; Q (Extensive)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><dl class="simple">
+<dt>c_W: </dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + Q(t) \quad\)</span> otherwise</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="turbines">
+<h3>Turbines<a class="headerlink" href="#turbines" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>🚧 WIP</p>
+</div>
+<a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Source block" height="126" src="_images/Block_Turbine.svg" width="189" /></a>
+<p id="module-Devices.Turbines">AGISTIN project</p>
+<p>.DevicesTurbines.py</p>
+<p>Pump pyomo block contains characteristics of a turbine.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Turbines.Turbine">
+<span class="sig-prename descclassname"><span class="pre">Devices.Turbines.</span></span><span class="sig-name descname"><span class="pre">Turbine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Turbines.html#Turbine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Turbines.Turbine" title="Link to this definition"></a></dt>
+<dd><p>Turbine.</p>
+<p>Sizes a new turbine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Q’: Injected flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Q (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Pdim</p></li>
+<li><p>Qin (t)</p></li>
+<li><p>Qout (t)</p></li>
+<li><p>H (t)</p></li>
+<li><p>Ph (t)</p></li>
+<li><p>Pe (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Qin &#64; Qin as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; P as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_Qin: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q(t)\)</span></p></li>
+<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) = Q(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="electrical-devices">
+<h2>Electrical devices<a class="headerlink" href="#electrical-devices" title="Link to this heading"></a></h2>
+<section id="eb-pumping-station">
+<h3>EB (Pumping Station)<a class="headerlink" href="#eb-pumping-station" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="Source block" height="74" src="_images/Block_EB.svg" width="97" /></a>
+<p id="module-Devices.EB">EB pyomo block containing the characteristics of a pumping station.</p>
+<p>It is meant to act as a node for power balance.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.EB.EB">
+<span class="sig-prename descclassname"><span class="pre">Devices.EB.</span></span><span class="sig-name descname"><span class="pre">EB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/EB.html#EB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.EB.EB" title="Link to this definition"></a></dt>
+<dd><p>Basic EB.</p>
+<p>Captures the powers linked to it and sets their sum to 0:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i} P_i = 0 \]</div>
+<section id="block-parameters">
+<h4>Block parameters<a class="headerlink" href="#block-parameters" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>t: pyomo Set() referring to time</p></li>
+<li><p>data: <em>None</em></p></li>
+<li><p>init_data: <em>None</em></p></li>
+</ul>
+</section>
+<section id="pyomo-declarations">
+<h4>Pyomo declarations<a class="headerlink" href="#pyomo-declarations" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p><em>None</em></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>P_bal (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P_bal (Extensive)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>balance: <span class="math notranslate nohighlight">\(P_{bal} = 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</dd></dl>
+
+</section>
+<section id="main-grid">
+<h3>Main Grid<a class="headerlink" href="#main-grid" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Source block" height="107" src="_images/Block_Grid.svg" width="132" /></a>
+<p id="module-Devices.MainGrid">MainGrid pyomo block contains characteristics of the point of connection.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.MainGrid.Grid">
+<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#Grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.Grid" title="Link to this definition"></a></dt>
+<dd><p>Point of connection to the grid.</p>
+<p>Delivers or consumes the required power up to a set maximum.
+It also defines whether the power is consumed from the grid <span class="math notranslate nohighlight">\(P_{buy}\)</span> or delivered to <span class="math notranslate nohighlight">\(P_{sell}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Pmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>P (t)</p></li>
+<li><p>Psell (t)</p></li>
+<li><p>Pbuy (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \cdot  P_{buy}(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="solar-pv">
+<h3>Solar PV<a class="headerlink" href="#solar-pv" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Solar.svg"><img alt="Source block" height="107" src="_images/Block_Solar.svg" width="129" /></a>
+<p id="module-Devices.SolarPV">SolarPV pyomo block contains characteristics of a solar PV plant.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.SolarPV.SolarPV">
+<span class="sig-prename descclassname"><span class="pre">Devices.SolarPV.</span></span><span class="sig-name descname"><span class="pre">SolarPV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/SolarPV.html#SolarPV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.SolarPV.SolarPV" title="Link to this definition"></a></dt>
+<dd><p>Expandable solar PV plant.</p>
+<p>Delivers power subject to a forecast <span class="math notranslate nohighlight">\(f(t)\)</span> and its installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span>.
+The plant will be able to expand up to a <span class="math notranslate nohighlight">\(P_{max}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Pinst’: Installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power to be installed <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t) \in [0,1]\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Pinst</p></li>
+<li><p>forecast</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>P (t) <span class="math notranslate nohighlight">\(\in [-P_{max}, 0]\)</span></p></li>
+<li><p>Pdim <span class="math notranslate nohighlight">\(\in [0, P_{max}-P_{inst}]\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="switch">
+<span id="id1"></span><h3>Switch<a class="headerlink" href="#switch" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Switch.svg"><img alt="Source block" height="123" src="_images/Block_Switch.svg" width="190" /></a>
+<p id="module-Devices.Switch">Switch pyomo block contains characteristics of a switch for line commutation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Switch.Switch">
+<span class="sig-prename descclassname"><span class="pre">Devices.Switch.</span></span><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Switch.html#Switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Switch.Switch" title="Link to this definition"></a></dt>
+<dd><p>Electrical switch.</p>
+<p>Commutes the output <span class="math notranslate nohighlight">\(P_{out}(t)\)</span> between 2 inputs of water flow <span class="math notranslate nohighlight">\(P_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(P_{in,1}(t)\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p><cite>None</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Pin0 (t)</p></li>
+<li><p>Pin1 (t)</p></li>
+<li><p>Pout (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Pin0 &#64; Pin0 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Pin1 &#64; Pin1 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Pout &#64; Pout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_State: <span class="math notranslate nohighlight">\(P_{in,0}(t) \cdot P_{in,1}(t) = 0\)</span></p></li>
+<li><p>c_Pout: <span class="math notranslate nohighlight">\(P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="AGISTIN Optimization Tool documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Builder.html" class="btn btn-neutral float-right" title="Builder module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CITCEA-UPC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devices.Turbines &mdash; AGISTIN 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AGISTIN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Devices.html">Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Builder.html">Builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AGISTIN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Devices.Turbines</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Devices.Turbines</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">AGISTIN project </span>
+
+<span class="sd">.\Devices\Turbines.py</span>
+
+<span class="sd">Pump pyomo block contains characteristics of a turbine.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="c1"># data: eff</span>
+<span class="c1"># init_data: Q(t), H(t), n(t), Pe(t)</span>
+
+<div class="viewcode-block" id="Turbine">
+<a class="viewcode-back" href="../../Devices.html#Devices.Turbines.Turbine">[docs]</a>
+<span class="k">def</span> <span class="nf">Turbine</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turbine.</span>
+<span class="sd">    </span>
+<span class="sd">    Sizes a new turbine.</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">        </span>
+<span class="sd">    data</span>
+<span class="sd">         - &#39;Q&#39;: Injected flow :math:`Q(t)` as a ``list``</span>
+<span class="sd">    </span>
+<span class="sd">    Pyomo declarations    </span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - Q (t)</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - Pdim</span>
+<span class="sd">            - Qin (t)</span>
+<span class="sd">            - Qout (t)</span>
+<span class="sd">            - H (t)</span>
+<span class="sd">            - Ph (t)</span>
+<span class="sd">            - Pe (t)</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_Qin @ Qin as ``Extensive``</span>
+<span class="sd">            - port_Qout @ Qout as ``Extensive``</span>
+<span class="sd">            - port_P @ P as ``Extensive``</span>
+<span class="sd">            - port_H @ H as ``Equality``</span>
+<span class="sd">        - Constraints: </span>
+<span class="sd">            - c_Qin: :math:`Q_{in}(t) = -Q(t)`</span>
+<span class="sd">            - c_Qout: :math:`Q_{out}(t) = Q(t)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">eff</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Qin</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Qout</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">H</span>    <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
+    <span class="n">b</span><span class="o">.</span><span class="n">Ph</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pe</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
+    
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Qin</span>  <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Qin</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Qout</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Qout</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_P</span>    <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Pe</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_H</span>    <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Equality</span><span class="p">)})</span>
+    
+    <span class="c1"># Constraints</span>
+    <span class="k">def</span> <span class="nf">Constraint_Q</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Qin</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Qout</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Q</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_Ph</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Ph</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9810</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">Qin</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Ph</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Ph</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_Pe</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pe</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Ph</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Pe</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Pe</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Constraint_Pdim</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Pe</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Pdim</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CITCEA-UPC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
