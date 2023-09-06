@@ -55,7 +55,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Devices.HydroSwitch.HydroSwitch"><code class="docutils literal notranslate"><span class="pre">HydroSwitch()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-Devices.NewPumps">New Pump</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-pump">New Pump</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.NewPumps.NewPump"><code class="docutils literal notranslate"><span class="pre">NewPump()</span></code></a></li>
 </ul>
 </li>
@@ -354,15 +354,79 @@
 <p><a class="reference internal" href="#switch">Switch</a></p>
 </div>
 </section>
-<section id="module-Devices.NewPumps">
-<span id="new-pump"></span><h3>New Pump<a class="headerlink" href="#module-Devices.NewPumps" title="Link to this heading"></a></h3>
-<p>AGISTIN project</p>
-<p>.DevicesPumps.py</p>
-<p>Pump pyomo block contains characteristics of a pump.</p>
+<section id="new-pump">
+<h3>New Pump<a class="headerlink" href="#new-pump" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_NewPump.svg"><img alt="Source block" height="126" src="_images/Block_NewPump.svg" width="189" /></a>
+<p id="module-Devices.NewPumps">Pump pyomo block contains characteristics of a pump.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.NewPumps.NewPump">
 <span class="sig-prename descclassname"><span class="pre">Devices.NewPumps.</span></span><span class="sig-name descname"><span class="pre">NewPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/NewPumps.html#NewPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.NewPumps.NewPump" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Power sizing <span class="math notranslate nohighlight">\(P_{dim}\)</span> of a new pump</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p>eff</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables:</dt><dd><ul>
+<li><p>Pdim (t) bounded <span class="math notranslate nohighlight">\(P_{dim} \ge 0\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \ge 0\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \ge 0\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \ge 0\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \ge 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports:</dt><dd><ul>
+<li><p>port_Qin &#64; Qin with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; Pe with ‘P’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H with ‘H’ as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = - Q_{out}(t)\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\cdot H(t)\cdot Q_{out}\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)/\eta\)</span></p></li>
+<li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \ge P_e(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="pipes">
@@ -603,6 +667,7 @@ It is utilised in Example0.</p>
 <section id="reservoirs">
 <h3>Reservoirs<a class="headerlink" href="#reservoirs" title="Link to this heading"></a></h3>
 <a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Source block" height="107" src="_images/Block_Reservoir.svg" width="130" /></a>
+<a class="reference internal image-reference" href="_images/Block_Reservoir_full.svg"><img alt="Source block" height="107" src="_images/Block_Reservoir_full.svg" width="146" /></a>
 <p id="module-Devices.Reservoirs">Reservoir pyomo block containing the characteristics of a reservoir.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir">

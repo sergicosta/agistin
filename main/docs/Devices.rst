@@ -141,6 +141,10 @@ Hydro Switch
 New Pump
 ```````````````````
 
+.. image:: img/Block_NewPump.svg
+   :scale: 100 %
+   :alt: Source block
+   
 .. automodule:: Devices.NewPumps
    :members:
    :undoc-members:

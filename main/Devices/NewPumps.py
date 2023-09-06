@@ -1,20 +1,55 @@
+# AGISTIN project 
+# .\Devices\NewPumps.py
 """
-AGISTIN project 
-
-.\Devices\Pumps.py
-
 Pump pyomo block contains characteristics of a pump.
 """
-
 
 import pyomo.environ as pyo
 from pyomo.network import *
 
 
 # data: eff
-# init_data: Q(t), H(t), n(t), Pe(t)
+# init_data: Q(t), H(t), Pe(t)
 
 def NewPump(b, t, data, init_data):
+    
+    """
+    Power sizing :math:`P_{dim}` of a new pump
+    
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+        
+    data
+         - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
+         
+    init_data
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'H': Head :math:`H(t)` as a ``list``
+         - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
+    
+    Pyomo declarations    
+        - Parameters:
+            - eff
+        - Variables:
+            - Pdim (t) bounded :math:`P_{dim} \ge 0`
+            - Qin (t) bounded :math:`Q_{in} \ge 0`
+            - Qout (t) bounded :math:`Q_{out} \ge 0`
+            - H (t) bounded :math:`H \ge 0`
+            - Ph (t) bounded :math:`P_h \ge 0`
+            - Pe (t) bounded :math:`P_e \ge 0`
+        - Ports:
+            - port_Qin @ Qin with 'Q' as ``Extensive``
+            - port_Qout @ Qout with 'Q' as ``Extensive``
+            - port_P @ Pe with 'P' as ``Extensive``
+            - port_H @ H with 'H' as ``Equality``
+        - Constraints:
+            - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
+            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
+            - c_Pe: :math:`P_e(t) = P_h(t)/\eta`
+            - c_Pdim: :math:`P_{dim}(t) \ge P_e(t)`
+    """
     
     # Parameters
     b.eff = pyo.Param(initialize=data['eff'])
@@ -35,11 +70,11 @@ def NewPump(b, t, data, init_data):
     
     # Constraints
     def Constraint_Q(_b, _t):
-        return _b.Qin[_t] == _b.Qout[_t]
+        return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
     
     def Constraint_Ph(_b, _t):
-        return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qin[_t]
+        return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qout[_t]
     b.c_Ph = pyo.Constraint(t, rule = Constraint_Ph)
     
     def Constraint_Pe(_b, _t):
