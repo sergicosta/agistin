@@ -1,9 +1,9 @@
 """
-AGISTIN project 
+AGISTIN project
 
 .\Builder.py
 
-Builder functions generate un complete pyomo model from a .json file.
+Builder functions generate a complete pyomo model from a .json file.
 """
 
 import pyomo.environ as pyo
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     # electricity cost
     l_cost = [1,1,1,1,1]
     m.cost = pyo.Param(m.t, initialize=l_cost)
-    cost_new_turb, cost_new_pump = 2, 2
+    cost_new_turb, cost_new_pump = 2, 10
     
     builder(m,'TestAll')
     
@@ -74,10 +74,15 @@ if __name__ == '__main__':
     # instance.Turb1.Qin.pprint()
     # instance.Pump1.Qout.pprint()
     # instance.PumpNew.Qout.pprint()
-    # instance.Reservoir0.W.pprint()
+    print('------------------------- Reservoirs -------------------------')
+    instance.Reservoir0.W.pprint()
     instance.Reservoir1.W.pprint()
-    # instance.Pipe1.Q.pprint()
+    print('--------------------------- Powers ---------------------------')
+    instance.Turb1.Pe.pprint()
+    instance.Pump1.Pe.pprint()
+    instance.PumpNew.Pe.pprint()
+    instance.PV1.P.pprint()
     instance.MainGrid.P.pprint()
-    print('---------------------------------------------------')
+    print('--------------------------- Sizing ---------------------------')
     instance.Turb1.Pdim.pprint()
     instance.PumpNew.Pdim.pprint()
