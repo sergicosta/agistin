@@ -1,37 +1,26 @@
 Examples
 ===============
 
-Example0 module
+Example 0
+----------
+   
+.. literalinclude:: ..\\Example0.py  
+   
+Example 1
+----------
+   
+.. literalinclude:: ..\\Example1.py  
+   
+Example 2
+----------
+   
+.. literalinclude:: ..\\Example2.py  
+   
+Example 3
 ----------
 
-.. automodule:: Example0
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-   
-Example1 module
-----------
+.. note::
+   🚧 WIP
 
-.. automodule:: Example1
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-   
-Example2 module
-----------
-
-.. automodule:: Example2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-   
-Example3 module
-----------
-
-.. automodule:: Example3
-   :members:
-   :undoc-members:
-   :show-inheritance:
+..
+	.. literalinclude:: ..\\Example3.py 
