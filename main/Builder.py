@@ -9,7 +9,49 @@ Builder functions generate a complete pyomo model from a .json file.
 import pyomo.environ as pyo
 from pyomo.network import *
 import json
+import pandas as pd
+
+
+def data_parser(NameTest):
+    T = 5
+    dt = 1
     
+    df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
+    
+    with open(f'Cases/{NameTest}.json', 'w') as f:
+        f.write('{\n')
+        for k in df.keys():
+            for val in range(len(df[k])):
+                f.write(f'"{df[k]["Name"][val]}":{{\n')
+                f.write(f'\t "data":{{"type":"{k}",')
+                for it in df[k].columns.values:
+                    if it in ('Name','CONNECTION'):
+                        pass
+                    else:
+                        f.write(f'"{it}":{df[k][it][val]},')
+                if k == 'Reservoir':
+                    f.write(f'"dt":{dt}')
+                f.write('},\n')
+                f.write('\t "init_data":{},\n')
+                f.write('\t "conns":{')
+                try:
+                    con = df[k]['CONNECTION'][val]
+                    cons = con.split(';')
+                    for aux in cons:
+                        if len(aux) == 0:
+                            pass
+                        else:
+                            trp = aux.split(',')
+                            f.write(f'"{trp[0]}":["{trp[1]}","{trp[2]}"],')
+                except KeyError: # no CONNECTION
+                    pass
+                except AttributeError: # CONNECTION is NaN
+                    pass 
+                f.write('}\n')
+                f.write('\t },\n')
+        f.write('}\n')
+
+ 
 def builder(m, test_case):
   
     from Devices.EB import EB
@@ -19,6 +61,7 @@ def builder(m, test_case):
     from Devices.Pipes import Pipe
     from Devices.Pumps import Pump
     from Devices.Reservoirs import Reservoir
+    from Devices.Reservoirs import Reservoir_Ex0
     from Devices.SolarPV import SolarPV
     from Devices.Sources import Source
     from Devices.Switch import Switch
