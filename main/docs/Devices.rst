@@ -184,6 +184,10 @@ Reservoirs
    :scale: 100 %
    :alt: Source block
    
+.. image:: img/Block_Reservoir_full.svg
+   :scale: 100 %
+   :alt: Source block
+   
 .. automodule:: Devices.Reservoirs
    :members:
    :undoc-members:
