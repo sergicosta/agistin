@@ -8,7 +8,7 @@ DataParser generates a .json file that feeds the builder function.
 
 import pandas as pd
 
-NameTest = 'Test1'
+NameTest = 'Example3'
 T = 5
 dt = 1
 
@@ -39,8 +39,10 @@ with open(f'Cases/{NameTest}.json', 'w') as f:
                     else:
                         trp = aux.split(',')
                         f.write(f'"{trp[0]}":["{trp[1]}","{trp[2]}"],')
-            except KeyError:
+            except KeyError: # no CONNECTION
                 pass
+            except AttributeError: # CONNECTION is NaN
+                pass 
             f.write('}\n')
             f.write('\t },\n')
     f.write('}\n')
