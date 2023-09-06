@@ -13,6 +13,7 @@ T = 5
 dt = 1
 
 df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
+df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
 
 with open(f'Cases/{NameTest}.json', 'w') as f:
     f.write('{\n')
