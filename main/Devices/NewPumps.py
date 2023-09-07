@@ -1,9 +1,9 @@
 """
 AGISTIN project 
 
-.\Devices\Pumps.py
+.\Devices\ NewPumps.py
 
-Pump pyomo block contains characteristics of a pump.
+NewPump pyomo block contains characteristics of a pump to size.
 """
 
 

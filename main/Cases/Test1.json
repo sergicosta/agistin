@@ -1,0 +1,57 @@
+{
+"MainGrid":{
+	 "data":{"type":"Grid","Pmax":100000000,},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],}
+	 },
+"Reservoir0":{
+	 "data":{"type":"Reservoir","W0":20,"Wmin":1,"Wmax":50,"zmin":420,"zmax":480,"dt":1},
+	 "init_data":{},
+	 "conns":{"z":["Pipe1","zlow"],}
+	 },
+"Reservoir1":{
+	 "data":{"type":"Reservoir","W0":20,"Wmin":1,"Wmax":50,"zmin":450,"zmax":510,"dt":1},
+	 "init_data":{},
+	 "conns":{"z":["Pipe1","zhigh"],}
+	 },
+"Pipe1":{
+	 "data":{"type":"Pipe","H0":20,"K":0.05,"Qmax":50,},
+	 "init_data":{},
+	 "conns":{"Q":["Reservoir1","Q"],}
+	 },
+"HySw1":{
+	 "data":{"type":"HydroSwitch",},
+	 "init_data":{},
+	 "conns":{"Qout":["Pipe1","Q"],}
+	 },
+"Pump1":{
+	 "data":{"type":"Pump","A":50,"B":0.1,"Pmax":10000000,"Qmax":10,"Qnom":8,"n_n":1450,"eff":0.9,},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],"Qout":["HySw1","Qin0"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"],}
+	 },
+"PumpNew":{
+	 "data":{"type":"NewPump","eff":0.9,},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],"Qout":["HySw1","Qin0"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"],}
+	 },
+"Turb1":{
+	 "data":{"type":"Turbine","eff":0.85,},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],"Qin":["HySw1","Qin1"],"H":["Pipe1","H"],"Qout":["Reservoir0","Q"],}
+	 },
+"R1_OUT":{
+	 "data":{"type":"Source",},
+	 "init_data":{},
+	 "conns":{"Qin":["Reservoir1","Q"],}
+	 },
+"EB1":{
+	 "data":{"type":"EB",},
+	 "init_data":{},
+	 "conns":{}
+	 },
+"PV1":{
+	 "data":{"type":"SolarPV","Pinst":50000,"Pmax":100000,},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],}
+	 },
+}

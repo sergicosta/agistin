@@ -10,7 +10,7 @@
     "conns":{"z":["Pipe1","zlow"]}
     },
 "Reservoir1":{
-    "data":{"type":"Reservoir","W0":3,"Wmin":1,"Wmax":10,"zmin":450,"zmax":510,"dt":1},
+    "data":{"type":"Reservoir","W0":20,"Wmin":1,"Wmax":50,"zmin":450,"zmax":510,"dt":1},
     "init_data":{"Q":[0,0,0,0,0],"W":[5,5,5,5,5]},
     "conns":{"z":["Pipe1","zhigh"]}
     },
@@ -39,13 +39,8 @@
     "init_data":{"Pe":[-1e3,-1e3,-1e3,-1e3,-1e3],"H":[20,20,20,20,20],"Q":[0,0,0,0,0]},
     "conns":{"P":["EB1","P"],"Qin":["HySw1","Qin1"],"H":["Pipe1","H"],"Qout":["Reservoir0","Q"]}
     },
-"R1_IN":{
-    "data":{"type":"Source","Q":[5,5,0,0,0]},
-    "init_data":{},
-    "conns":{"Qout":["Reservoir1","Q"]}
-    },
 "R1_OUT":{
-    "data":{"type":"Source","Q":[0,0,6,6,6]},
+    "data":{"type":"Source","Q":[2,1,1,2,1]},
     "init_data":{},
     "conns":{"Qin":["Reservoir1","Q"]}
     },
@@ -53,5 +48,10 @@
     "data":{"type":"EB"},
     "init_data":{},
     "conns":{}
+    },
+"PV1":{
+    "data":{"type":"SolarPV","Pinst":50e3,"Pmax":100e3,"forecast":[1.0,0.0,0.5,0.2,0.8]},
+    "init_data":{},
+    "conns":{"P":["EB1","P"]}
     }
 }
