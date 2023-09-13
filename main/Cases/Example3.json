@@ -1,0 +1,47 @@
+{
+"MainGrid":{
+	 "data":{"type":"Grid","Pmax":100000,},
+	 "init_data":{},
+	 "conns":{"P":["EB","P"],}
+	 },
+"Reservoir0":{
+	 "data":{"type":"Reservoir_Ex0","W0":5,"Wmin":0,"Wmax":20,},
+	 "init_data":{"Q":[0, 0, 0, 0, 0],"W":[5, 5, 5, 5, 5],},
+	 "conns":{}
+	 },
+"Reservoir1":{
+	 "data":{"type":"Reservoir_Ex0","W0":5,"Wmin":0,"Wmax":20,},
+	 "init_data":{"Q":[0, 0, 0, 0, 0],"W":[5, 5, 5, 5, 5],},
+	 "conns":{}
+	 },
+"Pipe1":{
+	 "data":{"type":"Pipe_Ex0","H0":20,"K":0.05,"Qmax":50,},
+	 "init_data":{"Q":[0, 0, 0, 0, 0],"H":[20, 20, 20, 20, 20],},
+	 "conns":{"Q":["Reservoir1","Q"],}
+	 },
+"Pump1":{
+	 "data":{"type":"Pump","A":50,"B":0.1,"Pmax":9810000,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9,},
+	 "init_data":{"Q":[0, 0, 0, 0, 0],"H":[20, 20, 20, 20, 20],"n":[1450, 1450, 1450, 1450, 1450],"Pe":[981000, 981000, 981000, 981000, 981000],},
+	 "conns":{"P":["EB","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"],}
+	 },
+"Pump1":{
+	 "data":{"type":"Pump","A":50,"B":0.1,"Pmax":9810000,"Qmax":20,"Qnom":5,"n_n":1450,"eff":0.9,},
+	 "init_data":{"Q":[0, 0, 0, 0, 0],"H":[20, 20, 20, 20, 20],"n":[1450, 1450, 1450, 1450, 1450],"Pe":[981000, 981000, 981000, 981000, 981000],},
+	 "conns":{"P":["EB","P"],"Qout":["Pipe1","Q"],"H":["Pipe1","H"],"Qin":["Reservoir0","Q"],}
+	 },
+"Irrigation1":{
+	 "data":{"type":"Source","Q":[2, 1, 1, 1, 1],},
+	 "init_data":{},
+	 "conns":{"Qin":["Reservoir1","Q"],}
+	 },
+"EB":{
+	 "data":{"type":"EB",},
+	 "init_data":{},
+	 "conns":{}
+	 },
+"PV1":{
+	 "data":{"type":"SolarPV","Pinst":50000,"Pmax":100000,"forecast":[0.0, 0.2, 0.8, 1.0, 0.1],},
+	 "init_data":{},
+	 "conns":{"P":["EB1","P"],}
+	 },
+}

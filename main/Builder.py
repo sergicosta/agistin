@@ -11,12 +11,20 @@ from pyomo.network import *
 import json
 import pandas as pd
 
+def write_list(f, df, df_time, k, val):
+    for it in df_time[k]:
+        aux = it.split('_')
+        if aux[0] == df[k]["Name"][val]:
+            f.write(f'"{aux[1]}":{list(df_time[k][it])},')
+
 
 def data_parser(NameTest):
     T = 5
     dt = 1
     
     df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
+    df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
+    special = ['SolarPV','Source']
     
     with open(f'Cases/{NameTest}.json', 'w') as f:
         f.write('{\n')
@@ -31,8 +39,16 @@ def data_parser(NameTest):
                         f.write(f'"{it}":{df[k][it][val]},')
                 if k == 'Reservoir':
                     f.write(f'"dt":{dt}')
+                if k in special:
+                    #  Time values as data
+                    write_list(f, df, df_time, k, val)
                 f.write('},\n')
-                f.write('\t "init_data":{},\n')
+                #  Time values as Initial data
+                f.write('\t "init_data":{')
+                if k not in special:
+                    write_list(f, df, df_time, k, val)
+                f.write('},\n')
+                #  CONNECTIONS
                 f.write('\t "conns":{')
                 try:
                     con = df[k]['CONNECTION'][val]
