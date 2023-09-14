@@ -25,7 +25,7 @@ from Devices.MainGrid import Grid
 
 
 # generate system json file
-data_parser("Test1", dt=1)
+data_parser("Example3", dt=1)
 
 m = pyo.ConcreteModel()
 
@@ -36,9 +36,9 @@ m.t = pyo.Set(initialize=l_t)
 # electricity cost
 l_cost = [10,5,1,5,10]
 m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 2, 10
+cost_new_pv = 10
 
-builder(m,'Test1')
+builder(m,'Example3')
 
 
 #%% RUN THE OPTIMIZATION
