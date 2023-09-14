@@ -86,6 +86,7 @@ def builder(m, test_case):
     from Devices.MainGrid import Grid
     from Devices.NewPumps import NewPump
     from Devices.Pipes import Pipe
+    from Devices.Pipes import Pipe_Ex0
     from Devices.Pumps import Pump
     from Devices.Reservoirs import Reservoir
     from Devices.Reservoirs import Reservoir_Ex0
