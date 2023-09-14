@@ -25,7 +25,7 @@ from Devices.MainGrid import Grid
 
 
 # generate system json file
-data_parser("Example3", dt=1)
+data_parser("Example3", dt=1) # dt = value of each timestep (if using SI this is seconds)
 
 m = pyo.ConcreteModel()
 
