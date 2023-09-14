@@ -116,44 +116,44 @@ def builder(m, test_case):
     pyo.TransformationFactory("network.expand_arcs").apply_to(m)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    m = pyo.ConcreteModel()
+#     m = pyo.ConcreteModel()
     
-    # time
-    l_t = list(range(5))
-    m.t = pyo.Set(initialize=l_t)
+#     # time
+#     l_t = list(range(5))
+#     m.t = pyo.Set(initialize=l_t)
     
-    # electricity cost
-    l_cost = [1,1,1,1,1]
-    m.cost = pyo.Param(m.t, initialize=l_cost)
-    cost_new_turb, cost_new_pump = 2, 10
+#     # electricity cost
+#     l_cost = [1,1,1,1,1]
+#     m.cost = pyo.Param(m.t, initialize=l_cost)
+#     cost_new_turb, cost_new_pump = 2, 10
     
-    builder(m,'Test1')
+#     builder(m,'Test1')
     
-    def obj_fun(m):
-     	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb + m.PumpNew.Pdim*cost_new_pump
-    m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+#     def obj_fun(m):
+#      	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb + m.PumpNew.Pdim*cost_new_pump
+#     m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
     
-    # with open('model','w') as f:
-    #     m.pprint(f)
+#     # with open('model','w') as f:
+#     #     m.pprint(f)
     
-    instance = m.create_instance()
-    solver = pyo.SolverFactory('ipopt')
-    solver.solve(instance, tee=False)
+#     instance = m.create_instance()
+#     solver = pyo.SolverFactory('ipopt')
+#     solver.solve(instance, tee=False)
     
-    # instance.Turb1.Qin.pprint()
-    # instance.Pump1.Qout.pprint()
-    # instance.PumpNew.Qout.pprint()
-    print('------------------------- Reservoirs -------------------------')
-    instance.Reservoir0.W.pprint()
-    instance.Reservoir1.W.pprint()
-    print('--------------------------- Powers ---------------------------')
-    instance.Turb1.Pe.pprint()
-    instance.Pump1.Pe.pprint()
-    instance.PumpNew.Pe.pprint()
-    instance.PV1.P.pprint()
-    instance.MainGrid.P.pprint()
-    print('--------------------------- Sizing ---------------------------')
-    instance.Turb1.Pdim.pprint()
-    instance.PumpNew.Pdim.pprint()
+#     # instance.Turb1.Qin.pprint()
+#     # instance.Pump1.Qout.pprint()
+#     # instance.PumpNew.Qout.pprint()
+#     print('------------------------- Reservoirs -------------------------')
+#     instance.Reservoir0.W.pprint()
+#     instance.Reservoir1.W.pprint()
+#     print('--------------------------- Powers ---------------------------')
+#     instance.Turb1.Pe.pprint()
+#     instance.Pump1.Pe.pprint()
+#     instance.PumpNew.Pe.pprint()
+#     instance.PV1.P.pprint()
+#     instance.MainGrid.P.pprint()
+#     print('--------------------------- Sizing ---------------------------')
+#     instance.Turb1.Pdim.pprint()
+#     instance.PumpNew.Pdim.pprint()
