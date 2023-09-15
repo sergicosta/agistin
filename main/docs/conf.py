@@ -25,9 +25,11 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.mathjax",
     "sphinxcontrib.bibtex",
-    "sphinx.ext.doctest"
+    "sphinx.ext.doctest",
+    "rst2pdf.pdfbuilder"
     ]
-
+    
+pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 bibtex_bibfiles = ['references.bib']
