@@ -128,7 +128,7 @@ Hydro Switch
 
 .. image:: img/Block_HydroSwitch.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Hydro switch block
    
 .. automodule:: Devices.HydroSwitch
    :members:
@@ -143,7 +143,7 @@ New Pump
 
 .. image:: img/Block_NewPump.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: New pump block
    
 .. automodule:: Devices.NewPumps
    :members:
@@ -156,11 +156,11 @@ Pipes
 
 .. image:: img/Block_Pipe.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Pipe_Ex0 block
    
 .. image:: img/Block_Pipe_full.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Pipe block
    
 .. automodule:: Devices.Pipes
    :members:
@@ -173,7 +173,7 @@ Pumps
 
 .. image:: img/Block_Pump.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Pump block
    
 .. automodule:: Devices.Pumps
    :members:
@@ -186,11 +186,11 @@ Reservoirs
 
 .. image:: img/Block_Reservoir.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Reservoir_Ex0 block
    
 .. image:: img/Block_Reservoir_full.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Reservoir block
    
 .. automodule:: Devices.Reservoirs
    :members:
@@ -206,7 +206,7 @@ Turbines
    
 .. image:: img/Block_Turbine.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Turbine block
    
 .. automodule:: Devices.Turbines
    :members:
@@ -223,7 +223,7 @@ EB (Pumping Station)
 
 .. image:: img/Block_EB.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: EB block
    
 .. automodule:: Devices.EB
    :members:
@@ -236,7 +236,7 @@ Main Grid
 
 .. image:: img/Block_Grid.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Grid block
    
 .. automodule:: Devices.MainGrid
    :members:
@@ -249,7 +249,7 @@ Solar PV
 
 .. image:: img/Block_Solar.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Solar PV block
    
 .. automodule:: Devices.SolarPV
    :members:
@@ -264,9 +264,24 @@ Switch
 
 .. image:: img/Block_Switch.svg
    :scale: 100 %
-   :alt: Source block
+   :alt: Switch block
    
 .. automodule:: Devices.Switch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. _Battery:
+
+Battery
+```````````````````
+
+.. image:: img/Block_Battery.svg
+   :scale: 100 %
+   :alt: Battery block
+   
+.. automodule:: Devices.Batteries
    :members:
    :undoc-members:
    :show-inheritance:

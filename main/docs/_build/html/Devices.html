@@ -96,6 +96,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Switch.Switch"><code class="docutils literal notranslate"><span class="pre">Switch()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -292,7 +296,7 @@
 </section>
 <section id="hydro-switch">
 <span id="hydroswitch"></span><h3>Hydro Switch<a class="headerlink" href="#hydro-switch" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_HydroSwitch.svg"><img alt="Source block" height="123" src="_images/Block_HydroSwitch.svg" width="191" /></a>
+<a class="reference internal image-reference" href="_images/Block_HydroSwitch.svg"><img alt="Hydro switch block" height="123" src="_images/Block_HydroSwitch.svg" width="191" /></a>
 <p id="module-Devices.HydroSwitch">HydroSwitch pyomo block contains characteristics of a switch for pipe commutation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.HydroSwitch.HydroSwitch">
@@ -356,8 +360,8 @@
 </section>
 <section id="new-pump">
 <h3>New Pump<a class="headerlink" href="#new-pump" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_NewPump.svg"><img alt="Source block" height="126" src="_images/Block_NewPump.svg" width="189" /></a>
-<p id="module-Devices.NewPumps">Pump pyomo block contains characteristics of a pump.</p>
+<a class="reference internal image-reference" href="_images/Block_NewPump.svg"><img alt="New pump block" height="126" src="_images/Block_NewPump.svg" width="189" /></a>
+<p id="module-Devices.NewPumps">NewPump pyomo block contains characteristics of a pump to size.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.NewPumps.NewPump">
 <span class="sig-prename descclassname"><span class="pre">Devices.NewPumps.</span></span><span class="sig-name descname"><span class="pre">NewPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/NewPumps.html#NewPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.NewPumps.NewPump" title="Link to this definition"></a></dt>
@@ -431,8 +435,8 @@
 </section>
 <section id="pipes">
 <h3>Pipes<a class="headerlink" href="#pipes" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Pipe.svg"><img alt="Source block" height="113" src="_images/Block_Pipe.svg" width="137" /></a>
-<a class="reference internal image-reference" href="_images/Block_Pipe_full.svg"><img alt="Source block" height="113" src="_images/Block_Pipe_full.svg" width="183" /></a>
+<a class="reference internal image-reference" href="_images/Block_Pipe.svg"><img alt="Pipe_Ex0 block" height="113" src="_images/Block_Pipe.svg" width="137" /></a>
+<a class="reference internal image-reference" href="_images/Block_Pipe_full.svg"><img alt="Pipe block" height="113" src="_images/Block_Pipe_full.svg" width="183" /></a>
 <p id="module-Devices.Pipes">Pipe pyomo block contains characteristics of a pipe.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pipes.Pipe">
@@ -578,7 +582,7 @@ It is utilised in Example0.</p>
 </section>
 <section id="pumps">
 <h3>Pumps<a class="headerlink" href="#pumps" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Pump.svg"><img alt="Source block" height="126" src="_images/Block_Pump.svg" width="189" /></a>
+<a class="reference internal image-reference" href="_images/Block_Pump.svg"><img alt="Pump block" height="126" src="_images/Block_Pump.svg" width="189" /></a>
 <p id="module-Devices.Pumps">Pump pyomo block contains characteristics of a pump.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.Pump">
@@ -666,8 +670,8 @@ It is utilised in Example0.</p>
 </section>
 <section id="reservoirs">
 <h3>Reservoirs<a class="headerlink" href="#reservoirs" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Source block" height="107" src="_images/Block_Reservoir.svg" width="130" /></a>
-<a class="reference internal image-reference" href="_images/Block_Reservoir_full.svg"><img alt="Source block" height="107" src="_images/Block_Reservoir_full.svg" width="146" /></a>
+<a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Reservoir_Ex0 block" height="107" src="_images/Block_Reservoir.svg" width="130" /></a>
+<a class="reference internal image-reference" href="_images/Block_Reservoir_full.svg"><img alt="Reservoir block" height="107" src="_images/Block_Reservoir_full.svg" width="146" /></a>
 <p id="module-Devices.Reservoirs">Reservoir pyomo block containing the characteristics of a reservoir.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir">
@@ -826,7 +830,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <p class="admonition-title">Note</p>
 <p>🚧 WIP</p>
 </div>
-<a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Source block" height="126" src="_images/Block_Turbine.svg" width="189" /></a>
+<a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Turbine block" height="126" src="_images/Block_Turbine.svg" width="189" /></a>
 <p id="module-Devices.Turbines">AGISTIN project</p>
 <p>.DevicesTurbines.py</p>
 <p>Pump pyomo block contains characteristics of a turbine.</p>
@@ -899,7 +903,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <h2>Electrical devices<a class="headerlink" href="#electrical-devices" title="Link to this heading"></a></h2>
 <section id="eb-pumping-station">
 <h3>EB (Pumping Station)<a class="headerlink" href="#eb-pumping-station" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="Source block" height="74" src="_images/Block_EB.svg" width="97" /></a>
+<a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="EB block" height="74" src="_images/Block_EB.svg" width="97" /></a>
 <p id="module-Devices.EB">EB pyomo block containing the characteristics of a pumping station.</p>
 <p>It is meant to act as a node for power balance.</p>
 <dl class="py function">
@@ -955,7 +959,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </section>
 <section id="main-grid">
 <h3>Main Grid<a class="headerlink" href="#main-grid" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Source block" height="107" src="_images/Block_Grid.svg" width="132" /></a>
+<a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Grid block" height="107" src="_images/Block_Grid.svg" width="132" /></a>
 <p id="module-Devices.MainGrid">MainGrid pyomo block contains characteristics of the point of connection.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.MainGrid.Grid">
@@ -1018,7 +1022,7 @@ It also defines whether the power is consumed from the grid <span class="math no
 </section>
 <section id="solar-pv">
 <h3>Solar PV<a class="headerlink" href="#solar-pv" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Solar.svg"><img alt="Source block" height="107" src="_images/Block_Solar.svg" width="129" /></a>
+<a class="reference internal image-reference" href="_images/Block_Solar.svg"><img alt="Solar PV block" height="107" src="_images/Block_Solar.svg" width="129" /></a>
 <p id="module-Devices.SolarPV">SolarPV pyomo block contains characteristics of a solar PV plant.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.SolarPV.SolarPV">
@@ -1082,7 +1086,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </section>
 <section id="switch">
 <span id="id1"></span><h3>Switch<a class="headerlink" href="#switch" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Switch.svg"><img alt="Source block" height="123" src="_images/Block_Switch.svg" width="190" /></a>
+<a class="reference internal image-reference" href="_images/Block_Switch.svg"><img alt="Switch block" height="123" src="_images/Block_Switch.svg" width="190" /></a>
 <p id="module-Devices.Switch">Switch pyomo block contains characteristics of a switch for line commutation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Switch.Switch">
@@ -1130,6 +1134,96 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_State: <span class="math notranslate nohighlight">\(P_{in,0}(t) \cdot P_{in,1}(t) = 0\)</span></p></li>
 <li><p>c_Pout: <span class="math notranslate nohighlight">\(P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="battery">
+<span id="id2"></span><h3>Battery<a class="headerlink" href="#battery" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Battery.svg"><img alt="Battery block" height="107" src="_images/Block_Battery.svg" width="131" /></a>
+<p id="module-Devices.Batteries">Battery pyomo block containing the characteristics of a battery.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Batteries.Battery">
+<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">Battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#Battery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.Battery" title="Link to this definition"></a></dt>
+<dd><p>Simple Battery.</p>
+<p>Modifies its energy state <span class="math notranslate nohighlight">\(E(t)\)</span> from an initial state <span class="math notranslate nohighlight">\(E_0\)</span> according to 
+the charge or discharge power <span class="math notranslate nohighlight">\(P(t)&gt;0\)</span> is <span class="math notranslate nohighlight">\(P_{ch}(t)\)</span> and <span class="math notranslate nohighlight">\(P(t)&lt;0\)</span> is <span class="math notranslate nohighlight">\(P_{disc}(t)\)</span>.</p>
+<p>The state of charge <cite>SOC(t)</cite> is computed and taken into account as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘dt’: time delta <span class="math notranslate nohighlight">\(\Delta t\)</span></p></li>
+<li><p>‘E0’: Initial energy <span class="math notranslate nohighlight">\(E_0\)</span></p></li>
+<li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
+<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span></p></li>
+<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span></p></li>
+<li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>dt</p></li>
+<li><p>E0</p></li>
+<li><p>Emax</p></li>
+<li><p>SOCmin</p></li>
+<li><p>SOCmax</p></li>
+<li><p>Pmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]\)</span></p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
+<li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>Pdisc (t) bounded <span class="math notranslate nohighlight">\(P_{disc}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P (Extensive)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t) - P_{disc}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \cdot P_{disc}(t)\)</span></p></li>
+<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) \cdot E_{max}\)</span></p></li>
+<li><dl class="simple">
+<dt>c_E: </dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \cdot P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </dd>
 </dl>

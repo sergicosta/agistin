@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devices.Batteries &mdash; AGISTIN 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AGISTIN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Devices.html">Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Builder.html">Builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AGISTIN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Devices.Batteries</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Devices.Batteries</h1><div class="highlight"><pre>
+<span></span><span class="c1"># AGISTIN project </span>
+<span class="c1"># .\Devices\Batteries.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Battery pyomo block containing the characteristics of a battery.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="c1"># data: dt, E0, Emax, SOCmin, SOCmax, Pmax</span>
+<span class="c1"># init_data: E(t), P(t)</span>
+    
+<div class="viewcode-block" id="Battery">
+<a class="viewcode-back" href="../../Devices.html#Devices.Batteries.Battery">[docs]</a>
+<span class="k">def</span> <span class="nf">Battery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple Battery.</span>
+<span class="sd">    </span>
+<span class="sd">    Modifies its energy state :math:`E(t)` from an initial state :math:`E_0` according to </span>
+<span class="sd">    the charge or discharge power :math:`P(t)&gt;0` is :math:`P_{ch}(t)` and :math:`P(t)&lt;0` is :math:`P_{disc}(t)`.</span>
+<span class="sd">    </span>
+<span class="sd">    The state of charge `SOC(t)` is computed and taken into account as well.</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">    </span>
+<span class="sd">    data</span>
+<span class="sd">         - &#39;dt&#39;: time delta :math:`\Delta t`</span>
+<span class="sd">         - &#39;E0&#39;: Initial energy :math:`E_0`</span>
+<span class="sd">         - &#39;Emax&#39;: Maximum battery energy :math:`E_{max}`</span>
+<span class="sd">         - &#39;SOCmin&#39;: Minimum allowed SOC :math:`SOC_{min}`</span>
+<span class="sd">         - &#39;SOCmax&#39;: Maximum allowed SOC :math:`SOC_{max}`</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum delivered/absorbed power :math:`P_{max}`</span>
+<span class="sd">         </span>
+<span class="sd">    init_data</span>
+<span class="sd">         - &#39;E&#39;: Energy :math:`E(t)` as a ``list``</span>
+<span class="sd">         - &#39;P&#39;: Power :math:`P(t)` as a ``list``</span>
+<span class="sd">    </span>
+<span class="sd">    Pyomo declarations    </span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - dt</span>
+<span class="sd">            - E0</span>
+<span class="sd">            - Emax</span>
+<span class="sd">            - SOCmin</span>
+<span class="sd">            - SOCmax</span>
+<span class="sd">            - Pmax</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`</span>
+<span class="sd">            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`</span>
+<span class="sd">            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`</span>
+<span class="sd">            - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`</span>
+<span class="sd">            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_P @ P (Extensive)</span>
+<span class="sd">        - Constraints:</span>
+<span class="sd">            - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`</span>
+<span class="sd">            - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`</span>
+<span class="sd">            - c_SOC: :math:`SOC(t) = E(t) \cdot E_{max}`</span>
+<span class="sd">            - c_E: </span>
+<span class="sd">                - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`W(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">E0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Emax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOCmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOCmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">])</span>
+    
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">E</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pdisc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOC</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="o">/</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_P</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+
+    <span class="c1"># Constraints</span>
+    <span class="k">def</span> <span class="nf">Constraint_P</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdisc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_P0</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">*</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdisc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_P0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P0</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_SOC</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">SOC</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">/</span> <span class="n">_b</span><span class="o">.</span><span class="n">Emax</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_SOC</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_SOC</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_E</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdisc</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E0</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdisc</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_E</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_E</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CITCEA-UPC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
