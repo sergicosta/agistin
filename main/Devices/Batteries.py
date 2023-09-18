@@ -8,8 +8,8 @@ import pyomo.environ as pyo
 from pyomo.network import *
 
 
-# data: W0, Wmin, Wmax
-# init_data: Q(t), W(t)
+# data: dt, E0, Emax, SOCmin, SOCmax, Pmax
+# init_data: E(t), P(t)
     
 def Battery(b, t, data, init_data):
     
@@ -32,6 +32,7 @@ def Battery(b, t, data, init_data):
          - 'Emax': Maximum battery energy :math:`E_{max}`
          - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}`
          - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}`
+         - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
          
     init_data
          - 'E': Energy :math:`E(t)` as a ``list``
@@ -76,7 +77,7 @@ def Battery(b, t, data, init_data):
     b.P = pyo.Var(t, initialize=init_data['P'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.Pch = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.Pdisc = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-    b.SOC = pyo.Var(t, initialize=init_data['E']/data['Emax'], bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)
+    b.SOC = pyo.Var(t, initialize={k: init_data['E'][k]/data['Emax'] for k in range(len(t))}, bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
