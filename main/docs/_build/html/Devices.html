@@ -691,6 +691,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </dl>
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
+<li><p>‘dt’: Time delta <span class="math notranslate nohighlight">\(\Delta t\)</span></p></li>
 <li><p>‘W0’: Initial volume <span class="math notranslate nohighlight">\(W_0\)</span></p></li>
 <li><p>‘Wmin’: Minimum allowed volume <span class="math notranslate nohighlight">\(W_{min}\)</span></p></li>
 <li><p>‘Wmax’: Maximum allowed volume <span class="math notranslate nohighlight">\(W_{max}\)</span></p></li>
@@ -736,8 +737,8 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <dt>Constraints:</dt><dd><ul>
 <li><dl class="simple">
 <dt>c_W: </dt><dd><ul>
-<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + Q(t) \quad\)</span> otherwise</p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + \Delta t \cdot Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + \Delta t \cdot Q(t) \quad\)</span> otherwise</p></li>
 </ul>
 </dd>
 </dl>

@@ -25,6 +25,7 @@ def Reservoir(b, t, data, init_data):
     :param init_data: init_data ``dict``
     
     data
+         - 'dt': Time delta :math:`\Delta t`
          - 'W0': Initial volume :math:`W_0`
          - 'Wmin': Minimum allowed volume :math:`W_{min}`
          - 'Wmax': Maximum allowed volume :math:`W_{max}`
@@ -51,8 +52,8 @@ def Reservoir(b, t, data, init_data):
             - port_z @ z as ``Equality``
         - Constraints:
             - c_W: 
-                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t>0`
-                - :math:`W(t) = W_0 + Q(t) \quad` otherwise
+                - :math:`W(t) = W(t-1) + \Delta t \cdot Q(t) \quad` if  :math:`t>0`
+                - :math:`W(t) = W_0 + \Delta t \cdot Q(t) \quad` otherwise
             - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`
     """
     

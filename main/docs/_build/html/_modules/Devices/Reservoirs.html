@@ -101,6 +101,7 @@
 <span class="sd">    :param init_data: init_data ``dict``</span>
 <span class="sd">    </span>
 <span class="sd">    data</span>
+<span class="sd">         - &#39;dt&#39;: Time delta :math:`\Delta t`</span>
 <span class="sd">         - &#39;W0&#39;: Initial volume :math:`W_0`</span>
 <span class="sd">         - &#39;Wmin&#39;: Minimum allowed volume :math:`W_{min}`</span>
 <span class="sd">         - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
@@ -127,8 +128,8 @@
 <span class="sd">            - port_z @ z as ``Equality``</span>
 <span class="sd">        - Constraints:</span>
 <span class="sd">            - c_W: </span>
-<span class="sd">                - :math:`W(t) = W(t-1) + Q(t) \quad` if  :math:`t&gt;0`</span>
-<span class="sd">                - :math:`W(t) = W_0 + Q(t) \quad` otherwise</span>
+<span class="sd">                - :math:`W(t) = W(t-1) + \Delta t \cdot Q(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`W(t) = W_0 + \Delta t \cdot Q(t) \quad` otherwise</span>
 <span class="sd">            - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
