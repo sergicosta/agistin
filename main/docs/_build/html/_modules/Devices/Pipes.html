@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Devices.Pipes &mdash; AGISTIN 1.0 documentation</title>
+  <title>Devices.Pipes &mdash; AGISTIN 0.0.20230919 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,7 +12,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../_static/documentation_options.js?v=b6851926"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -44,6 +44,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Devices.html">Devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Builder.html">Builder module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
 </ul>
 
         </div>
@@ -97,9 +98,9 @@
 <span class="sd">    Acts as a flow transportation device which also applies an energy loss to the fluid as:</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
-<span class="sd">        H(t) = H_0 + K \cdot Q(t)^2</span>
+<span class="sd">        H(t) = H_0(t) + K \cdot Q(t)^2</span>
 <span class="sd">    </span>
-<span class="sd">    where :math:`H_0` is the static height and is computed as the difference of heights between both pipe extremes.</span>
+<span class="sd">    where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.</span>
 <span class="sd">    </span>
 <span class="sd">    :param b: pyomo ``Block()`` to be set</span>
 <span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
