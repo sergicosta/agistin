@@ -29,7 +29,7 @@ def SolarPV(b, t, data, init_data=None):
     data
          - 'Pinst': Installed power :math:`P_{inst}`
          - 'Pmax': Maximum allowed power to be installed :math:`P_{max}`
-         - 'forecast': Forecast as power in p.u. :math:`f(t) \in [0,1]` as a ``list``
+         - 'forecast': Forecast as power in p.u. :math:`f(t)` as a ``list``
     
     Pyomo declarations
         - Parameters: 
