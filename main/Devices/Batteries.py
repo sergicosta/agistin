@@ -30,8 +30,8 @@ def Battery(b, t, data, init_data):
          - 'dt': time delta :math:`\Delta t`
          - 'E0': Initial energy :math:`E_0`
          - 'Emax': Maximum battery energy :math:`E_{max}`
-         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}`
-         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}`
+         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
+         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
          - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
          
     init_data
