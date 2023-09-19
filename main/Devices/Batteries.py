@@ -60,7 +60,7 @@ def Battery(b, t, data, init_data):
             - c_SOC: :math:`SOC(t) = E(t) / E_{max}`
             - c_E: 
                 - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
-                - :math:`W(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
+                - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
     """
     
     b.dt = data['dt']
