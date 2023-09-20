@@ -30,8 +30,8 @@ def Battery(b, t, data, init_data):
          - 'dt': time delta :math:`\Delta t`
          - 'E0': Initial energy :math:`E_0`
          - 'Emax': Maximum battery energy :math:`E_{max}`
-         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}`
-         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}`
+         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
+         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
          - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
          
     init_data
@@ -57,10 +57,10 @@ def Battery(b, t, data, init_data):
         - Constraints:
             - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
             - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
-            - c_SOC: :math:`SOC(t) = E(t) \cdot E_{max}`
+            - c_SOC: :math:`SOC(t) = E(t) / E_{max}`
             - c_E: 
                 - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
-                - :math:`W(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
+                - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
     """
     
     b.dt = data['dt']

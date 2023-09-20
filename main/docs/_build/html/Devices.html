@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Devices &mdash; AGISTIN 1.0 documentation</title>
+  <title>Devices &mdash; AGISTIN 0.0.20230919 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/documentation_options.js?v=b6851926"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -445,8 +445,8 @@
 It is utilised in Example0.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
 <div class="math notranslate nohighlight">
-\[H(t) = H_0 + K \cdot Q(t)^2\]</div>
-<p>where <span class="math notranslate nohighlight">\(H_0\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
+\[H(t) = H_0(t) + K \cdot Q(t)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(H_0(t)\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1045,7 +1045,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘Pinst’: Installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
 <li><p>‘Pmax’: Maximum allowed power to be installed <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
-<li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t) \in [0,1]\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations</dt><dd><ul class="simple">
@@ -1171,8 +1171,8 @@ the charge or discharge power <span class="math notranslate nohighlight">\(P(t)&
 <li><p>‘dt’: time delta <span class="math notranslate nohighlight">\(\Delta t\)</span></p></li>
 <li><p>‘E0’: Initial energy <span class="math notranslate nohighlight">\(E_0\)</span></p></li>
 <li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
-<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span></p></li>
-<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span></p></li>
+<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span> in p.u.</p></li>
+<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span> in p.u.</p></li>
 <li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
 </ul>
 </dd>
@@ -1216,11 +1216,11 @@ the charge or discharge power <span class="math notranslate nohighlight">\(P(t)&
 <dt>Constraints:</dt><dd><ul>
 <li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t) - P_{disc}(t)\)</span></p></li>
 <li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \cdot P_{disc}(t)\)</span></p></li>
-<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) \cdot E_{max}\)</span></p></li>
+<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) / E_{max}\)</span></p></li>
 <li><dl class="simple">
 <dt>c_E: </dt><dd><ul>
 <li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \cdot P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(W(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
 </ul>
 </dd>
 </dl>
