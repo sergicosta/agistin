@@ -46,7 +46,7 @@ with open(f'Cases/{NameTest}.json', 'w') as f:
                     pass
                 else:
                     f.write(f',"{it}":{df[k][it][val]}')
-            if k == 'Reservoir':
+            if k in ['Reservoir', 'Battery']:
                 f.write(f',"dt":{dt}')
             if k in special:
                 #  Time values as data
