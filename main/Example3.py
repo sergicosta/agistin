@@ -23,6 +23,11 @@ from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
 
+# Import useful functions
+from Utilities import clear_clc
+
+#clean console and variable pane
+clear_clc() #consider removing if you are not working with Spyder
 
 # generate system json file
 data_parser("Example3", dt=1) # dt = value of each timestep (if using SI this is seconds)

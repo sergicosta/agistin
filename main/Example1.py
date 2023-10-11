@@ -17,6 +17,13 @@ from Devices.Sources import Source
 from Devices.Pipes import Pipe_Ex0
 from Devices.Pumps import Pump
 from Devices.MainGrid import Grid
+from Devices.EB import EB
+
+# Import useful functions
+from Utilities import clear_clc
+
+#clean console and variable pane
+clear_clc() #consider removing if you are not working with Spyder
 
 # model
 m = pyo.ConcreteModel()
