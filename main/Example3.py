@@ -27,7 +27,7 @@ from Devices.MainGrid import Grid
 from Utilities import clear_clc
 
 #clean console and variable pane
-clear_clc() #consider removing if you are not working with Spyder
+# clear_clc() #consider removing if you are not working with Spyder
 
 # generate system json file
 data_parser("Example3", dt=1) # dt = value of each timestep (if using SI this is seconds)
@@ -38,11 +38,6 @@ m = pyo.ConcreteModel()
 l_t = list(range(5))
 m.t = pyo.Set(initialize=l_t)
 
-# electricity cost
-l_cost = [10,5,1,5,10]
-m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 10
-
 builder(m,'Example3')
 
 
@@ -50,7 +45,7 @@ builder(m,'Example3')
 
 # Objective function
 def obj_fun(m):
-	return sum((m.Grid.Pbuy[t]*m.cost[t] - m.Grid.Psell[t]*m.cost[t]/2) for t in l_t ) + m.PV.Pdim*cost_new_pv
+	return sum((m.Grid.Pbuy[t]*m.cost_MainGrid[t] - m.Grid.Psell[t]*m.cost_MainGrid[t]/2) for t in l_t ) + m.PV.Pdim*m.cost_PV1[0]
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
