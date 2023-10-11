@@ -29,16 +29,19 @@ from Utilities import clear_clc
 #clean console and variable pane
 # clear_clc() #consider removing if you are not working with Spyder
 
+data_filename = "Example3"
+
 # generate system json file
-data_parser("Example3", dt=1) # dt = value of each timestep (if using SI this is seconds)
+data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this is seconds)
 
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(5))
+l_t = list(range(5)) #TODO this should be inferred from the number of rows in the excel time series,
+#TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 
-builder(m,'Example3')
+builder(m, data_filename)
 
 
 #%% RUN THE OPTIMIZATION

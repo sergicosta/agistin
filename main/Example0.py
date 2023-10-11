@@ -8,7 +8,7 @@
 
 # Import pyomo
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc
 
 # Import devices
 from Devices.Reservoirs import Reservoir_Ex0

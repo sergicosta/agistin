@@ -2,7 +2,7 @@
 """
 Created on Tue Oct 10 11:37:28 2023
 
-@author: Daniel V Pombo
+@author: Daniel V Pombo (EPRI)
 
 .\ Utilities.py
 
