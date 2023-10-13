@@ -2,11 +2,11 @@ Variables and units
 ===============
 
 .. csv-table:: Variables and units
-	:header: "Magnitude", "Variable", "Units"
+	:header: "Magnitude", "Variable", "Units", "Comments"
 	
 	"Height", "H *or* z", "m"
 	"Flow", "Q", "m3/s"
 	"Volume", "W", "m3"
 	"Rotational speed", "n", "rpm"
-	"Active power", "P", "W"
+	"Active power", "P", "W", "Defined positive if consumed by the device"
 	"Energy", "E", "Wh"
