@@ -17,6 +17,7 @@ AGISTIN Optimization Tool documentation
    :maxdepth: 3
    :caption: Contents:
    
+   Vars
    Devices
    Builder
    Examples
