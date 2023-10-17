@@ -46,8 +46,9 @@ In order to run the tool you require:
 
 ## Usage
 
-Find usage examples at ``./AGISTIN tool usage examples.pdf`` ([here](./AGISTIN tool usage examples.pdf))
-You may find the full documentation [here](./main/docs/_build/html)
+Find usage examples at ``./AGISTIN tool usage examples.pdf`` ([here](./AGISTIN%20tool%20usage%20examples.pdf))
+
+You may find the full documentation at ``./main/docs/_build/html/index.html`` [here](./main/docs/_build/html/index.html)
 
 ## Contributors
 In alphabetical order:
