@@ -7,7 +7,7 @@ Pump pyomo block contains characteristics of a pump.
 
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: A, B, n_n, eff, Qmax, Qnom, Pmax

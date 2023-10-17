@@ -7,7 +7,7 @@ Pipe pyomo block contains characteristics of a pipe.
 
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: K, Qmax

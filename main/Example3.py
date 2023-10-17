@@ -9,7 +9,7 @@
 
 # Import pyomo
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 # Import builder
 from Builder import data_parser, builder

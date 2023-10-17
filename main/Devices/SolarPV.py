@@ -7,7 +7,7 @@ SolarPV pyomo block contains characteristics of a solar PV plant.
 
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: Pinst, Pmax, forecast(t)

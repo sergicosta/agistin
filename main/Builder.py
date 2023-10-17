@@ -7,7 +7,7 @@ Builder functions generate a complete pyomo model from a .json file.
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 import json
 import pandas as pd
 

@@ -5,7 +5,7 @@ Source pyomo block contains characteristics of a source.
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: Q(t)

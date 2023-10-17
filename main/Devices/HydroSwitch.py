@@ -5,7 +5,7 @@ HydroSwitch pyomo block contains characteristics of a switch for pipe commutatio
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: None
