@@ -126,18 +126,25 @@ def Battery(b, t, data, init_data):
     b.MinEnergy = pyo.Constraint(t, rule = ConstraintEnergymin)
     
 #%% Battery_Ex0
-"""
+
+def Battery_Ex0(b, t, data, init_data):
+    """
     Simple Battery for testing and example purposes.
-    It is utilised in Example21.
+    It is used in Example21.
     
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+        
     data:
          - 'E0': Initial energy :math:`E_0`
          - 'Emax': Maximum battery energy :math:`E_{max}`
          - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
          - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
          - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
-         - 'Pinst': Power already installed
-         - 'Einst': Energy storage already installel
+         - 'Pinst': Power already installed :math: `P_{inst}`
+         - 'Einst': Energy storage already installel :math: `E_{inst}`
              
     init_data:
          - 'E': Energy :math:`E(t)` as a ``list``
@@ -161,8 +168,8 @@ def Battery(b, t, data, init_data):
             - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
             - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
             - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
-            - Edim bounded :math: 'E_{dim} \in [0, E_ {max} - E_{inst}]'
-            - Pdim bounded :math: 'P_{dim} \in [0, P_ {max} - P_{inst}'
+            - Edim bounded :math: `E_{dim} \in [0, E_ {max} - E_{inst}]`
+            - Pdim bounded :math: `P_{dim} \in [0, P_ {max} - P_{inst}`
         - Ports: 
             - port_P @ P (Extensive)
         - Constraints:
@@ -172,15 +179,12 @@ def Battery(b, t, data, init_data):
             - c_E: 
                 - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
                 - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
-            -c_ch: :math:'Pch(t) <= (P{inst} + P{dim})'
-            -c_disc: :math:'Pdisc(t) <= (P{inst} + P{dim})'
-            -c_Emax: math: 'E(t) <= (E{inst} + E{dim})*SOC{max}'
-            -c_Emin: math: 'E(t) <= (E{inst} + E{dim})*SOC{min}'
-            
-"""
-
-
-def Battery_Ex0(b, t, data, init_data):
+            -c_ch: :math:`Pch(t) <= (P{inst} + P{dim})`
+            -c_disc: :math:`Pdisc(t) <= (P{inst} + P{dim})`
+            -c_Emax: math: `E(t) <= (E{inst} + E{dim})*SOC{max}`
+            -c_Emin: math: `E(t) <= (E{inst} + E{dim})*SOC{min}`
+                
+    """
     
     # Parameters
     b.E0 = pyo.Param(initialize=data['E0'])
