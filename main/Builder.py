@@ -45,7 +45,7 @@ def data_parser(NameTest, dt):
                         pass
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
-                if k == 'Reservoir':
+                if k == ('Reservoir'):
                     f.write(f',"dt":{dt}')
                 if k in special:
                     #  Time values as data
@@ -94,6 +94,8 @@ def builder(m, test_case):
     from Devices.Sources import Source
     from Devices.Switch import Switch
     from Devices.Turbines import Turbine
+    from Devices.Batteries import Battery
+    from Devices.Batteries import Battery_Ex0
 
     with open(f'Cases\{test_case}.json', 'r') as jfile:
         system = json.load(jfile)
