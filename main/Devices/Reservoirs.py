@@ -5,7 +5,7 @@ Reservoir pyomo block containing the characteristics of a reservoir.
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: dt, W0, Wmin, Wmax, zmin, zmax

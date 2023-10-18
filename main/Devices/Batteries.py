@@ -5,7 +5,7 @@ Battery pyomo block containing the characteristics of a battery.
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: dt, E0, Emax, SOCmin, SOCmax, Pmax

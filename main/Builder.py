@@ -7,7 +7,7 @@ Builder functions generate a complete pyomo model from a .json file.
 """
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 import json
 import pandas as pd
 
@@ -24,8 +24,26 @@ def write_list(f, df, df_time, k, val):
 
 
 def data_parser(NameTest, dt):
+    """
+    Converting several excel files, with static data and time-based datasets,
+    into a .json format file, which is called by the builder.
+    
+    data_parser requieres the following:
+        
+    :param NameTest: name of the excel file with the static information of the plant ``str``
+    :param dt: time interval for numerical integration :math:`\Delta t` ``int``
+    
+    It is required that 2 excel files exists:
+        - 'NameTest.xlsx': plant parameters
+        - 'NameTest_time.xlsx': devices initialization variables for optimization solver
+    
+    The output .json file:
+        - 'NameTest.json': containing `data`, `init_data`, and `conns` of each device.
+
+    """
     df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
     df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
+    df_cost = pd.read_excel(f'Cases/{NameTest}_cost.xlsx', sheet_name=None)
     special = ['SolarPV','Source']
     T = df_time['Reservoir'].shape[0]
     
@@ -45,6 +63,7 @@ def data_parser(NameTest, dt):
                         pass
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
+                        
                 if k == ('Reservoir'):
                     f.write(f',"dt":{dt}')
                 if k in special:
@@ -77,10 +96,36 @@ def data_parser(NameTest, dt):
                 f.write('}\n')
                 f.write('\t }')
         f.write('\n}\n')
+        
+    with open(f'Cases/{NameTest}_cost.json', 'w') as f:
+        first = True
+        f.write('{')
+        for k in df_cost.keys():
+            if not df_cost[k].empty:
+                for it in df_cost[k]:
+                    if first:
+                        f.write(f'\n"{it}":{list(df_cost[k][it])}')
+                        first = False
+                    else:
+                        f.write(f',\n"{it}":{list(df_cost[k][it])}')
+        f.write('\n}\n')
+        
+    return T
 
  
 def builder(m, test_case):
-  
+    """
+    Generate a complete pyomo model from a .json file.
+    It provides a flexible solution to create an optimization problem in a pyomo environment using object-oriented programming.
+    
+    builder requieres the following:
+           
+    :param m: concrete pyomo model ``pyomo.core.base.PyomoModel.ConcreteModel``
+    :param test_case: must match the name of the .json source file ``str``
+    
+    """
+    
+    from Devices.Batteries import Battery
     from Devices.EB import EB
     from Devices.HydroSwitch import HydroSwitch
     from Devices.MainGrid import Grid
@@ -116,16 +161,37 @@ def builder(m, test_case):
             val += 1
     
     pyo.TransformationFactory("network.expand_arcs").apply_to(m)
+    
+    with open(f'Cases\{test_case}_cost.json', 'r') as jfile:
+        cost = json.load(jfile)
+        
+    for it in cost.keys():
+        setattr(m, it, cost[it])
+
+
+def run(name, dt):
+    
+    m = pyo.ConcreteModel()
+    T = data_parser(name, dt)
+    m.t = pyo.Set(initialize=list(range(T)))
+    
+    builder(m, name)
+    
+    def obj_fun(m):
+        return sum(-m.MainGrid.P[t]*m.cost_MainGrid[t] for t in list(range(T))) + m.Turb1.Pdim*m.cost_Turb1[0] + m.PumpNew.Pdim*m.cost_PumpNew[0]
+    m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+    
+    instance = m.create_instance()
+    solver = pyo.SolverFactory('ipopt')
+    solver.options['tol'] = 1e-6
+    print(solver.options['tol'])
+    solver.solve(instance, tee=False)
+    
+    return instance
 
 
 # if __name__ == '__main__':
 
-#     m = pyo.ConcreteModel()
-    
-#     # time
-#     l_t = list(range(5))
-#     m.t = pyo.Set(initialize=l_t)
-    
 #     # electricity cost
 #     l_cost = [1,1,1,1,1]
 #     m.cost = pyo.Param(m.t, initialize=l_cost)

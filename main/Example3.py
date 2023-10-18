@@ -9,7 +9,7 @@
 
 # Import pyomo
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 # Import builder
 from Builder import data_parser, builder
@@ -23,29 +23,32 @@ from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
 
+# Import useful functions
+from Utilities import clear_clc
+
+#clean console and variable pane
+# clear_clc() #consider removing if you are not working with Spyder
+
+data_filename = "Example3"
 
 # generate system json file
-data_parser("Example3", dt=1) # dt = value of each timestep (if using SI this is seconds)
+data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this is seconds)
 
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(5))
+l_t = list(range(5)) #TODO this should be inferred from the number of rows in the excel time series,
+#TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 
-# electricity cost
-l_cost = [10,5,1,5,10]
-m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 10
-
-builder(m,'Example3')
+builder(m, data_filename)
 
 
 #%% RUN THE OPTIMIZATION
 
 # Objective function
 def obj_fun(m):
-	return sum((m.Grid.Pbuy[t]*m.cost[t] - m.Grid.Psell[t]*m.cost[t]/2) for t in l_t ) + m.PV.Pdim*cost_new_pv
+	return sum((m.Grid.Pbuy[t]*m.cost_MainGrid[t] - m.Grid.Psell[t]*m.cost_MainGrid[t]/2) for t in l_t ) + m.PV.Pdim*m.cost_PV1[0]
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()

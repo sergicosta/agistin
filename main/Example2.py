@@ -12,7 +12,7 @@
 
 # Import pyomo
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 # Import devices
 from Devices.Reservoirs import Reservoir_Ex0
@@ -23,6 +23,11 @@ from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
 
+# Import useful functions
+from Utilities import clear_clc
+
+#clean console and variable pane
+clear_clc() #consider removing if you are not working with Spyder
 
 # model
 m = pyo.ConcreteModel()

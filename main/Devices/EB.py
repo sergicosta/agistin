@@ -8,7 +8,7 @@ It is meant to act as a node for power balance.
 
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: None

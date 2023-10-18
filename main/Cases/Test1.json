@@ -53,5 +53,10 @@
 	 "data":{"type":"SolarPV","Pinst":50000,"Pmax":100000,"forecast":[1.0, 0.0, 0.5, 0.2, 0.8]},
 	 "init_data":{},
 	 "conns":{"P":["EB1","P"]}
+	 },
+"Battery1":{
+	 "data":{"type":"Battery","E0":7000,"Emax":15000,"SOCmin":0.1,"SOCmax":0.98,"Pmax":1000,"dt":1},
+	 "init_data":{"E":[7000, 7000, 7000, 7000, 7000],"P":[500, 500, 500, 500, 500]},
+	 "conns":{"P":["EB1","P"]}
 	 }
 }

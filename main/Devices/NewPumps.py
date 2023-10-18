@@ -7,7 +7,7 @@ NewPump pyomo block contains characteristics of a pump to size.
 
 
 import pyomo.environ as pyo
-from pyomo.network import *
+from pyomo.network import Arc, Port
 
 
 # data: eff
