@@ -99,6 +99,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery_Ex0"><code class="docutils literal notranslate"><span class="pre">Battery_Ex0()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1227,6 +1228,100 @@ the charge or discharge power <span class="math notranslate nohighlight">\(P(t)&
 </dl>
 </li>
 </ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Batteries.Battery_Ex0">
+<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">Battery_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#Battery_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.Battery_Ex0" title="Link to this definition"></a></dt>
+<dd><p>Simple Battery for testing and example purposes.
+It is used in Example21.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt>data:</dt><dd><ul class="simple">
+<li><p>‘E0’: Initial energy <span class="math notranslate nohighlight">\(E_0\)</span></p></li>
+<li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
+<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span> in p.u.</p></li>
+<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span> in p.u.</p></li>
+<li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Pinst’: Power already installed :math: <cite>P_{inst}</cite></p></li>
+<li><p>‘Einst’: Energy storage already installel :math: <cite>E_{inst}</cite></p></li>
+</ul>
+</dd>
+<dt>init_data:</dt><dd><ul class="simple">
+<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declaration</dt><dd><ul>
+<li><dl>
+<dt>Parameters: </dt><dd><ul class="simple">
+<li><p>dt</p></li>
+<li><p>E0</p></li>
+<li><p>Emax</p></li>
+<li><p>SOCmin</p></li>
+<li><p>SOCmax</p></li>
+<li><p>Pmax</p></li>
+</ul>
+<p>-Pdim
+-Edim
+-Rend_ch
+-Renc_disc</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul class="simple">
+<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]\)</span></p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
+<li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>Pdisc (t) bounded <span class="math notranslate nohighlight">\(P_{disc}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
+<li><p>Edim bounded :math: <cite>E_{dim} in [0, E_ {max} - E_{inst}]</cite></p></li>
+<li><p>Pdim bounded :math: <cite>P_{dim} in [0, P_ {max} - P_{inst}</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul class="simple">
+<li><p>port_P &#64; P (Extensive)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Constraints:</dt><dd><ul class="simple">
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t) - P_{disc}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \cdot P_{disc}(t)\)</span></p></li>
+<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst}\)</span></p></li>
+<li><dl class="simple">
+<dt>c_E: </dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \cdot P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>-c_ch: <span class="math notranslate nohighlight">\(Pch(t) &lt;= (P{inst} + P{dim})\)</span>
+-c_disc: <span class="math notranslate nohighlight">\(Pdisc(t) &lt;= (P{inst} + P{dim})\)</span>
+-c_Emax: math: <cite>E(t) &lt;= (E{inst} + E{dim})*SOC{max}</cite>
+-c_Emin: math: <cite>E(t) &lt;= (E{inst} + E{dim})*SOC{min}</cite></p>
 </dd>
 </dl>
 </li>
