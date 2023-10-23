@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Builder &mdash; AGISTIN 1.0 documentation</title>
+  <title>Builder &mdash; AGISTIN 0.0.20230919 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -41,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Vars.html">Variables and units</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Devices.html">Devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Builder.html">Builder module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Examples.html">Examples</a></li>
@@ -81,34 +82,76 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
-<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="n">Arc</span><span class="p">,</span> <span class="n">Port</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
+<div class="viewcode-block" id="write_list"><a class="viewcode-back" href="../Builder.html#Builder.write_list">[docs]</a><span class="k">def</span> <span class="nf">write_list</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">df_time</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">df_time</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+        <span class="n">aux</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">aux</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;Name&quot;</span><span class="p">][</span><span class="n">val</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">aux</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">df_time</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,&quot;</span><span class="si">{</span><span class="n">aux</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">df_time</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="data_parser">
-<a class="viewcode-back" href="../Builder.html#Builder.data_parser">[docs]</a>
-<span class="k">def</span> <span class="nf">data_parser</span><span class="p">(</span><span class="n">NameTest</span><span class="p">):</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span>
-    
+
+<div class="viewcode-block" id="data_parser"><a class="viewcode-back" href="../Builder.html#Builder.data_parser">[docs]</a><span class="k">def</span> <span class="nf">data_parser</span><span class="p">(</span><span class="n">NameTest</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converting several excel files, with static data and time-based datasets,</span>
+<span class="sd">    into a .json format file, which is called by the builder.</span>
+<span class="sd">    </span>
+<span class="sd">    data_parser requieres the following:</span>
+<span class="sd">        </span>
+<span class="sd">    :param NameTest: name of the excel file with the static information of the plant ``str``</span>
+<span class="sd">    :param dt: time interval for numerical integration :math:`\Delta t` ``int``</span>
+<span class="sd">    </span>
+<span class="sd">    It is required that 2 excel files exists:</span>
+<span class="sd">        - &#39;NameTest.xlsx&#39;: plant parameters</span>
+<span class="sd">        - &#39;NameTest_time.xlsx&#39;: devices initialization variables for optimization solver</span>
+<span class="sd">    </span>
+<span class="sd">    The output .json file:</span>
+<span class="sd">        - &#39;NameTest.json&#39;: containing `data`, `init_data`, and `conns` of each device.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases/</span><span class="si">{</span><span class="n">NameTest</span><span class="si">}</span><span class="s1">.xlsx&#39;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">df_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases/</span><span class="si">{</span><span class="n">NameTest</span><span class="si">}</span><span class="s1">_time.xlsx&#39;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">df_cost</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases/</span><span class="si">{</span><span class="n">NameTest</span><span class="si">}</span><span class="s1">_cost.xlsx&#39;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">special</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SolarPV&#39;</span><span class="p">,</span><span class="s1">&#39;Source&#39;</span><span class="p">]</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">df_time</span><span class="p">[</span><span class="s1">&#39;Reservoir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases/</span><span class="si">{</span><span class="n">NameTest</span><span class="si">}</span><span class="s1">.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;{</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;Name&quot;</span><span class="p">][</span><span class="n">val</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;:</span><span class="se">{{\n</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> &quot;data&quot;:</span><span class="se">{{</span><span class="s1">&quot;type&quot;:&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot;,&#39;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> &quot;data&quot;:</span><span class="se">{{</span><span class="s1">&quot;type&quot;:&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">it</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span><span class="s1">&#39;CONNECTION&#39;</span><span class="p">):</span>
                         <span class="k">pass</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">][</span><span class="n">val</span><span class="p">]</span><span class="si">}</span><span class="s1">,&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;Reservoir&#39;</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;dt&quot;:</span><span class="si">{</span><span class="n">dt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">][</span><span class="n">val</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;Reservoir&#39;</span><span class="p">):</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,&quot;dt&quot;:</span><span class="si">{</span><span class="n">dt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">special</span><span class="p">:</span>
+                    <span class="c1">#  Time values as data</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                    <span class="n">write_list</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">df_time</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;},</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> &quot;init_data&quot;:</span><span class="si">{}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="c1">#  Time values as Initial data</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> &quot;init_data&quot;:{&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">special</span><span class="p">:</span>
+                    <span class="n">write_list</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">df_time</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;},</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="c1">#  CONNECTIONS</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> &quot;conns&quot;:{&#39;</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">con</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;CONNECTION&#39;</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
@@ -118,26 +161,52 @@
                             <span class="k">pass</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">trp</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;:[&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;,&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;],&#39;</span><span class="p">)</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;:[&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;,&quot;</span><span class="si">{</span><span class="n">trp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;]&#39;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">aux</span> <span class="o">!=</span> <span class="n">cons</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span> <span class="c1"># no CONNECTION</span>
                     <span class="k">pass</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="c1"># CONNECTION is NaN</span>
                     <span class="k">pass</span> 
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> },</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> }&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases/</span><span class="si">{</span><span class="n">NameTest</span><span class="si">}</span><span class="s1">_cost.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">df_cost</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">df_cost</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">df_cost</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">df_cost</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">df_cost</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">T</span></div>
 
  
-<div class="viewcode-block" id="builder">
-<a class="viewcode-back" href="../Builder.html#Builder.builder">[docs]</a>
-<span class="k">def</span> <span class="nf">builder</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">test_case</span><span class="p">):</span>
-  
+<div class="viewcode-block" id="builder"><a class="viewcode-back" href="../Builder.html#Builder.builder">[docs]</a><span class="k">def</span> <span class="nf">builder</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">test_case</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a complete pyomo model from a .json file.</span>
+<span class="sd">    It provides a flexible solution to create an optimization problem in a pyomo environment using object-oriented programming.</span>
+<span class="sd">    </span>
+<span class="sd">    builder requieres the following:</span>
+<span class="sd">           </span>
+<span class="sd">    :param m: concrete pyomo model ``pyomo.core.base.PyomoModel.ConcreteModel``</span>
+<span class="sd">    :param test_case: must match the name of the .json source file ``str``</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+
     <span class="kn">from</span> <span class="nn">Devices.EB</span> <span class="kn">import</span> <span class="n">EB</span>
     <span class="kn">from</span> <span class="nn">Devices.HydroSwitch</span> <span class="kn">import</span> <span class="n">HydroSwitch</span>
     <span class="kn">from</span> <span class="nn">Devices.MainGrid</span> <span class="kn">import</span> <span class="n">Grid</span>
     <span class="kn">from</span> <span class="nn">Devices.NewPumps</span> <span class="kn">import</span> <span class="n">NewPump</span>
     <span class="kn">from</span> <span class="nn">Devices.Pipes</span> <span class="kn">import</span> <span class="n">Pipe</span>
+    <span class="kn">from</span> <span class="nn">Devices.Pipes</span> <span class="kn">import</span> <span class="n">Pipe_Ex0</span>
     <span class="kn">from</span> <span class="nn">Devices.Pumps</span> <span class="kn">import</span> <span class="n">Pump</span>
     <span class="kn">from</span> <span class="nn">Devices.Reservoirs</span> <span class="kn">import</span> <span class="n">Reservoir</span>
     <span class="kn">from</span> <span class="nn">Devices.Reservoirs</span> <span class="kn">import</span> <span class="n">Reservoir_Ex0</span>
@@ -145,6 +214,8 @@
     <span class="kn">from</span> <span class="nn">Devices.Sources</span> <span class="kn">import</span> <span class="n">Source</span>
     <span class="kn">from</span> <span class="nn">Devices.Switch</span> <span class="kn">import</span> <span class="n">Switch</span>
     <span class="kn">from</span> <span class="nn">Devices.Turbines</span> <span class="kn">import</span> <span class="n">Turbine</span>
+    <span class="kn">from</span> <span class="nn">Devices.Batteries</span> <span class="kn">import</span> <span class="n">Battery</span>
+    <span class="kn">from</span> <span class="nn">Devices.Batteries</span> <span class="kn">import</span> <span class="n">Battery_Ex0</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases\</span><span class="si">{</span><span class="n">test_case</span><span class="si">}</span><span class="s1">.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jfile</span><span class="p">:</span>
         <span class="n">system</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">jfile</span><span class="p">)</span>
@@ -164,51 +235,71 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;arc_</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Arc</span><span class="p">(</span><span class="n">ports</span><span class="o">=</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">it</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;port_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">system</span><span class="p">[</span><span class="n">it</span><span class="p">][</span><span class="s1">&#39;conns&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="sa">f</span><span class="s1">&#39;port_</span><span class="si">{</span><span class="n">system</span><span class="p">[</span><span class="n">it</span><span class="p">][</span><span class="s2">&quot;conns&quot;</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)),</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="n">val</span> <span class="o">+=</span> <span class="mi">1</span>
     
-    <span class="n">pyo</span><span class="o">.</span><span class="n">TransformationFactory</span><span class="p">(</span><span class="s2">&quot;network.expand_arcs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+    <span class="n">pyo</span><span class="o">.</span><span class="n">TransformationFactory</span><span class="p">(</span><span class="s2">&quot;network.expand_arcs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cases\</span><span class="si">{</span><span class="n">test_case</span><span class="si">}</span><span class="s1">_cost.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jfile</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">jfile</span><span class="p">)</span>
+        
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">cost</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="n">cost</span><span class="p">[</span><span class="n">it</span><span class="p">])</span></div>
 
 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../Builder.html#Builder.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    
     <span class="n">m</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">()</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">data_parser</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
     
-    <span class="c1"># time</span>
-    <span class="n">l_t</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">l_t</span><span class="p">)</span>
-    
-    <span class="c1"># electricity cost</span>
-    <span class="n">l_cost</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">l_cost</span><span class="p">)</span>
-    <span class="n">cost_new_turb</span><span class="p">,</span> <span class="n">cost_new_pump</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span>
-    
-    <span class="n">builder</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="s1">&#39;TestAll&#39;</span><span class="p">)</span>
+    <span class="n">builder</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">obj_fun</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-     	<span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="o">.</span><span class="n">MainGrid</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">l_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">Turb1</span><span class="o">.</span><span class="n">Pdim</span><span class="o">*</span><span class="n">cost_new_turb</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">PumpNew</span><span class="o">.</span><span class="n">Pdim</span><span class="o">*</span><span class="n">cost_new_pump</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="o">.</span><span class="n">MainGrid</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">cost_MainGrid</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">Turb1</span><span class="o">.</span><span class="n">Pdim</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">cost_Turb1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">PumpNew</span><span class="o">.</span><span class="n">Pdim</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">cost_PumpNew</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">m</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">rule</span><span class="o">=</span><span class="n">obj_fun</span><span class="p">,</span> <span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">minimize</span><span class="p">)</span>
-    
-    <span class="c1"># with open(&#39;model&#39;,&#39;w&#39;) as f:</span>
-    <span class="c1">#     m.pprint(f)</span>
     
     <span class="n">instance</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_instance</span><span class="p">()</span>
     <span class="n">solver</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+    <span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;tol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;tol&#39;</span><span class="p">])</span>
     <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     
-    <span class="c1"># instance.Turb1.Qin.pprint()</span>
-    <span class="c1"># instance.Pump1.Qout.pprint()</span>
-    <span class="c1"># instance.PumpNew.Qout.pprint()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;------------------------- Reservoirs -------------------------&#39;</span><span class="p">)</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">Reservoir0</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">Reservoir1</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------- Powers ---------------------------&#39;</span><span class="p">)</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">Turb1</span><span class="o">.</span><span class="n">Pe</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">Pump1</span><span class="o">.</span><span class="n">Pe</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">PumpNew</span><span class="o">.</span><span class="n">Pe</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">PV1</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">MainGrid</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------- Sizing ---------------------------&#39;</span><span class="p">)</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">Turb1</span><span class="o">.</span><span class="n">Pdim</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
-    <span class="n">instance</span><span class="o">.</span><span class="n">PumpNew</span><span class="o">.</span><span class="n">Pdim</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">instance</span></div>
+
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+
+<span class="c1">#     # electricity cost</span>
+<span class="c1">#     l_cost = [1,1,1,1,1]</span>
+<span class="c1">#     m.cost = pyo.Param(m.t, initialize=l_cost)</span>
+<span class="c1">#     cost_new_turb, cost_new_pump = 2, 10</span>
+    
+<span class="c1">#     builder(m,&#39;Test1&#39;)</span>
+    
+<span class="c1">#     def obj_fun(m):</span>
+<span class="c1">#      	return sum(-m.MainGrid.P[t]*m.cost[t] for t in l_t) + m.Turb1.Pdim*cost_new_turb + m.PumpNew.Pdim*cost_new_pump</span>
+<span class="c1">#     m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)</span>
+    
+<span class="c1">#     # with open(&#39;model&#39;,&#39;w&#39;) as f:</span>
+<span class="c1">#     #     m.pprint(f)</span>
+    
+<span class="c1">#     instance = m.create_instance()</span>
+<span class="c1">#     solver = pyo.SolverFactory(&#39;ipopt&#39;)</span>
+<span class="c1">#     solver.solve(instance, tee=False)</span>
+    
+<span class="c1">#     # instance.Turb1.Qin.pprint()</span>
+<span class="c1">#     # instance.Pump1.Qout.pprint()</span>
+<span class="c1">#     # instance.PumpNew.Qout.pprint()</span>
+<span class="c1">#     print(&#39;------------------------- Reservoirs -------------------------&#39;)</span>
+<span class="c1">#     instance.Reservoir0.W.pprint()</span>
+<span class="c1">#     instance.Reservoir1.W.pprint()</span>
+<span class="c1">#     print(&#39;--------------------------- Powers ---------------------------&#39;)</span>
+<span class="c1">#     instance.Turb1.Pe.pprint()</span>
+<span class="c1">#     instance.Pump1.Pe.pprint()</span>
+<span class="c1">#     instance.PumpNew.Pe.pprint()</span>
+<span class="c1">#     instance.PV1.P.pprint()</span>
+<span class="c1">#     instance.MainGrid.P.pprint()</span>
+<span class="c1">#     print(&#39;--------------------------- Sizing ---------------------------&#39;)</span>
+<span class="c1">#     instance.Turb1.Pdim.pprint()</span>
+<span class="c1">#     instance.PumpNew.Pdim.pprint()</span>
 </pre></div>
 
            </div>

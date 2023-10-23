@@ -5,17 +5,23 @@ Variables and units
 	:header: "Magnitude", "Variable", "Units", "Comments"
 	
 	"**Hydraulic**"
-	"Height", "H *or* z", "m"
-	"Flow", "Q", "m3/s", "*⚠ Interfering with Reactive power. Change to F ?*"
-	"Volume", "W", "m3"
-	"Rotational speed", "n", "rpm"
+	"Height", ":math:`H or z`", ":math:`m`"
+	"Flow", ":math:`Q`", ":math:`m^3/s`", "*⚠ Interfering with Reactive power. Change to F ?*"
+	"Volume", ":math:`W`", ":math:`m^3`"
+	"Rotational speed", ":math:`n`", ":math:`rpm`"
+	"Linear pressure loss coefficient", ":math:`K`", ":math:`s/m^2`"
+	"Pump efficiency", ":math:`\eta_{i}`", ":math:`pu`"
 	
 	"**Electrical**"
-	"Active power", "P", "W", "Defined positive if consumed by the device"
-	"Reactive power", "Q", "VAr", "*TBD: Q(inductive) same sign as in P?*"
-	"Current", "I", "A",
-	"Voltage", "V", "V",
+	"Active power", ":math:`P`", ":math:`W`", "Defined positive if consumed by the device"
+	"Reactive power", ":math:`Q`", ":math:`VAR`", "*TBD: Q(inductive) same sign as in P?*"
+	"Current", ":math:`I`", ":math:`A`",
+	"Voltage", ":math:`V`", ":math:`V`",
+	"State of Health", ":math:`SOC`", ":math:`pu`"
+	"Battery efficiency", ":math:`\eta_{ch/dch}`", ":math:`pu`", ":math:`\eta_{dch} = 2-\eta_{ch}`"
 	
 	"**Global**"
-	"Time", "t", "s"
-	"Energy", "E", "Wh"
+	"Time", ":math:`t`", ":math:`s`"
+	"Energy", ":math:`E`", ":math:`Wh`"
+	"Forecast", ":math:`f(t)`", ":math:`pu`", "In p.u. of peak power, referenced at :math:`1000 W/m^2`"
+
