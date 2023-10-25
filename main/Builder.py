@@ -64,7 +64,7 @@ def data_parser(NameTest, dt):
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
                         
-                if k == ('Reservoir'):
+                if k in ('Reservoir','Battery_Ex0'):
                     f.write(f',"dt":{dt}')
                 if k in special:
                     #  Time values as data
@@ -125,7 +125,7 @@ def builder(m, test_case):
     
     """
     
-    from Devices.Batteries import Battery
+
     from Devices.EB import EB
     from Devices.HydroSwitch import HydroSwitch
     from Devices.MainGrid import Grid
