@@ -81,7 +81,7 @@ data = {'E0':0.1e3,'SOCmax':1,
         'Emax':100e3,'rend_ch':0.9,
         'rend_disc':1.1}
 
-init_data = {'E':19e3,'P':19e3}
+init_data = {'E':[19e3,19e3,19e3,19e3,19e3],'P':19e3}
 Battery_Ex0(m.Battery, m.t, data, init_data)
 
 
@@ -120,6 +120,7 @@ instance.Grid.P.pprint()
 instance.PV.Pdim.pprint()
 instance.Battery.Edim.pprint()
 instance.Battery.Pdim.pprint()
+instance.Battery.E.pprint()
 
 
 #%%Battery test
