@@ -182,8 +182,8 @@ def RealPump(b, t, data, init_data):
     b.Qmax = pyo.Param(initialize = data['Qmax'])
     
     # Variables
-    b.Qin  = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax'], 0), within=pyo.NonPositiveReals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']), within=pyo.NonNegativeReals)
+    b.Qin  = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.H    = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.n    = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals) 
     b.Ph   = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
@@ -223,10 +223,10 @@ def RealPump(b, t, data, init_data):
         return _b.alpha[_t]*_b.beta[_t] == 0
     b.c_bin2 = pyo.Constraint(t,rule = Constraint_bin_product)
     
-    def Constraint_Qmax(_b,_t):
-        return _b.Qout[_t] >= _b.Qmin * _b.alpha[_t]
-    b.c_Qmax = pyo.Constraint(t,rule = Constraint_Qmax)
-
     def Constraint_Qmin(_b,_t):
-        return _b.Qout[_t] <= _b.Qmax * _b.alpha[_t]
+        return _b.Qout[_t] >= _b.Qnom * _b.Qmin * _b.alpha[_t]
     b.c_Qmin = pyo.Constraint(t,rule = Constraint_Qmin)
+
+    def Constraint_Qmax(_b,_t):
+        return _b.Qout[_t] <= _b.Qnom * _b.Qmax * _b.alpha[_t]
+    b.c_Qmax = pyo.Constraint(t,rule = Constraint_Qmax)
