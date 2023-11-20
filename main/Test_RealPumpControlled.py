@@ -1,7 +1,8 @@
-
 """
- Optimization usage for testing the RealPump model, where it's introduced the working limits of it.
- It considers the same system as in Example 22, but adding the constraints of the pump.
+ Optimization usage for testing the RealPumpControled model,
+ where it's introduced the 3 working regimes.
+ It considers the same system as in Example 22,
+ but adding the new constraints of the pump.
 """ 
 #Clock
 import time
@@ -14,9 +15,8 @@ from pyomo.network import *
 # Import devices
 from Devices.Sources import Source
 from Devices.Reservoirs import Reservoir
-
 from Devices.Pipes import Pipe
-from Devices.Pumps import RealPump
+from Devices.Pumps import RealPumpControlled
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -47,12 +47,12 @@ m.Grid = pyo.Block()
 m.EB = pyo.Block()
 m.Battery = pyo.Block()
 
-Q_init = [2,0,0,0,2]
+Q_init = [0,0,0,0,2]
 data_irr = {'Q':[0,0,0,0,1]} # irrigation
 Source(m.Irrigation1, m.t, data_irr, {})
 
 data_res0 = {'W0':20, 'Wmin':0, 'Wmax':20,'zmin':0,'zmax':3,'dt':1}
-data_res1 = {'W0':0, 'Wmin':0, 'Wmax':10,'zmin':25,'zmax':35,'dt':1}
+data_res1 = {'W0':0, 'Wmin':0, 'Wmax':100,'zmin':25,'zmax':35,'dt':1}
 init_res0 = {'Q':Q_init, 'W':[15,15,15,15,15],'z':[5,5,5,5,5]}
 init_res1 = {'Q':Q_init, 'W':[0,0,0,0,0],'z':[20,20,20,20,20]}
 Reservoir(m.Reservoir1, m.t, data_res1, init_res1)
@@ -65,11 +65,11 @@ init_c1 = {'Q':Q_init, 'H':[20,20,20,20,20],
 Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
 data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qnom':5, 'Pmax':9810*50*20,
-          'Qmin':0.8, 'Qmax':1.3} # pumps (both equal)
+          'Qmin':0.8, 'Qbep':1.3,'Qpmax':1,'zmin':15} # pumps (both equal)
+# Qmin, Qbep and Qpmax in p.u
 init_p = {'Q':Q_init, 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20],}
-RealPump(m.Pump1, m.t, data_p, init_p)
-
-RealPump(m.Pump2, m.t, data_p, init_p)
+RealPumpControlled(m.Pump1, m.t, data_p, init_p)
+RealPumpControlled(m.Pump2, m.t, data_p, init_p)
 
 data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[0.4,1,1.7,1.2,0.5]} # PV
 SolarPV(m.PV, m.t, data_pv)
@@ -78,10 +78,10 @@ Grid(m.Grid, m.t, {'Pmax':9000e4}) # grid
 
 EB(m.EB, m.t)
 
-#Battery data
+# Battery data
 data = {'E0':15e3,'SOCmax':1,'SOCmin':0.05,'Pmax':100e3,
-         'Einst':50e3,'Pinst':50e3,
-         'Emax':100e3,'rend_ch':0.9,'rend_disc':1.1}
+          'Einst':50e3,'Pinst':50e3,
+          'Emax':100e3,'rend_ch':0.9,'rend_disc':1.1}
 init_data = {'E':[19e3,19e3,19e3,19e3,19e3],'P':19e3}
 Battery_Ex0(m.Battery, m.t, data, init_data)
 
@@ -122,18 +122,15 @@ instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
 instance.Grid.P.pprint()
 instance.Pump1.Qout.pprint()
-instance.Pump1.Pe.pprint()
-instance.Pump1.H.pprint()
 instance.Pump2.Qout.pprint()
+instance.Pump1.Pe.pprint()
 instance.Reservoir0.z.pprint()
 instance.Reservoir1.z.pprint()
+instance.Pump1.H.pprint()
 instance.goal.pprint()
 
-
 final =  time.perf_counter()
-
 Duration = final - initial
-
 print('Duration of the program:',Duration)
 
 #%% Plots
