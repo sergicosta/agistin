@@ -28,6 +28,8 @@ extensions = [
     "sphinx.ext.doctest",
     "rst2pdf.pdfbuilder"
     ]
+mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML'
+
     
 pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]
 templates_path = ['_templates']

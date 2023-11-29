@@ -7,10 +7,13 @@ Variables and units
 	"**Hydraulic**"
 	"Height", ":math:`H or z`", ":math:`m`"
 	"Flow", ":math:`Q`", ":math:`m^3/s`", "*⚠ Interfering with Reactive power. Change to F ?*"
+	"Control Flow", ":math:`Q_{control}`",":math:`m^3/s`", "Height depending flow"
 	"Volume", ":math:`W`", ":math:`m^3`"
 	"Rotational speed", ":math:`n`", ":math:`rpm`"
 	"Linear pressure loss coefficient", ":math:`K`", ":math:`s/m^2`"
 	"Pump efficiency", ":math:`\eta_{i}`", ":math:`pu`"
+	"Pump On", ":math:`PumpOn`", "", "Status of the pump binary variable"
+	"Auxiliar", ":math:`aux`", "", "Binary auxiliar variable"
 	
 	"**Electrical**"
 	"Active power", ":math:`P`", ":math:`W`", "Defined positive if consumed by the device"

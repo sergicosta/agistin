@@ -139,7 +139,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">it</span><span class="p">][</span><span class="n">val</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                         
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;Reservoir&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Reservoir&#39;</span><span class="p">,</span><span class="s1">&#39;Battery_Ex0&#39;</span><span class="p">):</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;,&quot;dt&quot;:</span><span class="si">{</span><span class="n">dt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">special</span><span class="p">:</span>
                     <span class="c1">#  Time values as data</span>

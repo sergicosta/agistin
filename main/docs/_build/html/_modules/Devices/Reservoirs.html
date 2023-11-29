@@ -10,11 +10,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=b6851926"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -86,9 +86,7 @@
 <span class="c1"># data: dt, W0, Wmin, Wmax, zmin, zmax</span>
 <span class="c1"># init_data: Q(t), W(t)</span>
 
-<div class="viewcode-block" id="Reservoir">
-<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir">[docs]</a>
-<span class="k">def</span> <span class="nf">Reservoir</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Reservoir"><a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir">[docs]</a><span class="k">def</span> <span class="nf">Reservoir</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Reservoir.</span>
@@ -136,7 +134,7 @@
     
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">zmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">zmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">zmin</span>
-    
+
     <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
     
     <span class="c1"># Parameters</span>
@@ -167,16 +165,13 @@
     <span class="k">def</span> <span class="nf">Constraint_z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_z</span><span class="p">)</span></div>
-
     
     
 
 <span class="c1"># data: W0, Wmin, Wmax</span>
 <span class="c1"># init_data: Q(t), W(t)</span>
     
-<div class="viewcode-block" id="Reservoir_Ex0">
-<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir_Ex0">[docs]</a>
-<span class="k">def</span> <span class="nf">Reservoir_Ex0</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Reservoir_Ex0"><a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir_Ex0">[docs]</a><span class="k">def</span> <span class="nf">Reservoir_Ex0</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Reservoir for testing and example purposes.</span>
@@ -230,7 +225,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W0</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_W</span><span class="p">)</span></div>
-
 </pre></div>
 
            </div>
