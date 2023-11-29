@@ -1,0 +1,7 @@
+.gitignore
+/main/Devices/__pycache__
+/main/Functionalities/__pycache__
+/__pycache__
+/Integration base+offshore+battery+hydro
+Renewable generation scenarios Catalonia.pdf
+/main/model

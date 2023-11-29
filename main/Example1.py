@@ -23,7 +23,7 @@ from Devices.EB import EB
 from Utilities import clear_clc
 
 #clean console and variable pane
-clear_clc() #consider removing if you are not working with Spyder
+#clear_clc() #consider removing if you are not working with Spyder
 
 # model
 m = pyo.ConcreteModel()
@@ -92,8 +92,8 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
-solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+solver = pyo.SolverFactory('asl:couenne')
+solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()

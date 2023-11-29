@@ -43,7 +43,7 @@ m.Grid = pyo.Block()
 m.EB = pyo.Block()
 # m.Battery = pyo.Block()
 
-Q_init = [0,0,0,0,3.9]
+Q_init = [0,0,0,0,0]
 data_irr = {'Q':[0,0,0,0,4]} # irrigation
 Source(m.Irrigation1, m.t, data_irr, {})
 
@@ -105,8 +105,8 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
-solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+solver = pyo.SolverFactory('asl:couenne')
+solver.solve(instance, tee=True)
 
 #%%
 instance.Reservoir1.W.pprint()
