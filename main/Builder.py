@@ -12,6 +12,22 @@ import json
 import pandas as pd
 
 def write_list(f, df, df_time, k, val):
+    """
+    Writes to the file f (type json), which is being created, a list of 
+    initialization values for the element "val" of type "k".
+    
+    Inputs:
+
+    :param f: .json file being created
+    :param df: dataframe regarding static data
+    :param df_time: dataframe regarding initializing data
+    :param k: defines the type of element (not the name of the element) [key]
+    :param val: counter to differentiate elements of the same type
+    
+    Outputs:
+        - None. The file is updated.
+
+    """
     first = True
     for it in df_time[k]:
         aux = it.split('_')
@@ -33,9 +49,10 @@ def data_parser(NameTest, dt):
     :param NameTest: name of the excel file with the static information of the plant ``str``
     :param dt: time interval for numerical integration :math:`\Delta t` ``int``
     
-    It is required that 2 excel files exists:
+    It is required that 3 excel files exists:
         - 'NameTest.xlsx': plant parameters
         - 'NameTest_time.xlsx': devices initialization variables for optimization solver
+        - 'NameTest_cost.xlsx': economic cost values for cost function formulation
     
     The output .json file:
         - 'NameTest.json': containing `data`, `init_data`, and `conns` of each device.
@@ -50,28 +67,27 @@ def data_parser(NameTest, dt):
     with open(f'Cases/{NameTest}.json', 'w') as f:
         first = True
         f.write('{\n')
-        for k in df.keys():
-            for val in range(len(df[k])):
+        for k in df.keys(): # type of element
+            for val in range(len(df[k])): # for each element of type k
                 if first:
                     first = False
                 else:
                     f.write(',\n')
                 f.write(f'"{df[k]["Name"][val]}":{{\n')
                 f.write(f'\t "data":{{"type":"{k}"')
-                for it in df[k].columns.values:
+                for it in df[k].columns.values: # for each characteristic of val
                     if it in ('Name','CONNECTION'):
                         pass
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
                         
-                if k in ('Reservoir','Battery_Ex0'):
+                if k in ('Reservoir','Battery_Ex0'): # Elements that have constraints modelled as differential equations
                     f.write(f',"dt":{dt}')
-                if k in special:
-                    #  Time values as data
+                if k in special: # Elements with parameters that change during the simulation
                     f.write(',')
                     write_list(f, df, df_time, k, val)
                 f.write('},\n')
-                #  Time values as Initial data
+                # Initialization values for decision variables
                 f.write('\t "init_data":{')
                 if k not in special:
                     write_list(f, df, df_time, k, val)
@@ -184,7 +200,7 @@ def run(name, dt):
     instance = m.create_instance()
     solver = pyo.SolverFactory('ipopt')
     solver.options['tol'] = 1e-6
-    print(solver.options['tol'])
+    # print(solver.options['tol'])
     solver.solve(instance, tee=False)
     
     return instance
