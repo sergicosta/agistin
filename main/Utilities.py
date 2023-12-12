@@ -19,3 +19,8 @@ def clear_clc():
         get_ipython().magic('reset -f')
     except:
         pass 
+
+
+def model_to_file(model, filename):
+    with open(filename,'w') as f:
+        model.pprint(f)
