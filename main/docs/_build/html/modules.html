@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>main &mdash; AGISTIN 0.0.20230919 documentation</title>
@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=b6851926"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -74,27 +74,69 @@
            <div itemprop="articleBody">
              
   <section id="main">
-<h1>main<a class="headerlink" href="#main" title="Permalink to this heading"></a></h1>
+<h1>main<a class="headerlink" href="#main" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Devices.html">Devices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Devices.html#hydro-devices">Hydro devices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#source">Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#hydro-switch">Hydro Switch</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#new-pump">New Pump</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#pipes">Pipes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#pumps">Pumps</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#reservoirs">Reservoirs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#turbines">Turbines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#source">Source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Sources.Source"><code class="docutils literal notranslate"><span class="pre">Source()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#hydro-switch">Hydro Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.HydroSwitch.HydroSwitch"><code class="docutils literal notranslate"><span class="pre">HydroSwitch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#new-pump">New Pump</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.NewPumps.NewPump"><code class="docutils literal notranslate"><span class="pre">NewPump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#pipes">Pipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pipes.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pipes.Pipe_Ex0"><code class="docutils literal notranslate"><span class="pre">Pipe_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#pumps">Pumps</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pumps.Pump"><code class="docutils literal notranslate"><span class="pre">Pump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pumps.RealPump"><code class="docutils literal notranslate"><span class="pre">RealPump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pumps.RealPumpControlled"><code class="docutils literal notranslate"><span class="pre">RealPumpControlled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Pumps.ReversiblePump"><code class="docutils literal notranslate"><span class="pre">ReversiblePump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#reservoirs">Reservoirs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Reservoirs.Reservoir"><code class="docutils literal notranslate"><span class="pre">Reservoir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Reservoirs.Reservoir_Ex0"><code class="docutils literal notranslate"><span class="pre">Reservoir_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#turbines">Turbines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Turbines.Turbine"><code class="docutils literal notranslate"><span class="pre">Turbine()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="Devices.html#electrical-devices">Electrical devices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#eb-pumping-station">EB (Pumping Station)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#main-grid">Main Grid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#solar-pv">Solar PV</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#switch">Switch</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Devices.html#battery">Battery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#eb-pumping-station">EB (Pumping Station)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.EB.EB"><code class="docutils literal notranslate"><span class="pre">EB()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#main-grid">Main Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.MainGrid.Grid"><code class="docutils literal notranslate"><span class="pre">Grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#solar-pv">Solar PV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.SolarPV.SolarPV"><code class="docutils literal notranslate"><span class="pre">SolarPV()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#switch">Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Switch.Switch"><code class="docutils literal notranslate"><span class="pre">Switch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Devices.html#battery">Battery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Devices.html#Devices.Batteries.Battery_Ex0"><code class="docutils literal notranslate"><span class="pre">Battery_Ex0()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
