@@ -1,9 +1,8 @@
+# AGISTIN project
+# .\Devices\Turbines.py
+
 """
-AGISTIN project 
-
-.\Devices\Turbines.py
-
-Pump pyomo block contains characteristics of a turbine.
+Turbine pyomo block contains characteristics of a turbine.
 """
 
 
@@ -12,7 +11,7 @@ from pyomo.network import Arc, Port
 
 
 # data: eff
-# init_data: Q(t), H(t), n(t), Pe(t)
+# init_data: Q(t), H(t), Pe(t)
 
 def Turbine(b, t, data, init_data):
     
@@ -27,11 +26,16 @@ def Turbine(b, t, data, init_data):
     :param init_data: init_data ``dict``
         
     data
-         - 'Q': Injected flow :math:`Q(t)` as a ``list``
+         - 'eff': Efficiency of the turbine :math:`\eta`
     
+    init_data
+         - 'Q': Flow :math:`Q(t)` as a ``list``
+         - 'H': Head :math:`H(t)` as a ``list``
+         - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
+         
     Pyomo declarations    
         - Parameters: 
-            - Q (t)
+            - eff
         - Variables: 
             - Pdim
             - Qin (t)
@@ -45,8 +49,10 @@ def Turbine(b, t, data, init_data):
             - port_P @ P as ``Extensive``
             - port_H @ H as ``Equality``
         - Constraints: 
-            - c_Qin: :math:`Q_{in}(t) = -Q(t)`
-            - c_Qout: :math:`Q_{out}(t) = Q(t)`
+            - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`
+            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
+            - c_Pe: :math:`P_e(t) = P_h(t)*\eta`
+            - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`
     """
     
     # Parameters
@@ -54,7 +60,7 @@ def Turbine(b, t, data, init_data):
     
     # Variables
     b.Pdim = pyo.Var(initialize=0, within=pyo.NonNegativeReals)
-    b.Qin  = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonPositiveReals)
+    b.Qin  = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.H    = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.Ph   = pyo.Var(t, initialize=init_data['Pe'], within=pyo.NonPositiveReals)
@@ -68,7 +74,7 @@ def Turbine(b, t, data, init_data):
     
     # Constraints
     def Constraint_Q(_b, _t):
-        return -_b.Qin[_t] == _b.Qout[_t]
+        return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
     
     def Constraint_Ph(_b, _t):
