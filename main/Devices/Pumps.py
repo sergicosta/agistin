@@ -446,7 +446,6 @@ def ReversiblePump(b, t, data, init_data):
     b.eff = pyo.Param(initialize=data['eff'])
     b.eff_t = pyo.Param(initialize=data['eff_t'])
     b.S = pyo.Param(initialize=data['S'])
-    # b.H0 = pyo.Param(t, initialize=data['H0'])
 
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
@@ -454,14 +453,10 @@ def ReversiblePump(b, t, data, init_data):
     b.Qoutp = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
     b.Qoutt = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    #b.zlow = pyo.Var(t, initialize=0, within=pyo.NonNegativeReals)
-    #b.zhigh = pyo.Var(t, initialize=0, within=pyo.NonNegativeReals)
-    #b.H0 = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
-    b.asdf = pyo.Var(t, initialize=20, within=pyo.NonNegativeReals)
     # b.alpha = pyo.Var(t, initialize=0, within=pyo.NonNegativeReals)
 
     # Ports
@@ -469,8 +464,6 @@ def ReversiblePump(b, t, data, init_data):
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
     b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
     b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
-    #b.port_zlow = Port(initialize={'z': (b.zlow, Port.Equality)})
-    #b.port_zhigh = Port(initialize={'z': (b.zhigh, Port.Equality)})
 
     # Constraints
     # def Constraint_aux1(_b, _t):
@@ -484,16 +477,10 @@ def ReversiblePump(b, t, data, init_data):
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
-    
-    #def Constraint_H0(_b, _t):
-    #    return _b.H0[_t] == _b.zhigh[_t]-_b.zlow[_t]
-    #b.c_H0 = pyo.Constraint(t, rule=Constraint_H0)
 
-    def Constraint_Qoutp(_b, _t):
-        # return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.asdf[_t]*(1-_b.ModePump[_t])
+    def Constraint_H(_b, _t):
         return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2)*(1-_b.ModePump[_t])
-        # return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.H[_t]*(1-_b.ModePump[_t])
-    b.c_Qoutp = pyo.Constraint(t, rule=Constraint_Qoutp)
+    b.c_H = pyo.Constraint(t, rule=Constraint_Qoutp)
     
     # def Constraint_Qoutt(_b, _t):
     #     return _b.Qoutt[_t] == (2*9.81*_b.H0[_t])**0.5*_b.S
