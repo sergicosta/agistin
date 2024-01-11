@@ -8,6 +8,7 @@ Pipe pyomo block contains characteristics of a pipe.
 
 import pyomo.environ as pyo
 from pyomo.network import Arc, Port
+from pyomo.core import Piecewise
 
 
 # data: K, Qmax
@@ -135,8 +136,9 @@ def Pipe_Ex0(b, t, data, init_data):
     b.K = pyo.Param(initialize=data['K'])
     
     # Variables
-    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
+    b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
+    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
+    b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
@@ -144,5 +146,9 @@ def Pipe_Ex0(b, t, data, init_data):
     
     # Constraints
     def Constraint_H(_b, _t):
-        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2
+        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2*_b.signQ[_t]
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
+    
+    def Constraint_sign(_b,_t):
+        return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2)**0.5
+    b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
