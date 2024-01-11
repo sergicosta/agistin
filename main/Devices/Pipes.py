@@ -50,6 +50,7 @@ def Pipe(b, t, data, init_data):
             - zlow (t)
             - zhigh (t)
             - H0 (t)
+            - signQ (t)
         - Ports: 
             - port_Q @ Q as ``Extensive``
             - port_H @ H as ``Equality``
@@ -58,6 +59,7 @@ def Pipe(b, t, data, init_data):
         - Constraints: 
             - c_H: :math:`H(t) = H_0(t) + K \cdot Q(t)^2`
             - c_H0: :math:`H_0(t) = z_{high}(t) - z_{low}(t)`
+            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`
     """
     
     # Parameters
@@ -69,6 +71,7 @@ def Pipe(b, t, data, init_data):
     b.zlow = pyo.Var(t, initialize=init_data['zlow'], within=pyo.NonNegativeReals) 
     b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], within=pyo.NonNegativeReals) 
     b.H0 = pyo.Var(t, initialize=init_data['H0'], within=pyo.NonNegativeReals)
+    b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
@@ -85,6 +88,9 @@ def Pipe(b, t, data, init_data):
         return _b.H0[_t] == _b.zhigh[_t] - _b.zlow[_t]
     b.c_H0 = pyo.Constraint(t, rule = Constraint_H0)
 
+    def Constraint_sign(_b,_t):
+        return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2)**0.5
+    b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
 
 
 # data: H0, K, Qmax
@@ -124,11 +130,13 @@ def Pipe_Ex0(b, t, data, init_data):
         - Variables: 
             - Q (t)
             - H (t)
+            - signQ (t)
         - Ports: 
             - port_Q @ Q as ``Extensive``
             - port_H @ H as ``Equality``
         - Constraints: 
-            - c_H: :math:`H(t) = H_0 + K \cdot Q(t)^2`
+            - c_H: :math:`H(t) = H_0 \pm K \cdot Q(t)^2`
+            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`
     """
     
     # Parameters
@@ -152,3 +160,16 @@ def Pipe_Ex0(b, t, data, init_data):
     def Constraint_sign(_b,_t):
         return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2)**0.5
     b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
+    
+    # Q_PTS = [-data['Qmax'],-1e-6,1e-6,data['Qmax']]
+    # Sign_PTS = [-1,-1,1,1]
+    # b.c_sign = Piecewise(
+    #     t,
+    #     b.signQ,  # variable
+    #     b.Q,  # range and domain variables
+    #     pw_pts=Q_PTS,    # Domain points
+    #     pw_constr_type='EQ',  # 'EQ' - Q variable is equal to the piecewise function
+    #     f_rule=Sign_PTS,     # Range points
+    #     pw_repn='SOS2',        # + 'DCC' - Disaggregated convex combination model.
+    #     unbounded_domain_var=True)  # Indicates the type of piecewise representation to use
+    
