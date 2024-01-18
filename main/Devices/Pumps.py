@@ -480,7 +480,7 @@ def ReversiblePump(b, t, data, init_data):
 
     def Constraint_H(_b, _t):
         return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2)*(1-_b.ModePump[_t])
-    b.c_H = pyo.Constraint(t, rule=Constraint_Qoutp)
+    b.c_H = pyo.Constraint(t, rule=Constraint_H)
     
     # def Constraint_Qoutt(_b, _t):
     #     return _b.Qoutt[_t] == (2*9.81*_b.H0[_t])**0.5*_b.S
