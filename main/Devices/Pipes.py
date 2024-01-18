@@ -81,7 +81,7 @@ def Pipe(b, t, data, init_data):
     
     # Constraints
     def Constraint_H(_b, _t):
-        return _b.H[_t] == _b.H0[_t] + _b.K*_b.Q[_t]**2
+        return _b.H[_t] == _b.H0[_t] + _b.K*_b.Q[_t]**2*_b.signQ[_t]
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
     
     def Constraint_H0(_b, _t):
