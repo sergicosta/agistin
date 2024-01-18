@@ -480,6 +480,7 @@ def ReversiblePump(b, t, data, init_data):
     def Constraint_H(_b, _t):
         return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2)*(1-_b.ModePump[_t])
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
+
     
     # def Constraint_Qoutt(_b, _t):
     #     return _b.Qoutt[_t] == (2*9.81*_b.H0[_t])**0.5*_b.S
@@ -634,104 +635,3 @@ def ReversibleRealPump(b, t, data, init_data):
         return _b.ModePump[_t] + _b.ModeTurbine[_t] <= 1
     b.c_workingbin = pyo.Constraint(t, rule = Constraint_WorkingBin)
    
-    
-    
-def ReversibleControlledPump(b, t, data, init_data):
-    '''
-    A frequency reversible controlled Pump with the 3 regimes of working
-    for the pump.
-    '''
-    
-    # Parameters
-    b.A = pyo.Param(initialize=data['A'])
-    b.B = pyo.Param(initialize=data['B'])
-    b.Qnom = pyo.Param(initialize=data['Qnom'])
-    b.n_n = pyo.Param(initialize=data['n_n'])
-    b.eff = pyo.Param(initialize=data['eff'])
-    b.eff_t = pyo.Param(initialize=data['eff_t'])
-    b.S = pyo.Param(initialize=data['S'])
-    b.Qmin = pyo.Param(initialize=data['Qmin'])
-    b.Qbep = pyo.Param(initialize=data['Qbep'])
-    b.Qpmax = pyo.Param(initialize=data['Qpmax'])
-    b.zmin = pyo.Param(initialize=data['zmin'])
-
-    # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
-    b.Qoutp = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
-    b.Qoutt = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
-    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
-    b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.alpha = pyo.Var(t, initialize=0, within=pyo.NonNegativeReals)
-    b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    b.Qcontrol = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
-    b.aux = pyo.Var(t,initialize=1, within=pyo.Binary)
-
-    # Ports
-    b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
-    b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
-    b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
-    b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
-    
-    Q_min = b.Qmin * b.Qnom
-    Q_bep = b.Qbep * b.Qnom
-    Q_pmax = b.Qpmax * b.Qnom
-
-    Domain_PTS = [0,20,20,30,30,35]  # Z1,Z2,Z3,z4
-    Range_PTS = [Q_min,Q_min,Q_min,Q_bep,Q_bep,Q_pmax]
-
-    b.con = Piecewise(
-        t,
-        b.Qcontrol,  # variable
-        b.H,  # range and domain variables
-        pw_pts=Domain_PTS,    # Domain points
-        pw_constr_type='EQ',  # 'EQ' - Q variable is equal to the piecewise function
-        f_rule=Range_PTS,     # Range points
-        pw_repn='DCC',        # + 'DCC' - Disaggregated convex combination model.
-        unbounded_domain_var=True)  # Indicates the type of piecewise representation to use
-    
-    def Constraint_Q(_b, _t):
-        return _b.Qin[_t] == -_b.Qout[_t]
-    b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
-
-    def Constraint_H(_b, _t):
-        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2)*(1-_b.ModePump[_t])
-    b.c_H = pyo.Constraint(t, rule=Constraint_Qoutp)
-    
-    # def Constraint_Qoutt(_b, _t):
-    #     return _b.Qoutt[_t] == (2*9.81*_b.H0[_t])**0.5*_b.S
-    # b.c_Qoutt = pyo.Constraint(t, rule=Constraint_Qoutt)
-    
-    def Constraint_Qout(_b, _t):
-        return _b.Qout[_t] == +_b.Qoutp[_t]*_b.ModePump[_t] - _b.Qoutt[_t]*(1-_b.ModePump[_t])
-    b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
-
-    def Constraint_Ph(_b, _t):
-        return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qout[_t]
-    b.c_Ph = pyo.Constraint(t, rule=Constraint_Ph)
-
-    def Constraint_Pe(_b, _t):
-        return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (1-_b.ModePump[_t])*_b.eff_t)
-    b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
-    
-    def Constraint_Control(_b, _t):
-        return _b.Qout[_t] == _b.Qcontrol[_t] * _b.aux[_t]
-    b.c_Qcontrol = pyo.Constraint(t, rule=Constraint_Control)
-
-    def Constraint_Hmin1(_b,_t):
-        return _b.H[_t] >= _b.zmin * _b.aux[_t]
-    b.c_hmin  =pyo.Constraint(t, rule=Constraint_Hmin1)
-
-    def Constraint_Hmin2(_b,_t):
-        return _b.zmin >= _b.H[_t] * (1 - _b.aux[_t])
-    b.c_hmin2 = pyo.Constraint(t,rule = Constraint_Hmin2)
-    
-    # def Constraint_Binary(_b,_t):
-    #     return _b.PumpOn[_t] + _b.aux[_t] >= 1
-    # b.c_bins = pyo.Constraint(t, rule=Constraint_Binary)
-    
-    
-    
