@@ -71,7 +71,8 @@ def Pipe(b, t, data, init_data):
     b.zlow = pyo.Var(t, initialize=init_data['zlow'], within=pyo.NonNegativeReals) 
     b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], within=pyo.NonNegativeReals) 
     b.H0 = pyo.Var(t, initialize=init_data['H0'], within=pyo.NonNegativeReals)
-    b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
+    # b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
+    b.signQ = pyo.Var(t, initialize=1, within=pyo.Binary)
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
@@ -89,8 +90,9 @@ def Pipe(b, t, data, init_data):
     b.c_H0 = pyo.Constraint(t, rule = Constraint_H0)
 
     def Constraint_sign(_b,_t):
-        return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
+        # return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
         # return _b.signQ[_t] == 2 * ( 1/(1+2.718281828**(-5*_b.Q[_t])) - 0.5)
+        return _b.Q[_t]*(2*_b.signQ[_t]-1) >= 0
     b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
 
 
@@ -147,7 +149,8 @@ def Pipe_Ex0(b, t, data, init_data):
     # Variables
     b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
+    # b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)
+    b.signQ = pyo.Var(t, initialize=1, within=pyo.Binary)
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
@@ -155,12 +158,13 @@ def Pipe_Ex0(b, t, data, init_data):
     
     # Constraints
     def Constraint_H(_b, _t):
-        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2*_b.signQ[_t]
+        return _b.H[_t] == _b.H0 + _b.K*_b.Q[_t]**2*(2*_b.signQ[_t]-1)#_b.signQ[_t]
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
     
     def Constraint_sign(_b,_t):
-        return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
+        # return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
         # return _b.signQ[_t] == 2 * ( 1/(1+pyo.exp(-5*_b.Q[_t])) - 0.5)
+        return _b.Q[_t]*(2*_b.signQ[_t]-1) >= 0
     b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
     
     # Q_PTS = [-data['Qmax'],-1e-6,1e-6,data['Qmax']]
