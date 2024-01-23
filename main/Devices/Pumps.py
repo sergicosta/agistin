@@ -184,7 +184,7 @@ def RealPump(b, t, data, init_data):
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'], bounds=(0, 40), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
@@ -449,8 +449,8 @@ def ReversiblePump(b, t, data, init_data):
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
-    b.Qoutp = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
-    b.Qoutt = pyo.Var(t, initialize=init_data['Q'], bounds=(1e-6, data['Qmax']), within=pyo.NonNegativeReals)
+    b.Qoutp = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']), within=pyo.NonNegativeReals)
+    b.Qoutt = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
