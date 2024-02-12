@@ -2,8 +2,8 @@
 # .\Devices\Evaporation.py
 
 '''
-Weather pyomo block contains the model of evaporation based in
-Penman method and rainfall.
+Evaporation pyomo block contains the model of evaporation based in
+Penman method.
 '''
 
 import pyomo.environ as pyo
@@ -11,56 +11,7 @@ from pyomo.network import Arc, Port
 from pyomo.core import *
 
 def Evaporation(b, t, data, init_data):
-    """
-    Evaporation and rainfall.
     
-    Add and rest  volume to the reservoirs given the evaporation and rainfall.
-        
-    :param b: pyomo ``Block()`` to be set
-    :param t: pyomo ``Set()`` referring to time
-    :param data: data ``dict``
-    :param init_data: init_data ``dict``
-    
-    data
-         - 'Wind': The wind measured :math:`Wind(t)`
-         - 'T': The temperature measured :math:`T(t)`
-         - 'G': The average radiation measured :math:`G(t)`
-         - 'P': The average atmospheric pressure measured :math:`P(t)`
-         - 'H': The average humidity measured :math:`H(t)`
-         - 'Rain': The accumulated rain in an interval of time :math:`Rain(t)`
-         - 'Latent': Latent heat constant of the water :math:`Latent`
-         - 'Hsum': The hours of sun in a day :math:`\sum(Hours_{i})`
-
-
-         
-    init_data
-         - 'Q': Flow :math:`Q(t)` as a ``list``
-    
-    Pyomo declarations    
-        - Parameters: 
-            - Wind
-            - T
-            - G
-            - P
-            - H
-            - Rain
-            - Latent
-            - Hsum
-            - slope
-            - ea
-            - es
-            - psy
-            - Evap
-            - Q
-        - Variables: 
-            - Q (t) bounded :math:`Q(t) \in [-\infty, \infty]`
-        - Ports: 
-            - port_Qout @ Qout (Extensive)
-        - Constraints:
-            - c_Q: :math:`Q_{out}(t) = Q(t)`
-    
-
-    """
     #Parameters
     
     b.wind = pyo.Param(t,initialize=data['Wind'])
@@ -96,7 +47,7 @@ def Evaporation(b, t, data, init_data):
     b.evap = pyo.Param(t, initialize=Calculate_evap)
     
     def Calculate_Q(_b,_t):
-        return (_b.Rain[_t]-_b.evap[_t])*_b.A/1000
+        return (_b.Rain[_t]-_b.evap[_t])*_b.A*1000/dt
     b.Q = pyo.Param(t,within=pyo.Reals,initialize=Calculate_Q)
     
     #Variables
