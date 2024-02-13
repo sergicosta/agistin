@@ -17,8 +17,7 @@ from pyomo.core import Piecewise
 def Pipe(b, t, data, init_data):
 
     """
-    Simple Pipe for testing and example purposes.
-    It is utilised in Example0.
+    Pipe that transports water and has implicit energy losses.
     
     Acts as a flow transportation device which also applies an energy loss to the fluid as:
     
