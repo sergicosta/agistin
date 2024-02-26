@@ -30,11 +30,13 @@ def SolarPV(b, t, data, init_data=None):
          - 'Pinst': Installed power :math:`P_{inst}`
          - 'Pmax': Maximum allowed power to be installed :math:`P_{max}`
          - 'forecast': Forecast as power in p.u. :math:`f(t)` as a ``list``
+         - 'eff': Efficiency of the PV panels :math:`\eta`
     
     Pyomo declarations
         - Parameters: 
             - Pinst
             - forecast
+            - eff
         - Variables: 
             - P (t) :math:`\in [-P_{max}, 0]`
             - Pdim :math:`\in [0, P_{max}-P_{inst}]`
@@ -47,6 +49,7 @@ def SolarPV(b, t, data, init_data=None):
     # Parameters
     b.Pinst = pyo.Param(initialize=data['Pinst'])
     b.forecast = pyo.Param(t, initialize=data['forecast'])
+    b.eff = pyo.Param(initialize=data['eff'])
     
     # Variables
     b.P = pyo.Var(t, initialize={k: -data['Pinst']*data['forecast'][k] for k in range(len(t))} , bounds=(-data['Pmax'],0), domain=pyo.Reals)
@@ -57,5 +60,5 @@ def SolarPV(b, t, data, init_data=None):
     
     # Constraints
     def Constraint_P(_b, _t):
-        return _b.P[_t] >= -(_b.Pinst+_b.Pdim)*_b.forecast[_t]
+        return _b.P[_t] >= -(_b.Pinst+_b.Pdim)*_b.forecast[_t]*_b.eff
     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P)
