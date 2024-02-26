@@ -27,7 +27,7 @@ from Devices.MainGrid import Grid
 from Utilities import clear_clc
 
 #clean console and variable pane
-clear_clc() #consider removing if you are not working with Spyder
+# clear_clc() #consider removing if you are not working with Spyder
 
 # model
 m = pyo.ConcreteModel()
@@ -40,7 +40,7 @@ m.t = pyo.Set(initialize=l_t)
 # electricity cost
 l_cost = [10,5,1,5,10]
 m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 10
+cost_new_pv = 2
 
 
 # ===== Create the system =====
@@ -72,7 +72,7 @@ init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450],
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[0.0,0.2,0.8,1.0,0.1]} # PV
+data_pv = {'Pinst':150e3, 'Pmax':500e3, 'forecast':[0.0,0.2,0.8,1.0,0.1], 'eff':0.2} # PV
 SolarPV(m.PV, m.t, data_pv)
 
 Grid(m.Grid, m.t, {'Pmax':100e3}) # grid
@@ -107,7 +107,7 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
@@ -118,24 +118,24 @@ instance.PV.Pdim.pprint()
     # W : Size=5, Index=t
     #     Key : Lower : Value              : Upper : Fixed : Stale : Domain
     #       0 :     0 : 3.0000000000000004 :    20 : False : False : NonNegativeReals
-    #       1 :     0 :  2.051624535242702 :    20 : False : False : NonNegativeReals
-    #       2 :     0 : 1.7161061718196515 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 0.9741875933941936 :    20 : False : False : NonNegativeReals
+    #       1 :     0 : 2.0541284389070125 :    20 : False : False : NonNegativeReals
+    #       2 :     0 : 1.7293577954634398 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 0.9999999899998216 :    20 : False : False : NonNegativeReals
     #       4 :     0 :                0.0 :    20 : False : False : NonNegativeReals
     # W : Size=5, Index=t
-    #     Key : Lower : Value             : Upper : Fixed : Stale : Domain
-    #       0 :     0 : 4.999999999999999 :    20 : False : False : NonNegativeReals
-    #       1 :     0 : 4.948375464757298 :    20 : False : False : NonNegativeReals
-    #       2 :     0 : 4.283893828180348 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 4.025812406605806 :    20 : False : False : NonNegativeReals
-    #       4 :     0 : 4.000000009999997 :    20 : False : False : NonNegativeReals
+    #     Key : Lower : Value              : Upper : Fixed : Stale : Domain
+    #       0 :     0 :  4.999999999999999 :    20 : False : False : NonNegativeReals
+    #       1 :     0 : 4.9458715610929875 :    20 : False : False : NonNegativeReals
+    #       2 :     0 :   4.27064220453656 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 4.0000000100001785 :    20 : False : False : NonNegativeReals
+    #       4 :     0 :  4.000000009999997 :    20 : False : False : NonNegativeReals
     # P : Size=5, Index=t
     #     Key : Lower     : Value                  : Upper    : Fixed : Stale : Domain
-    #       0 : -100000.0 :  9.444173782089441e-09 : 100000.0 : False : False :  Reals
-    #       1 : -100000.0 : -8.895566856661031e-09 : 100000.0 : False : False :  Reals
+    #       0 : -100000.0 :  9.446496316887764e-09 : 100000.0 : False : False :  Reals
+    #       1 : -100000.0 : -8.886264859400418e-09 : 100000.0 : False : False :  Reals
     #       2 : -100000.0 :              -100000.0 : 100000.0 : False : False :  Reals
-    #       3 : -100000.0 : -8.894453079458348e-09 : 100000.0 : False : False :  Reals
-    #       4 : -100000.0 :  9.520949369890758e-09 : 100000.0 : False : False :  Reals
+    #       3 : -100000.0 :  -8.88626492237028e-09 : 100000.0 : False : False :  Reals
+    #       4 : -100000.0 :      5899.999840812498 : 100000.0 : False : False :  Reals
     # Pdim : Size=1, Index=None
-    #     Key  : Lower : Value             : Upper   : Fixed : Stale : Domain
-    #     None :     0 : 6271.117831362812 : 50000.0 : False : False : NonNegativeReals
+    #     Key  : Lower : Value              : Upper    : Fixed : Stale : Domain
+    #     None :     0 : 144999.99054262094 : 350000.0 : False : False : NonNegativeReals
