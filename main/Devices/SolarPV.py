@@ -43,7 +43,7 @@ def SolarPV(b, t, data, init_data=None):
         - Ports: 
             - port_P @ P as ``Extensive``
         - Constraints: 
-            - c_P: :math:`P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)`
+            - c_P: :math:`P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)\cdot \eta`
     """
     
     # Parameters

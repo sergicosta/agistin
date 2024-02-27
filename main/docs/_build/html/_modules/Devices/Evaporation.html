@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devices.Evaporation &mdash; AGISTIN 0.0.20230919 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b6851926"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AGISTIN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Vars.html">Variables and units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Devices.html">Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Builder.html">Builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../References.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AGISTIN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Devices.Evaporation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Devices.Evaporation</h1><div class="highlight"><pre>
+<span></span><span class="c1"># AGISTIN project</span>
+<span class="c1"># .\Devices\Evaporation.py</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Evaporation pyomo block contains the model of evaporation based in</span>
+<span class="sd">Penman method.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="n">Arc</span><span class="p">,</span> <span class="n">Port</span>
+<span class="kn">from</span> <span class="nn">pyomo.core</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Evaporation">
+<a class="viewcode-back" href="../../Devices.html#Devices.Evaporation.Evaporation">[docs]</a>
+<span class="k">def</span> <span class="nf">Evaporation</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+    
+    <span class="c1">#Parameters</span>
+    
+    <span class="n">b</span><span class="o">.</span><span class="n">wind</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wind&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Radiation&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pressure&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Humitat&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Rain</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Rain&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Latent</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Latent&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">hsum</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;hsum&#39;</span><span class="p">])</span>
+    
+    <span class="c1">#Penman Method:</span>
+        
+    <span class="k">def</span> <span class="nf">Calculate_slope</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">4098</span><span class="o">*</span><span class="p">(</span><span class="mf">0.06108</span><span class="o">*</span><span class="mf">2.718</span><span class="o">**</span><span class="p">(</span><span class="mf">17.27</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="mf">273.3</span><span class="p">))))</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="mf">273.3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_slope</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Calculate_ea</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">*</span><span class="mf">0.6108</span><span class="o">*</span><span class="mf">2.718</span><span class="o">**</span><span class="p">(</span><span class="mf">17.27</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="mf">273.3</span><span class="p">))</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">ea</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_ea</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Calculate_es</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.6108</span><span class="o">*</span><span class="mf">2.718</span><span class="o">**</span><span class="p">(</span><span class="mf">17.27</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="mf">273.3</span><span class="p">))</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">es</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_es</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Calculate_psycht</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.000665</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">psy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_psycht</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Calculate_evap</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">_b</span><span class="o">.</span><span class="n">hsum</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="mi">997</span><span class="o">*</span><span class="p">(</span><span class="mf">86.4</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">slope</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">slope</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="n">_b</span><span class="o">.</span><span class="n">psy</span><span class="p">[</span><span class="n">_t</span><span class="p">]))</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="n">_b</span><span class="o">.</span><span class="n">Latent</span><span class="p">)</span><span class="o">+</span><span class="p">((</span><span class="n">_b</span><span class="o">.</span><span class="n">psy</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">psy</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="n">_b</span><span class="o">.</span><span class="n">slope</span><span class="p">[</span><span class="n">_t</span><span class="p">]))</span><span class="o">*</span><span class="mf">0.26</span><span class="o">*</span><span class="p">(</span><span class="mf">0.5</span><span class="o">+</span><span class="mf">0.54</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">wind</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">ea</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">evap</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_evap</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">Calculate_Q</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Rain</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">evap</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">A</span><span class="o">*</span><span class="mi">1000</span><span class="o">/</span><span class="n">dt</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">,</span><span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_Q</span><span class="p">)</span>
+    
+    <span class="c1">#Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Qout</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">Calculate_Q</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>    
+     
+    <span class="c1">#Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Qout</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Qout</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    
+    <span class="c1">#Constraint</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_Qout</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Qout</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Qout</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_Qout</span><span class="p">)</span></div>
+
+    
+
+
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CITCEA-UPC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

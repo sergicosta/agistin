@@ -189,6 +189,7 @@ def RealPump(b, t, data, init_data):
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
+    # b.PumpOn = pyo.Param(t, initialize=0, within=pyo.Binary)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})

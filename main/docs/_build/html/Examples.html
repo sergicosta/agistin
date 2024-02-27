@@ -275,7 +275,7 @@
 <span class="n">m</span><span class="o">.</span><span class="n">goal</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">rule</span><span class="o">=</span><span class="n">obj_fun</span><span class="p">,</span> <span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">minimize</span><span class="p">)</span>
 
 <span class="n">instance</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_instance</span><span class="p">()</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;asl:couenne&#39;</span><span class="p">)</span>
 <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">instance</span><span class="o">.</span><span class="n">Reservoir1</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
@@ -339,7 +339,7 @@
 <span class="kn">from</span> <span class="nn">Utilities</span> <span class="kn">import</span> <span class="n">clear_clc</span>
 
 <span class="c1">#clean console and variable pane</span>
-<span class="n">clear_clc</span><span class="p">()</span> <span class="c1">#consider removing if you are not working with Spyder</span>
+<span class="c1"># clear_clc() #consider removing if you are not working with Spyder</span>
 
 <span class="c1"># model</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">()</span>
@@ -352,7 +352,7 @@
 <span class="c1"># electricity cost</span>
 <span class="n">l_cost</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span>
 <span class="n">m</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">l_cost</span><span class="p">)</span>
-<span class="n">cost_new_pv</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">cost_new_pv</span> <span class="o">=</span> <span class="mi">2</span>
 
 
 <span class="c1"># ===== Create the system =====</span>
@@ -384,7 +384,7 @@
 <span class="n">Pump</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Pump1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">data_p</span><span class="p">,</span> <span class="n">init_p</span><span class="p">)</span>
 <span class="n">Pump</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Pump2</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">data_p</span><span class="p">,</span> <span class="n">init_p</span><span class="p">)</span>
 
-<span class="n">data_pv</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Pinst&#39;</span><span class="p">:</span><span class="mf">50e3</span><span class="p">,</span> <span class="s1">&#39;Pmax&#39;</span><span class="p">:</span><span class="mf">100e3</span><span class="p">,</span> <span class="s1">&#39;forecast&#39;</span><span class="p">:[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]}</span> <span class="c1"># PV</span>
+<span class="n">data_pv</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Pinst&#39;</span><span class="p">:</span><span class="mf">150e3</span><span class="p">,</span> <span class="s1">&#39;Pmax&#39;</span><span class="p">:</span><span class="mf">500e3</span><span class="p">,</span> <span class="s1">&#39;forecast&#39;</span><span class="p">:[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">],</span> <span class="s1">&#39;eff&#39;</span><span class="p">:</span><span class="mf">0.2</span><span class="p">}</span> <span class="c1"># PV</span>
 <span class="n">SolarPV</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">PV</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">data_pv</span><span class="p">)</span>
 
 <span class="n">Grid</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Grid</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Pmax&#39;</span><span class="p">:</span><span class="mf">100e3</span><span class="p">})</span> <span class="c1"># grid</span>
@@ -430,27 +430,27 @@
     <span class="c1"># W : Size=5, Index=t</span>
     <span class="c1">#     Key : Lower : Value              : Upper : Fixed : Stale : Domain</span>
     <span class="c1">#       0 :     0 : 3.0000000000000004 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       1 :     0 :  2.051624535242702 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       2 :     0 : 1.7161061718196515 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       3 :     0 : 0.9741875933941936 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       1 :     0 : 2.0541284389070125 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       2 :     0 : 1.7293577954634398 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       3 :     0 : 0.9999999899998216 :    20 : False : False : NonNegativeReals</span>
     <span class="c1">#       4 :     0 :                0.0 :    20 : False : False : NonNegativeReals</span>
     <span class="c1"># W : Size=5, Index=t</span>
-    <span class="c1">#     Key : Lower : Value             : Upper : Fixed : Stale : Domain</span>
-    <span class="c1">#       0 :     0 : 4.999999999999999 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       1 :     0 : 4.948375464757298 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       2 :     0 : 4.283893828180348 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       3 :     0 : 4.025812406605806 :    20 : False : False : NonNegativeReals</span>
-    <span class="c1">#       4 :     0 : 4.000000009999997 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#     Key : Lower : Value              : Upper : Fixed : Stale : Domain</span>
+    <span class="c1">#       0 :     0 :  4.999999999999999 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       1 :     0 : 4.9458715610929875 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       2 :     0 :   4.27064220453656 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       3 :     0 : 4.0000000100001785 :    20 : False : False : NonNegativeReals</span>
+    <span class="c1">#       4 :     0 :  4.000000009999997 :    20 : False : False : NonNegativeReals</span>
     <span class="c1"># P : Size=5, Index=t</span>
     <span class="c1">#     Key : Lower     : Value                  : Upper    : Fixed : Stale : Domain</span>
-    <span class="c1">#       0 : -100000.0 :  9.444173782089441e-09 : 100000.0 : False : False :  Reals</span>
-    <span class="c1">#       1 : -100000.0 : -8.895566856661031e-09 : 100000.0 : False : False :  Reals</span>
+    <span class="c1">#       0 : -100000.0 :  9.446496316887764e-09 : 100000.0 : False : False :  Reals</span>
+    <span class="c1">#       1 : -100000.0 : -8.886264859400418e-09 : 100000.0 : False : False :  Reals</span>
     <span class="c1">#       2 : -100000.0 :              -100000.0 : 100000.0 : False : False :  Reals</span>
-    <span class="c1">#       3 : -100000.0 : -8.894453079458348e-09 : 100000.0 : False : False :  Reals</span>
-    <span class="c1">#       4 : -100000.0 :  9.520949369890758e-09 : 100000.0 : False : False :  Reals</span>
+    <span class="c1">#       3 : -100000.0 :  -8.88626492237028e-09 : 100000.0 : False : False :  Reals</span>
+    <span class="c1">#       4 : -100000.0 :      5899.999840812498 : 100000.0 : False : False :  Reals</span>
     <span class="c1"># Pdim : Size=1, Index=None</span>
-    <span class="c1">#     Key  : Lower : Value             : Upper   : Fixed : Stale : Domain</span>
-    <span class="c1">#     None :     0 : 6271.117831362812 : 50000.0 : False : False : NonNegativeReals</span>
+    <span class="c1">#     Key  : Lower : Value              : Upper    : Fixed : Stale : Domain</span>
+    <span class="c1">#     None :     0 : 144999.99054262094 : 350000.0 : False : False : NonNegativeReals</span>
 </pre></div>
 </div>
 </section>
