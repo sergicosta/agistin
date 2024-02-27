@@ -107,7 +107,7 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=True)
+solver.solve(instance, tee=False)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
