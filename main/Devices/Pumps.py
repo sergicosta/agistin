@@ -524,8 +524,8 @@ def ReversibleRealPump(b, t, data, init_data):
          - 'n_n': Nominal rotational speed :math:`n_n`
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
-         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
-         - 'Qmin': Minimum flow :math:`Q_{min}`
+         - 'Qmax': Maximum allowed flow in p.u. :math:`Q_{max}`
+         - 'Qmin': Minimum flow in p.u. :math:`Q_{min}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
 
     init_data
@@ -554,6 +554,7 @@ def ReversibleRealPump(b, t, data, init_data):
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
             - ModePump (t) bounded :math:`ModePump =  [0,1]`
             - ModeTurbine (t) bounded :math:`ModeTurbine = [0,1]`
+            - K (t) bounded :math:`K = [0,1]`
             
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
@@ -596,7 +597,7 @@ def ReversibleRealPump(b, t, data, init_data):
     b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
     b.ModeTurbine = pyo.Var(t,initialize=1, within=pyo.Binary)
     b.a = pyo.Var(t,initialize = 0, within=pyo.NonNegativeReals)
-    b.k = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
+    b.K = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
 
 
     # Ports
@@ -611,7 +612,7 @@ def ReversibleRealPump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.k[_t])*_b.ModeTurbine[_t] + (1-(_b.ModePump[_t] +_b.ModeTurbine[_t]))*_b.a[_t]
+        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*_b.ModeTurbine[_t] + (1-(_b.ModePump[_t] +_b.ModeTurbine[_t]))*_b.a[_t]
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
     
     def Constraint_Qout(_b, _t):
