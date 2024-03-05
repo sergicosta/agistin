@@ -105,8 +105,9 @@ diff = diff_ea_es(ea,es)
 def Evaporation(slp,psy,Temp,ea,es,wnd,Rdt):
     evaporation = []
     for s,p,t,dff,w,r in zip (slp,psy,Temp,diff,wnd,Rdt):
-        evap = 1/h*1/997*(86.4*(s/(s+p))*(r/latent)+((p/(p+s))*0.26*(0.5+0.54*w)*dff*10))
-        
+        # evap = 1/h*1/997*(86.4*(s/(s+p))*(r/latent)+((p/(p+s))*0.26*(0.5+0.54*w)*dff*10))
+        evap = 1/h*((s/(s+p))*(r/latent)+(p/p+s)*(6.43*(1+0.536*w)*dff/latent))
+
         evaporation.append(evap)
     return evaporation
 evaporation = Evaporation(slp,psy,Temp,ea,es,wnd,Rdt)
