@@ -70,7 +70,7 @@ def Reservoir(b, t, data, init_data):
     b.zmax = pyo.Param(initialize=data['zmax'])
     
     # Variables
-    b.Q  = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
+    b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
     b.z = pyo.Var(t, initialize={k: z(b,init_data['W'][k]) for k in range(len(t))}, bounds=(data['zmin'], data['zmax']), within=pyo.NonNegativeReals) 
 
@@ -82,13 +82,13 @@ def Reservoir(b, t, data, init_data):
     # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
-            return _b.W[_t] == _b.W[_t-1] + _b.dt*(_b.Q[_t]) # TODO: - Qloss - gamma
+            return _b.W[_t] == _b.W[_t-1] + _b.dt*(_b.Q[_t])
         else:
             return _b.W[_t] == _b.W0 + _b.dt*(_b.Q[_t])
     b.c_W = pyo.Constraint(t, rule = Constraint_W)
     
     def Constraint_z(_b, _t):
-        return b.z[_t] == z(_b, _b.W[_t])
+        return _b.z[_t] == z(_b, _b.W[_t])
     b.c_z = pyo.Constraint(t, rule=Constraint_z)
     
     
@@ -137,7 +137,7 @@ def Reservoir_Ex0(b, t, data, init_data):
     b.W0 = pyo.Param(initialize=data['W0'])
     
     # Variables
-    b.Q  = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
+    b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
 
     # Ports
@@ -146,7 +146,7 @@ def Reservoir_Ex0(b, t, data, init_data):
     # Constraints
     def Constraint_W(_b, _t):
         if _t>0:
-            return _b.W[_t] == _b.W[_t-1] + (_b.Q[_t]) # TODO: - Qloss - gamma
+            return _b.W[_t] == _b.W[_t-1] + (_b.Q[_t])
         else:
             return _b.W[_t] == _b.W0 + (_b.Q[_t])
     b.c_W = pyo.Constraint(t, rule = Constraint_W)
