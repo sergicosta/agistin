@@ -445,7 +445,7 @@ def ReversiblePump(b, t, data, init_data):
     b.eff = pyo.Param(initialize=data['eff'])
     b.eff_t = pyo.Param(initialize=data['eff_t'])
     b.S = pyo.Param(initialize=data['S'])
-    b.k = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
+    b.K = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
 
 
     # Variables
@@ -480,7 +480,7 @@ def ReversiblePump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.k[_t])*(1-_b.ModePump[_t])
+        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*(1-_b.ModePump[_t])
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
     
@@ -588,16 +588,19 @@ def ReversibleRealPump(b, t, data, init_data):
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
-    b.Qoutp = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.Qoutp = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.Qoutt = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
-    b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
-    b.ModeTurbine = pyo.Var(t,initialize=1, within=pyo.Binary)
-    b.a = pyo.Var(t,initialize = 0, within=pyo.NonNegativeReals)
-    b.K = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
+    # b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
+    # b.ModeTurbine = pyo.Var(t,initialize=0, within=pyo.Binary)
+    b.a = pyo.Var(t,initialize = init_data['H'][0], within=pyo.NonNegativeReals)
+    b.K = pyo.Var(t,initialize = 1, bounds = (0.01,1), within=pyo.NonNegativeReals)
+    
+    b.ON = pyo.Var(t,initialize=1, within=pyo.Binary)
+    b.PumpTurbine = pyo.Var(t,initialize=1, within=pyo.Binary)
 
 
     # Ports
@@ -612,11 +615,13 @@ def ReversibleRealPump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*_b.ModeTurbine[_t] + (1-(_b.ModePump[_t] +_b.ModeTurbine[_t]))*_b.a[_t]
+        # return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*_b.ModeTurbine[_t] + (1-(_b.ModePump[_t] +_b.ModeTurbine[_t]))*_b.a[_t]
+        return _b.H[_t] == _b.ON[_t]*( ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.PumpTurbine[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*(1-_b.PumpTurbine[_t]) ) + (1-_b.ON[_t])*_b.a[_t]
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
     
     def Constraint_Qout(_b, _t):
-        return _b.Qout[_t] == +_b.Qoutp[_t]*_b.ModePump[_t] - _b.Qoutt[_t]*_b.ModeTurbine[_t]
+        # return _b.Qout[_t] == +_b.Qoutp[_t]*_b.ModePump[_t] - _b.Qoutt[_t]*_b.ModeTurbine[_t]
+        return _b.Qout[_t] == _b.ON[_t]*(_b.Qoutp[_t]*_b.PumpTurbine[_t] - _b.Qoutt[_t]*(1-_b.PumpTurbine[_t]))
     b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
 
     def Constraint_Ph(_b, _t):
@@ -624,18 +629,19 @@ def ReversibleRealPump(b, t, data, init_data):
     b.c_Ph = pyo.Constraint(t, rule=Constraint_Ph)
 
     def Constraint_Pe(_b, _t):
-        return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (_b.ModeTurbine[_t])*_b.eff_t)
+        # return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (_b.ModeTurbine[_t])*_b.eff_t)
+        return _b.Pe[_t] == _b.Ph[_t] *(_b.PumpTurbine[_t]/_b.eff + (1-_b.PumpTurbine[_t])*_b.eff_t)
     b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
     
     def Constraint_Qmaxp(_b, _t):
-        return _b.Qoutp[_t] <= (_b.Qmax * _b.ModePump[_t])
+        return _b.Qoutp[_t] <= (_b.Qmax *_b.ON[_t]*_b.PumpTurbine[_t])
     b.c_Qmaxp = pyo.Constraint(t, rule=Constraint_Qmaxp)
     
     def Constraint_Qminp(_b, _t):
-        return _b.Qoutp[_t] >= (_b.Qmin * _b.ModePump[_t])
+        return _b.Qoutp[_t] >= (_b.Qmin *_b.ON[_t]*_b.PumpTurbine[_t])
     b.c_Qminp = pyo.Constraint(t, rule=Constraint_Qminp)
     
-    def Constraint_WorkingBin(_b, _t):
-        return _b.ModePump[_t] + _b.ModeTurbine[_t] <= 1
-    b.c_workingbin = pyo.Constraint(t, rule = Constraint_WorkingBin)
+    # def Constraint_WorkingBin(_b, _t):
+    #     return _b.ModePump[_t] + _b.ModeTurbine[_t] <= 1
+    # b.c_workingbin = pyo.Constraint(t, rule = Constraint_WorkingBin)
    
