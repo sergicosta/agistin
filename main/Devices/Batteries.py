@@ -83,7 +83,7 @@ def Battery(b, t, data, init_data):
     b.P = pyo.Var(t, initialize= init_data['P'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.Pch = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, within=pyo.NonNegativeReals)
     b.Pdisc = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, within=pyo.NonNegativeReals)
-    b.SOC = pyo.Var(t, initialize={k:data['E0']/data['Emax'] for k in range(len(t))}, bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)
+    b.SOC = pyo.Var(t, initialize={k:data['E0']/data['Einst'] for k in range(len(t))}, bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)
     b.Pdim = pyo.Var(initialize = 0, bounds =(0,data['Pmax']-data['Pinst']),within = pyo.NonNegativeReals)
     b.Edim = pyo.Var(initialize = 0, bounds = (0,data['Emax']-data['Einst']),within = pyo.NonNegativeReals)
     # Ports
@@ -116,7 +116,7 @@ def Battery(b, t, data, init_data):
     b.Consume = pyo.Constraint(t, rule = Constraint_consume)
     
     def Constraint_prodc(_b,_t):
-        return  _b.Pdch[_t] <= (_b.Pinst + _b.Pdim)
+        return  _b.Pdisc[_t] <= (_b.Pinst + _b.Pdim)
     
     b.Prod = pyo.Constraint(t, rule = Constraint_prodc)
     
