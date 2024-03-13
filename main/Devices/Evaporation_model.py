@@ -87,7 +87,7 @@ es = mean_sat_vapor(Temp)
 def psychct(Press):
     psy = []
     for P in Press:
-        pssyy = 0.000665*P/10
+        pssyy = 0.000665*P#/10
         psy.append(pssyy)
     return psy
 psy = psychct(Press)
