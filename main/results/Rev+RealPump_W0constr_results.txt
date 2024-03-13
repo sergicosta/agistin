@@ -9,7 +9,7 @@ Problem:
   Upper bound: inf
   Number of objectives: 1
   Number of constraints: 0
-  Number of variables: 1105
+  Number of variables: 1226
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
@@ -20,7 +20,7 @@ Solver:
   Termination condition: maxIterations
   Id: 421
   Error rc: 0
-  Time: 10005.06439447403
+  Time: 10008.88927102089
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -29,4 +29,4 @@ Solution:
   number of solutions displayed: 0
 
 GOAL VALUE:
-71.65633909467141
+71.82407444654443
