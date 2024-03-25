@@ -58,6 +58,9 @@ solver.solve(instance, tee=False)
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
 instance.Grid.P.pprint()
+instance.Grid.Psell.pprint()#
+instance.Grid.Pbuy.pprint()
+
 instance.PV.Pdim.pprint()
 
 # RESULTS
