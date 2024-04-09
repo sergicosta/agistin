@@ -10,11 +10,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b6851926"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -86,7 +86,9 @@
 <span class="c1"># data: dt, W0, Wmin, Wmax, zmin, zmax</span>
 <span class="c1"># init_data: Q(t), W(t)</span>
 
-<div class="viewcode-block" id="Reservoir"><a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir">[docs]</a><span class="k">def</span> <span class="nf">Reservoir</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Reservoir">
+<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir">[docs]</a>
+<span class="k">def</span> <span class="nf">Reservoir</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Reservoir.</span>
@@ -134,7 +136,7 @@
     
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">zmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">zmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">zmin</span>
-
+    
     <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
     
     <span class="c1"># Parameters</span>
@@ -145,7 +147,7 @@
     <span class="n">b</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmax&#39;</span><span class="p">])</span>
     
     <span class="c1"># Variables</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">Q</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">z</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
 
@@ -157,21 +159,24 @@
     <span class="c1"># Constraints</span>
     <span class="k">def</span> <span class="nf">Constraint_W</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span> <span class="c1"># TODO: - Qloss - gamma</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W0</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_W</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">Constraint_z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_z</span><span class="p">)</span></div>
+
     
     
 
 <span class="c1"># data: W0, Wmin, Wmax</span>
 <span class="c1"># init_data: Q(t), W(t)</span>
     
-<div class="viewcode-block" id="Reservoir_Ex0"><a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir_Ex0">[docs]</a><span class="k">def</span> <span class="nf">Reservoir_Ex0</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Reservoir_Ex0">
+<a class="viewcode-back" href="../../Devices.html#Devices.Reservoirs.Reservoir_Ex0">[docs]</a>
+<span class="k">def</span> <span class="nf">Reservoir_Ex0</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Reservoir for testing and example purposes.</span>
@@ -212,7 +217,7 @@
     <span class="n">b</span><span class="o">.</span><span class="n">W0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;W0&#39;</span><span class="p">])</span>
     
     <span class="c1"># Variables</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">Q</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
 
     <span class="c1"># Ports</span>
@@ -221,10 +226,101 @@
     <span class="c1"># Constraints</span>
     <span class="k">def</span> <span class="nf">Constraint_W</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span> <span class="c1"># TODO: - Qloss - gamma</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">W0</span> <span class="o">+</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_W</span><span class="p">)</span></div>
+
+
+    
+    
+    
+<span class="c1"># def Reservoir_loop(b, t, data, init_data):</span>
+    
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Reservoir.</span>
+    
+<span class="c1">#     Modifies its volume state :math:`W(t)` and height :math:`z(t)` from an initial state :math:`W_0` according to </span>
+<span class="c1">#     the aggregated input flows :math:`Q(t)`</span>
+    
+<span class="c1">#     :param b: pyomo ``Block()`` to be set</span>
+<span class="c1">#     :param t: pyomo ``Set()`` referring to time</span>
+<span class="c1">#     :param data: data ``dict``</span>
+<span class="c1">#     :param init_data: init_data ``dict``</span>
+    
+<span class="c1">#     data</span>
+<span class="c1">#          - &#39;dt&#39;: Time delta :math:`\Delta t`</span>
+<span class="c1">#          - &#39;Wmin&#39;: Minimum allowed volume :math:`W_{min}`</span>
+<span class="c1">#          - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
+<span class="c1">#          - &#39;zmin&#39;: Height at minimum volume :math:`z_{min}`</span>
+<span class="c1">#          - &#39;zmax&#39;: Height at maximum volume :math:`z_{max}`</span>
+    
+<span class="c1">#     init_data</span>
+<span class="c1">#          - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
+<span class="c1">#          - &#39;W&#39;: Volume :math:`W(t)` as a ``list``</span>
+    
+<span class="c1">#     Pyomo declarations    </span>
+<span class="c1">#         - Parameters: </span>
+<span class="c1">#             - Wmin</span>
+<span class="c1">#             - Wmax</span>
+<span class="c1">#             - zmin</span>
+<span class="c1">#             - zmax</span>
+<span class="c1">#         - Variables: </span>
+<span class="c1">#             - Q (t)</span>
+<span class="c1">#             - W (t)</span>
+<span class="c1">#             - z (t)</span>
+<span class="c1">#         - Ports: </span>
+<span class="c1">#             - port_Q @ Q as ``Extensive``</span>
+<span class="c1">#             - port_z @ z as ``Equality``</span>
+<span class="c1">#         - Constraints:</span>
+<span class="c1">#             - c_W: </span>
+<span class="c1">#                 - :math:`W(t) = W(t-1) + \Delta t \cdot Q(t) \quad` if  :math:`t&gt;0`</span>
+<span class="c1">#                 - :math:`W(t) = W_0 + \Delta t \cdot Q(t) \quad` otherwise</span>
+<span class="c1">#             - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+    
+<span class="c1">#     def z(_b, w):</span>
+<span class="c1">#         return (w-_b.Wmin)/(_b.Wmax-_b.Wmin)*(_b.zmax-_b.zmin) + _b.zmin</span>
+    
+<span class="c1">#     b.dt = data[&#39;dt&#39;]</span>
+    
+<span class="c1">#     # Parameters</span>
+<span class="c1">#     b.T = pyo.Param(initialize=len(init_data[&#39;W&#39;]))</span>
+<span class="c1">#     b.Wmin = pyo.Param(initialize=data[&#39;Wmin&#39;])</span>
+<span class="c1">#     b.Wmax = pyo.Param(initialize=data[&#39;Wmax&#39;])</span>
+<span class="c1">#     b.zmin = pyo.Param(initialize=data[&#39;zmin&#39;])</span>
+<span class="c1">#     b.zmax = pyo.Param(initialize=data[&#39;zmax&#39;])</span>
+    
+<span class="c1">#     # Variables</span>
+<span class="c1">#     b.W0 = pyo.Var(initialize=init_data[&#39;W&#39;][0], bounds=(data[&#39;Wmin&#39;], data[&#39;Wmax&#39;]), within=pyo.NonNegativeReals)</span>
+<span class="c1">#     b.Q = pyo.Var(t, initialize=init_data[&#39;Q&#39;], within=pyo.Reals)</span>
+<span class="c1">#     b.W = pyo.Var(t, initialize=init_data[&#39;W&#39;], bounds=(data[&#39;Wmin&#39;], data[&#39;Wmax&#39;]), within=pyo.NonNegativeReals)</span>
+<span class="c1">#     b.z = pyo.Var(t, initialize={k: z(b,init_data[&#39;W&#39;][k]) for k in range(len(t))}, bounds=(data[&#39;zmin&#39;], data[&#39;zmax&#39;]), within=pyo.NonNegativeReals) </span>
+
+    
+<span class="c1">#     # Ports</span>
+<span class="c1">#     b.port_Q = Port(initialize={&#39;Q&#39;: (b.Q, Port.Extensive)})</span>
+<span class="c1">#     b.port_z = Port(initialize={&#39;z&#39;: (b.z, Port.Equality)})</span>
+
+<span class="c1">#     # Constraints</span>
+<span class="c1">#     def Constraint_W(_b, _t):</span>
+<span class="c1">#         if _t&gt;0:</span>
+<span class="c1">#             return _b.W[_t] == _b.W[_t-1] + _b.dt*(_b.Q[_t])</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             return _b.W[_t] == _b.W0 + _b.dt*(_b.Q[_t])</span>
+<span class="c1">#     b.c_W = pyo.Constraint(t, rule = Constraint_W)</span>
+    
+<span class="c1">#     def ConstraintW0min(_b, _t):</span>
+<span class="c1">#         return _b.W0 &gt;= _b.W[_b.T-1]*0.99</span>
+<span class="c1">#     b.c_W1min = pyo.Constraint(t, rule = ConstraintW0min)</span>
+
+<span class="c1">#     def ConstraintW0max(_b, _t):</span>
+<span class="c1">#         return _b.W0 &lt;= _b.W[_b.T-1]*1.01</span>
+<span class="c1">#     b.c_W1max = pyo.Constraint(t, rule = ConstraintW0max)</span>
+    
+<span class="c1">#     def Constraint_z(_b, _t):</span>
+<span class="c1">#         return _b.z[_t] == z(_b, _b.W[_t])</span>
+<span class="c1">#     b.c_z = pyo.Constraint(t, rule=Constraint_z)</span>
 </pre></div>
 
            </div>

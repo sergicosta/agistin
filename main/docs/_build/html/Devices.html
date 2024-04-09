@@ -90,6 +90,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#main-grid">Main Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.MainGrid.FlexibleGrid"><code class="docutils literal notranslate"><span class="pre">FlexibleGrid()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.MainGrid.Grid"><code class="docutils literal notranslate"><span class="pre">Grid()</span></code></a></li>
 </ul>
 </li>
@@ -970,8 +971,8 @@ A</p>
 <li><p>‘n_n’: Nominal rotational speed <span class="math notranslate nohighlight">\(n_n\)</span></p></li>
 <li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
 <li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
-<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
-<li><p>‘Qmin’: Minimum flow <span class="math notranslate nohighlight">\(Q_{min}\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow in p.u. <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+<li><p>‘Qmin’: Minimum flow in p.u. <span class="math notranslate nohighlight">\(Q_{min}\)</span></p></li>
 <li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
 </ul>
 </dd>
@@ -1008,6 +1009,7 @@ A</p>
 <li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
 <li><p>ModePump (t) bounded <span class="math notranslate nohighlight">\(ModePump =  [0,1]\)</span></p></li>
 <li><p>ModeTurbine (t) bounded <span class="math notranslate nohighlight">\(ModeTurbine = [0,1]\)</span></p></li>
+<li><p>K (t) bounded <span class="math notranslate nohighlight">\(K = [0,1]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1341,6 +1343,65 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <h3>Main Grid<a class="headerlink" href="#main-grid" title="Link to this heading"></a></h3>
 <a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Grid block" height="107" src="_images/Block_Grid.svg" width="132" /></a>
 <p id="module-Devices.MainGrid">MainGrid pyomo block contains characteristics of the point of connection.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.MainGrid.FlexibleGrid">
+<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">FlexibleGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#FlexibleGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.FlexibleGrid" title="Link to this definition"></a></dt>
+<dd><p>Point of connection to the grid.</p>
+<p>Delivers or consumes the required power up to a set maximum.
+It also defines whether the power is consumed from the grid <span class="math notranslate nohighlight">\(P_{buy}\)</span> or delivered to <span class="math notranslate nohighlight">\(P_{sell}\)</span>.
+This version</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Pmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>P (t)</p></li>
+<li><p>Psell (t)</p></li>
+<li><p>Pbuy (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \cdot  P_{buy}(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.MainGrid.Grid">
 <span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#Grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.Grid" title="Link to this definition"></a></dt>
