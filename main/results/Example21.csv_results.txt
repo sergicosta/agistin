@@ -1,0 +1,32 @@
+# ==========================================================
+# = Solver Results                                         =
+# ==========================================================
+# ----------------------------------------------------------
+#   Problem Information
+# ----------------------------------------------------------
+Problem: 
+- Lower bound: -inf
+  Upper bound: inf
+  Number of objectives: 1
+  Number of constraints: 215
+  Number of variables: 213
+  Sense: unknown
+# ----------------------------------------------------------
+#   Solver Information
+# ----------------------------------------------------------
+Solver: 
+- Status: ok
+  Message: Ipopt 3.10.1\x3a Optimal Solution Found
+  Termination condition: optimal
+  Id: 0
+  Error rc: 0
+  Time: 0.4229006767272949
+# ----------------------------------------------------------
+#   Solution Information
+# ----------------------------------------------------------
+Solution: 
+- number of solutions: 0
+  number of solutions displayed: 0
+
+GOAL VALUE:
+1484499.964372469

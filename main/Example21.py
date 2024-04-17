@@ -10,6 +10,11 @@
 import pyomo.environ as pyo
 from pyomo.network import *
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as pl
+import seaborn as sns
+
 # Import devices
 from Devices.Reservoirs import Reservoir_Ex0
 from Devices.Sources import Source
@@ -18,7 +23,7 @@ from Devices.Pumps import Pump
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
-from Devices.Batteries import Battery_Ex0
+from Devices.Batteries import Battery
 
 
 # model
@@ -30,10 +35,10 @@ l_t = list(range(5))
 m.t = pyo.Set(initialize=l_t)
 
 # electricity cost
-l_cost = [5,10,15,10,5]
+l_cost = [5,10,5,5,30]
 m.cost = pyo.Param(m.t, initialize=l_cost)
 cost_new_pv = 10
-cost_new_battery = 1
+cost_new_battery = 2
 
 # ===== Create the system =====
 m.Reservoir1 = pyo.Block()
@@ -67,7 +72,7 @@ init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450],
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[0.4,1,1.7,1.2,0.5]} # PV
+data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1,1,1.7,0.5,0], 'eff': 0.98} # PV
 SolarPV(m.PV, m.t, data_pv)
 
 Grid(m.Grid, m.t, {'Pmax':480e3}) # grid
@@ -77,12 +82,12 @@ EB(m.EB, m.t)
 #Battery data
 data = {'E0':0.1e3,'SOCmax':1,
         'SOCmin':0.0,'Pmax':100e3,
-        'Einst':80e3,'Pinst':80e3,
+        'Einst':10e3,'Pinst':10e3,
         'Emax':100e3,'rend_ch':0.9,
-        'rend_disc':1.1}
+        'rend_dc':0.9}
 
 init_data = {'E':[19e3,19e3,19e3,19e3,19e3],'P':19e3}
-Battery_Ex0(m.Battery, m.t, data, init_data)
+Battery(m.Battery, m.t, data, init_data)
 
 
 # Connections
@@ -104,6 +109,9 @@ pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to mod
 
 
 #%% RUN THE OPTIMIZATION
+from pyomo.environ import value
+import os
+
 
 # Objective function
 def obj_fun(m):
@@ -111,17 +119,69 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
+# solver = pyo.SolverFactory('asl:couenne') #ipopt asl:couenne gdpopt.enumerate
+# solver.options['branch_fbbt'] = 'no'
+# solver.solve(instance, tee=True)
+
+# os.environ['NEOS_EMAIL'] = 'sergi.costa.dilme@upc.edu'
+# opt = pyo.SolverFactory("knitro")
+# solver_manager = pyo.SolverManagerFactory('neos')
+# results = solver_manager.solve(instance, opt=opt)
+# results.write()
+
+# with open("couenne.opt", "w") as file:
+#     file.write('''time_limit 100000
+#                 convexification_cuts 4
+#                 convexification_points 3
+#                 delete_redundant yes
+#                 use_quadratic no
+#                 feas_tolerance 1e-5
+#                 ''')
+# solver = pyo.SolverFactory('asl:couenne')
+# results = solver.solve(instance, tee=True)
+# results.write()
+# os.remove('couenne.opt') #Delete options
+
+instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+results = solver.solve(instance, tee=True)
 
-instance.Reservoir1.W.pprint()
-instance.Reservoir0.W.pprint()
-instance.Grid.P.pprint()
-instance.PV.Pdim.pprint()
-instance.Battery.Edim.pprint()
-instance.Battery.Pdim.pprint()
-instance.Battery.E.pprint()
+#%%
 
+from pyomo.environ import value
+
+df_out = pd.DataFrame(l_t, columns=['t'])
+for i in range(len(instance._decl_order)):
+    e = instance._decl_order[i][0]
+    if e is None:
+        continue
+    name = e.name
+    
+    if "pyomo.core.base.block.ScalarBlock" not in str(e.type):
+        continue
+    
+    for ii in range(len(e._decl_order)):
+        v = e._decl_order[ii][0]
+        vals = 0
+        
+        if "pyomo.core.base.var.IndexedVar" in str(v.type): #Var
+            vals = v.get_values()
+        elif "pyomo.core.base.param.IndexedParam" in str(v.type): #Param
+            vals = v.extract_values()
+        elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Param
+            vals = v.get_values()
+        else:
+            continue
+        
+        df_out = pd.concat([df_out, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
+
+
+file = './results/Example21.csv'
+df_out.to_csv(file+'.csv')
+results.write(filename=file+'_results.txt')
+with open(file+'_results.txt','a') as f:
+    f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
+    f.close()
 
 #%%Battery test
 
