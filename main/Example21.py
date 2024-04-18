@@ -16,9 +16,9 @@ import matplotlib.pyplot as pl
 import seaborn as sns
 
 # Import devices
-from Devices.Reservoirs import Reservoir_Ex0
+from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
-from Devices.Pipes import Pipe_Ex0
+from Devices.Pipes import Pipe
 from Devices.Pumps import Pump
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
@@ -31,11 +31,12 @@ m = pyo.ConcreteModel()
 
 
 # time
-l_t = list(range(5))
+T = 10
+l_t = list(range(T))
 m.t = pyo.Set(initialize=l_t)
 
 # electricity cost
-l_cost = [5,10,5,5,30]
+l_cost = [5,10,5,5,30]*2
 m.cost = pyo.Param(m.t, initialize=l_cost)
 cost_new_pv = 10
 cost_new_battery = 2
@@ -53,26 +54,26 @@ m.EB = pyo.Block()
 m.Battery = pyo.Block()
 
 
-data_irr = {'Q':[2,0,0,0,2]} # irrigation
+data_irr = {'Q':[2,0,0,0,2]*2} # irrigation
 Source(m.Irrigation1, m.t, data_irr, {})
 
-data_res0 = {'W0':15, 'Wmin':0, 'Wmax':20}
-data_res1 = {'W0':1, 'Wmin':0, 'Wmax':10}
-init_res = {'Q':[0,0,0,0,0], 'W':[5,5,5,5,5]}
+data_res0 = {'dt':1, 'W0':15, 'Wmin':0, 'Wmax':20, 'zmin':100, 'zmax':105}
+data_res1 = {'dt':1, 'W0':15, 'Wmin':0, 'Wmax':20, 'zmin':90, 'zmax':95}
+init_res = {'Q':[0]*T, 'W':[5]*T}
 
-Reservoir_Ex0(m.Reservoir1, m.t, data_res1, init_res)
-Reservoir_Ex0(m.Reservoir0, m.t, data_res0, init_res)
+Reservoir(m.Reservoir1, m.t, data_res1, init_res)
+Reservoir(m.Reservoir0, m.t, data_res0, init_res)
 
-data_c1 = {'H0':20, 'K':0.05, 'Qmax':50} # canal
-init_c1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
-Pipe_Ex0(m.Pipe1, m.t, data_c1, init_c1)
+data_c1 = {'K':0.02, 'Qmax':50} # canal
+init_c1 = {'Q':[0]*T, 'H':[20]*T, 'H0':[20]*T, 'zlow':[90]*T, 'zhigh':[100]*T}
+Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
 data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
-init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
+init_p = {'Q':[0]*T, 'H':[20]*T, 'n':[1450]*T, 'Pe':[9810*5*20]*T}
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1,1,1.7,0.5,0], 'eff': 0.98} # PV
+data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1,1,1.7,0.5,0]*2, 'eff': 0.98} # PV
 SolarPV(m.PV, m.t, data_pv)
 
 Grid(m.Grid, m.t, {'Pmax':480e3}) # grid
@@ -86,7 +87,7 @@ data = {'E0':0.1e3,'SOCmax':1,
         'Emax':100e3,'rend_ch':0.9,
         'rend_dc':0.9}
 
-init_data = {'E':[19e3,19e3,19e3,19e3,19e3],'P':19e3}
+init_data = {'E':[19e3]*T,'P':19e3}
 Battery(m.Battery, m.t, data, init_data)
 
 
@@ -129,28 +130,29 @@ instance = m.create_instance()
 # results = solver_manager.solve(instance, opt=opt)
 # results.write()
 
-# with open("couenne.opt", "w") as file:
-#     file.write('''time_limit 100000
-#                 convexification_cuts 4
-#                 convexification_points 3
-#                 delete_redundant yes
-#                 use_quadratic no
-#                 feas_tolerance 1e-5
-#                 ''')
-# solver = pyo.SolverFactory('asl:couenne')
-# results = solver.solve(instance, tee=True)
-# results.write()
-# os.remove('couenne.opt') #Delete options
-
-instance = m.create_instance()
-solver = pyo.SolverFactory('ipopt')
+with open("couenne.opt", "w") as file:
+    file.write('''time_limit 100000
+                convexification_cuts 4
+                convexification_points 3
+                delete_redundant yes
+                use_quadratic no
+                feas_tolerance 1e-5
+                ''')
+solver = pyo.SolverFactory('asl:couenne')
 results = solver.solve(instance, tee=True)
+results.write()
+os.remove('couenne.opt') #Delete options
+
+# instance = m.create_instance()
+# solver = pyo.SolverFactory('ipopt')
+# results = solver.solve(instance, tee=True)
 
 #%%
 
 from pyomo.environ import value
 
 df_out = pd.DataFrame(l_t, columns=['t'])
+df_param = pd.DataFrame()
 for i in range(len(instance._decl_order)):
     e = instance._decl_order[i][0]
     if e is None:
@@ -164,12 +166,16 @@ for i in range(len(instance._decl_order)):
         v = e._decl_order[ii][0]
         vals = 0
         
-        if "pyomo.core.base.var.IndexedVar" in str(v.type): #Var
+        if "pyomo.core.base.var.IndexedVar" in str(v.type): #Var(t)
             vals = v.get_values()
-        elif "pyomo.core.base.param.IndexedParam" in str(v.type): #Param
+        elif "pyomo.core.base.param.IndexedParam" in str(v.type): #Param(t)
             vals = v.extract_values()
-        elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Param
+        elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Var
             vals = v.get_values()
+        elif "pyomo.core.base.param.ScalarParam" in str(v.type): #Param
+            vals = v.extract_values()
+            df_param = pd.concat([df_param, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
+            continue
         else:
             continue
         
@@ -191,46 +197,47 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import numpy as np
 
+df = pd.read_csv(file+'.csv')
+df['PV.Pf'] = -df['PV.forecast']*(df_param['PV.Pinst'].iloc[0] + df['PV.Pdim'].iloc[10])
 
-P_grid = instance.Grid.P.get_values()
-P_Pump1 = instance.Pump1.Pe.get_values()
-P_Pump2 = instance.Pump2.Pe.get_values()
-P_PV = instance.PV.P.get_values()
-W_R0 = instance.Reservoir0.W.get_values()
-W_R1 = instance.Reservoir1.W.get_values()
-cost = instance.cost.extract_values()
-E_bat = instance.Battery.E.get_values()
-SOC = instance.Battery.SOC.get_values()
-P_bat = instance.Battery.P.get_values()
-
-
-
-df = pd.DataFrame.from_dict(P_grid, orient='index', columns=['P_grid'])
-df = pd.concat([df, pd.DataFrame.from_dict(P_Pump1, orient='index', columns=['P_Pump1'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(P_Pump2, orient='index', columns=['P_Pump2'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(P_PV, orient='index', columns=['P_PV'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(W_R0, orient='index', columns=['W_R0'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(W_R1, orient='index', columns=['W_R1'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(cost, orient='index', columns=['cost'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(SOC, orient='index', columns=['SOC'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(P_bat, orient='index', columns=['P_bat'])], axis=1)
-df = pd.concat([df, pd.DataFrame.from_dict(E_bat, orient='index', columns=['E_bat'])], axis=1)
-
-
-
-df['t'] = df.index
-df = df.set_index('t', drop=False)
-
-
-fig = plt.figure(1)
-
-ax=sns.lineplot(data=df, x='t',y='W_R0', label='Reservoir0 (m3)', color='tab:blue', marker='o')
-sns.lineplot(data=df, x='t',y='W_R1', label='Reservoir1 (m3)', color='tab:red', marker='o')
-plt.axhline(y=0, color='k')
+fig = plt.figure()
+ax=sns.lineplot(data=df, x='t',y='Reservoir0.W', label='Reservoir0 (m$^3$)', color='tab:blue', marker='o')
+sns.lineplot(data=df, x='t',y='Reservoir1.W', label='Reservoir1 (m$^3$)', color='tab:red', marker='o')
+plt.axhline(y=df_param['Reservoir0.Wmin'].iloc[0], color='k')
+plt.axhline(y=df_param['Reservoir1.Wmin'].iloc[0], color='k')
 plt.xlabel('Time')
 plt.ylabel('Volume')
 plt.tight_layout()
 plt.show()
+
+
+fig = plt.figure(figsize=(3.4, 2.5))
+plt.rc('font',size=9)
+# plt.suptitle('Power consumption')
+ax1 = fig.add_subplot(1,1,1)
+df.apply(lambda x: x/1000).plot(y=['Pump1.Pe','Pump2.Pe','PV.P', 'Grid.P'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)')
+df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', color='tab:green', alpha=0.3)
+ax1.legend(['$P_{p1}$','$P_{p2}$','$P_{PV}$', '$P_{g}$', '$\hat{P}_{PV}$'],loc='upper center', bbox_to_anchor=(0.5, -0.2),
+          fancybox=False, shadow=False, ncol=5)
+ax1.axhline(0,color='k')
+# ax1.set_xticklabels([])
+# ax1.set_xticks(range(24), labels=range(24), rotation=90)
+# ax2 = fig.add_subplot(2,1,2, sharex=ax1)
+ax2 = plt.twinx()
+sns.lineplot(df.iloc[0:10],x='t',y=l_cost, ax=ax2, color='tab:red')#, label='Buy')
+# sns.lineplot(df_grid,x='Hour',y='Excedentes', ax=ax2, color='tab:blue', label='Sell')
+ax2.set_xticks(range(T), labels=range(T), rotation=90)
+plt.ylabel('Price (€/MWh)')
+plt.xlabel('Hour')
+plt.title('Power consumption')
+plt.show()
+plt.tight_layout()
+# plt.rcParams['savefig.format']='pdf'
+# plt.savefig('results/CIRED/' + file + '_P', dpi=300)
+
+
+
+
 
 
 fig = plt.figure(3)
