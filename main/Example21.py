@@ -31,15 +31,15 @@ m = pyo.ConcreteModel()
 
 
 # time
-T = 10
+T = 5
 l_t = list(range(T))
 m.t = pyo.Set(initialize=l_t)
 
 # electricity cost
-l_cost = [10,10,5,5,30]*2
+l_cost = [10,10,5,5,15]*1
 m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 10
-cost_new_battery = 2
+cost_new_pv = 5
+cost_new_battery = 10
 
 # ===== Create the system =====
 m.Reservoir1 = pyo.Block()
@@ -54,40 +54,40 @@ m.EB = pyo.Block()
 m.Battery = pyo.Block()
 
 
-data_irr = {'Q':[2,0,0,0,0.6]*2} # irrigation
+data_irr = {'Q':[0.8,0.1,0.1,0.1,0.8]*1} # irrigation
 Source(m.Irrigation1, m.t, data_irr, {})
 
-data_res0 = {'dt':1, 'W0':5, 'Wmin':0, 'Wmax':10, 'zmin':90, 'zmax':95}
-data_res1 = {'dt':1, 'W0':5, 'Wmin':0, 'Wmax':10, 'zmin':100, 'zmax':105}
-init_res = {'Q':[0]*T, 'W':[5]*T}
+data_res0 = {'dt':1, 'W0':5, 'Wmin':0, 'Wmax':10, 'zmin':0, 'zmax':0.05}
+data_res1 = {'dt':1, 'W0':1, 'Wmin':0, 'Wmax':1, 'zmin':0.75, 'zmax':0.80}
+init_res = {'Q':[0]*T, 'W':[0.5]*T}
 
 Reservoir(m.Reservoir1, m.t, data_res1, init_res)
 Reservoir(m.Reservoir0, m.t, data_res0, init_res)
 
-data_c1 = {'K':0.02, 'Qmax':50} # canal
-init_c1 = {'Q':[0]*T, 'H':[20]*T, 'H0':[20]*T, 'zlow':[90]*T, 'zhigh':[100]*T}
+data_c1 = {'K':0.01, 'Qmax':5} # canal
+init_c1 = {'Q':[0]*T, 'H':[1]*T, 'H0':[1]*T, 'zlow':[0.01]*T, 'zhigh':[0.75]*T}
 Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
-data_p = {'A':50, 'B':0.01, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20, 'Qmin':0.5, 'Qmax':1.1} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[20]*T, 'n':[1450]*T, 'Pe':[9810*5*20]*T}
+data_p = {'A':1, 'B':0.05, 'n_n':1, 'eff':0.9, 'Qmax':2, 'Qnom':1, 'Pmax':9810*1*1, 'Qmin':0.5, 'Qmax':1.1} # pumps (both equal)
+init_p = {'Q':[0]*T, 'H':[1]*T, 'n':[1]*T, 'Pe':[9810*1*1]*T}
 RealPump(m.Pump1, m.t, data_p, init_p)
 RealPump(m.Pump2, m.t, data_p, init_p)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[1,1,1.7,0.5,0]*2, 'eff': 0.98} # PV
+data_pv = {'Pinst':9810, 'Pmax':9810*2, 'forecast':[1,1,1.7,0.5,0]*1, 'eff': 0.98} # PV
 SolarPV(m.PV, m.t, data_pv)
 
-Grid(m.Grid, m.t, {'Pmax':1e9}) # grid
+Grid(m.Grid, m.t, {'Pmax':9810e3}) # grid
 
 EB(m.EB, m.t)
 
 #Battery data
-data = {'E0':0.1e3,'SOCmax':1,
-        'SOCmin':0.0,'Pmax':100e3,
-        'Einst':10e3,'Pinst':10e3,
-        'Emax':100e3,'rend_ch':0.9,
+data = {'E0':9810/2,'SOCmax':1,
+        'SOCmin':0.0,'Pmax':9810*2,
+        'Einst':9810/2,'Pinst':9810,
+        'Emax':9810,'rend_ch':0.9,
         'rend_dc':0.9}
 
-init_data = {'E':[19e3]*T,'P':19e3}
+init_data = {'E':[0/2]*T,'P':0}
 Battery(m.Battery, m.t, data, init_data)
 
 
@@ -159,6 +159,7 @@ from pyomo.environ import value
 
 df_out = pd.DataFrame(l_t, columns=['t'])
 df_param = pd.DataFrame()
+df_size = pd.DataFrame()
 for i in range(len(instance._decl_order)):
     e = instance._decl_order[i][0]
     if e is None:
@@ -178,6 +179,8 @@ for i in range(len(instance._decl_order)):
             vals = v.extract_values()
         elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Var
             vals = v.get_values()
+            df_size = pd.concat([df_size, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
+            continue
         elif "pyomo.core.base.param.ScalarParam" in str(v.type): #Param
             vals = v.extract_values()
             df_param = pd.concat([df_param, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
@@ -204,21 +207,25 @@ from matplotlib import rc
 import numpy as np
 
 df = pd.read_csv(file+'.csv')
-df['PV.Pf'] = -df['PV.forecast']*(df_param['PV.Pinst'].iloc[0] + df['PV.Pdim'].iloc[T])
+df['PV.Pf'] = -df['PV.forecast']*(df_param['PV.Pinst'].iloc[0] + df_size['PV.Pdim'])
 
 # Hydro
 fig = plt.figure()
 fig.add_subplot(2,1,1)
-sns.lineplot(data=df, x='t',y='Reservoir0.W', label='Reservoir0 (m$^3$)', color='tab:blue', marker='o')
-sns.lineplot(data=df, x='t',y='Reservoir1.W', label='Reservoir1 (m$^3$)', color='tab:red', marker='o')
+ax1 = sns.lineplot(data=df, x='t',y='Reservoir0.W', label='R0', color='tab:blue', marker='o')
+sns.lineplot(data=df, x='t',y='Reservoir1.W', label='R1', color='tab:red', marker='o')
 plt.axhline(y=df_param['Reservoir0.Wmin'].iloc[0], color='k')
 plt.axhline(y=df_param['Reservoir1.Wmin'].iloc[0], color='k')
 plt.xlabel('Time')
 plt.ylabel('Volume')
+plt.xticks(range(T),range(T))
 ax2 = fig.add_subplot(2,1,2)
-df.plot(y=['Pump1.Qout','Pump2.Qout'], kind='bar', stacked=False, ylabel='Q', ax=ax2, color=['tab:blue','tab:red'], label=['Pump1','Pump2'])
+df.plot(y=['Pump1.Qout','Pump2.Qout','Irrigation1.Qout'], kind='bar', stacked=False, ylabel='Q', ax=ax2, color=['tab:blue','tab:red','tab:green'], label=['P1','P2','Irr'], sharex=True)
+plt.axhline(y=df_param['Pump1.Qmin'].iloc[0], color='k', linestyle='dashed')
+plt.axhline(y=df_param['Pump1.Qmax'].iloc[0], color='k', linestyle='dashed')
 plt.xlabel('Time')
 plt.ylabel('Flow')
+plt.xticks(range(T),range(T))
 plt.tight_layout()
 plt.show()
 
@@ -228,13 +235,9 @@ plt.rc('font',size=9)
 # plt.suptitle('Power consumption')
 ax1 = fig.add_subplot(1,1,1)
 df.apply(lambda x: x/1000).plot(y=['Pump1.Pe','Pump2.Pe','PV.P', 'Grid.P'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)')
-df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', color='tab:green', alpha=0.3)
-ax1.legend(['$P_{p1}$','$P_{p2}$','$P_{PV}$', '$P_{g}$', '$\hat{P}_{PV}$'],loc='upper center', bbox_to_anchor=(0.5, -0.2),
+ax1.legend(['$P_{p1}$','$P_{p2}$','$P_{PV}$', '$P_{g}$'],loc='upper center', bbox_to_anchor=(0.5, -0.2),
           fancybox=False, shadow=False, ncol=5)
 ax1.axhline(0,color='k')
-# ax1.set_xticklabels([])
-# ax1.set_xticks(range(24), labels=range(24), rotation=90)
-# ax2 = fig.add_subplot(2,1,2, sharex=ax1)
 ax2 = plt.twinx()
 sns.lineplot(df.iloc[0:T],x='t',y=l_cost, ax=ax2, color='tab:red')#, label='Buy')
 # sns.lineplot(df_grid,x='Hour',y='Excedentes', ax=ax2, color='tab:blue', label='Sell')
@@ -244,8 +247,6 @@ plt.xlabel('Hour')
 plt.title('Power consumption')
 plt.show()
 plt.tight_layout()
-# plt.rcParams['savefig.format']='pdf'
-# plt.savefig('results/CIRED/' + file + '_P', dpi=300)
 
 
 # Battery
