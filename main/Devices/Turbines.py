@@ -57,6 +57,7 @@ def Turbine(b, t, data, init_data):
     
     # Parameters
     b.eff = pyo.Param(initialize=data['eff'])
+    b.Pmax = pyo.Param(initialize=data['Pmax'])
     
     # Variables
     b.Pdim = pyo.Var(initialize=0, within=pyo.NonNegativeReals)
@@ -88,3 +89,7 @@ def Turbine(b, t, data, init_data):
     def Constraint_Pdim(_b, _t):
         return _b.Pdim >= -_b.Pe[_t]
     b.c_Pdim = pyo.Constraint(t, rule = Constraint_Pdim)
+
+    def Constraint_TurbPmax(_b, _t):
+        return _b.Pdim <= _b.Pmax
+    b.c_TurbPmax = pyo.Constraint(b.t, rule=Constraint_TurbPmax)
