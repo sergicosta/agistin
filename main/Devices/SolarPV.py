@@ -47,6 +47,7 @@ def SolarPV(b, t, data, init_data=None):
     """
     
     # Parameters
+    b.Pmax = pyo.Param(initialize=data['Pmax'])
     b.Pinst = pyo.Param(initialize=data['Pinst'])
     b.forecast = pyo.Param(t, initialize=data['forecast'])
     b.eff = pyo.Param(initialize=data['eff'])
