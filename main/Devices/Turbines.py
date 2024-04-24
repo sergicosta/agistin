@@ -35,7 +35,8 @@ def Turbine(b, t, data, init_data):
          
     Pyomo declarations    
         - Parameters: 
-            - eff
+            - eff 
+            - Pmax
         - Variables: 
             - Pdim
             - Qin (t)
@@ -92,4 +93,4 @@ def Turbine(b, t, data, init_data):
 
     def Constraint_TurbPmax(_b, _t):
         return _b.Pdim <= _b.Pmax
-    b.c_TurbPmax = pyo.Constraint(b.t, rule=Constraint_TurbPmax)
+    b.c_TurbPmax = pyo.Constraint(t, rule=Constraint_TurbPmax)
