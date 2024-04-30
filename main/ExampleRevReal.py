@@ -28,7 +28,7 @@ from Devices.Pumps import ReversibleRealPump
 from Devices.MainGrid import Grid
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
-from Devices.Batteries import Battery_Ex0
+from Devices.Batteries import Battery
 
 
 #model
@@ -47,7 +47,7 @@ m.Reservoir1 = pyo.Block()
 m.Reservoir0 = pyo.Block()
 m.Irrigation1 = pyo.Block()
 m.Pump1 = pyo.Block()
-# m.Pump2 = pyo.Block()
+m.Pump2 = pyo.Block()
 m.Pipe1 = pyo.Block()
 m.Grid = pyo.Block()
 m.EB = pyo.Block()
@@ -55,7 +55,7 @@ m.Battery = pyo.Block()
 m.PV = pyo.Block()
 
 
-data_irr = {'Q':[0,0,0,0,1]} # irrigation
+data_irr = {'Q':[0,0,0,0,0]} # irrigation
 Source(m.Irrigation1, m.t, data_irr, None)
 Q_init = [0,0,0,0,0]
 
@@ -74,23 +74,23 @@ init_c1 = {'Q':Q_init, 'H':[20,20,20,20,20],
 Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
 
-data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'eff_t':0.5,'Qmin':1,
-          'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20, 'S':0.05} # pumps (both equal)
+data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'eff_t':0.5,'Qmin':0.5,
+          'Qmax':2, 'Qnom':5, 'Pmax':9810*50*20, 'S':0.05} # pumps (both equal)
 init_p = {'Q':[1e-6,1e-6,1e-6,1e-6,1e-6], 'H':[20,20,20,20,20],
           'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
 ReversibleRealPump(m.Pump1, m.t, data_p, init_p)
-# ReversibleRealPump(m.Pump2, m.t, data_p, init_p)
+ReversibleRealPump(m.Pump2, m.t, data_p, init_p)
 
 data = {'E0':15e3,'SOCmax':1,'SOCmin':0.05,'Pmax':100e3,
-         'Einst':50e3,'Pinst':50e3,
-         'Emax':100e3,'rend_ch':0.9,'rend_disc':1.1}
+          'Einst':50e3,'Pinst':50e3,
+          'Emax':100e3,'rend_ch':0.9,'rend_dc':1.1}
 init_data = {'E':[19e3,19e3,19e3,19e3,19e3],'P':19e3}
-Battery_Ex0(m.Battery, m.t, data, init_data)
+Battery(m.Battery, m.t, data, init_data)
 
-data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[0.4,1,1.7,1.2,0.5]} # PV
+data_pv = {'Pinst':50e3, 'Pmax':100e3, 'forecast':[0.4,1,1.7,1.2,0.5],'eff':0.2} # PV
 SolarPV(m.PV, m.t, data_pv)
 
-Grid(m.Grid, m.t, {'Pmax':1000e6}, None) # grid
+Grid(m.Grid, m.t, {'Pmax':10e6}, None) # grid
 EB(m.EB, m.t, None, None) # node
 
 # Connections
@@ -98,13 +98,13 @@ EB(m.EB, m.t, None, None) # node
 m.p1r0 = Arc(ports=(m.Pump1.port_Qin, m.Reservoir0.port_Q), directed=True)
 m.p1c1_Q = Arc(ports=(m.Pump1.port_Qout, m.Pipe1.port_Q), directed=True)
 m.p1c1_H = Arc(ports=(m.Pump1.port_H, m.Pipe1.port_H), directed=True)
-# m.p2r0 = Arc(ports=(m.Pump2.port_Qin, m.Reservoir0.port_Q), directed=True)
-# m.p2c1_Q = Arc(ports=(m.Pump2.port_Qout, m.Pipe1.port_Q), directed=True)
-# m.p2c1_H = Arc(ports=(m.Pump2.port_H, m.Pipe1.port_H), directed=True)
+m.p2r0 = Arc(ports=(m.Pump2.port_Qin, m.Reservoir0.port_Q), directed=True)
+m.p2c1_Q = Arc(ports=(m.Pump2.port_Qout, m.Pipe1.port_Q), directed=True)
+m.p2c1_H = Arc(ports=(m.Pump2.port_H, m.Pipe1.port_H), directed=True)
 m.c1r1 = Arc(ports=(m.Pipe1.port_Q, m.Reservoir1.port_Q), directed=True)
 m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Q), directed=True)
 m.ebp1 = Arc(ports=(m.Pump1.port_P, m.EB.port_P), directed=True)
-# m.ebp2 = Arc(ports=(m.Pump2.port_P, m.EB.port_P), directed=True)
+m.ebp2 = Arc(ports=(m.Pump2.port_P, m.EB.port_P), directed=True)
 m.grideb = Arc(ports=(m.Grid.port_P, m.EB.port_P), directed=True)
 m.pveb = Arc(ports=(m.PV.port_P, m.EB.port_P), directed=True)
 m.bat_eb = Arc(ports=(m.Battery.port_P, m.EB.port_P), directed=True)
@@ -119,10 +119,24 @@ pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to mod
 def obj_fun(m):
 	return sum(-m.Grid.P[t]*m.cost[t] for t in l_t)
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
-
 instance = m.create_instance()
-solver = pyo.SolverFactory('asl:couenne')
-solver.solve(instance, tee=True)
+
+import os
+# with open("couenne.opt", "w") as file:
+#     file.write('''
+#                time_limit 80
+#                ''')
+    
+
+# solver = pyo.SolverFactory('asl:couenne')
+# solver.solve(instance, tee=True)
+# os.remove('couenne.opt') #Delete options
+
+os.environ['NEOS_EMAIL'] = 'pau.garcia.motilla@upc.edu'
+opt = pyo.SolverFactory("knitro")
+solver_manager = pyo.SolverManagerFactory('neos')
+results = solver_manager.solve(instance, opt=opt)
+
 
 #%%
 instance.Reservoir1.W.pprint()
@@ -134,11 +148,6 @@ instance.Pump1.Pe.pprint()
 instance.Pipe1.signQ.pprint()
 instance.Pipe1.Q.pprint()
 
-final =  time.perf_counter()
-
-Duration = final - initial
-
-print('Duration of the program:',Duration)
 
 #%% Plots
 
@@ -151,7 +160,7 @@ import numpy as np
 
 P_grid = instance.Grid.P.get_values()
 P_Pump1 = instance.Pump1.Pe.get_values()
-# P_Pump2 = instance.Pump2.Pe.get_values()
+P_Pump2 = instance.Pump2.Pe.get_values()
 P_PV = instance.PV.P.get_values()
 W_R0 = instance.Reservoir0.W.get_values()
 W_R1 = instance.Reservoir1.W.get_values()
@@ -164,7 +173,7 @@ P_bat = instance.Battery.P.get_values()
 
 df = pd.DataFrame.from_dict(P_grid, orient='index', columns=['P_grid'])
 df = pd.concat([df, pd.DataFrame.from_dict(P_Pump1, orient='index', columns=['P_Pump1'])], axis=1)
-# df = pd.concat([df, pd.DataFrame.from_dict(P_Pump2, orient='index', columns=['P_Pump2'])], axis=1)
+df = pd.concat([df, pd.DataFrame.from_dict(P_Pump2, orient='index', columns=['P_Pump2'])], axis=1)
 df = pd.concat([df, pd.DataFrame.from_dict(P_PV, orient='index', columns=['P_PV'])], axis=1)
 df = pd.concat([df, pd.DataFrame.from_dict(W_R0, orient='index', columns=['W_R0'])], axis=1)
 df = pd.concat([df, pd.DataFrame.from_dict(W_R1, orient='index', columns=['W_R1'])], axis=1)

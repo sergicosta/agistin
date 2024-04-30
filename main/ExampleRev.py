@@ -3,7 +3,7 @@
     
     Optimization usage example of two reservoirs, considering irragtion consumption,
     and two pumps connected to the electrical grid.
-    
+        
     Authors: Sergi Costa Dilmé (CITCEA-UPC), Juan Carlos Olives-Camps (CITCEA-UPC), Paula Muñoz Peña (CITCEA-UPC)
 """
 
@@ -110,8 +110,17 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
-solver = pyo.SolverFactory('asl:couenne')
-solver.solve(instance, tee=True)
+# solver = pyo.SolverFactory('asl:couenne')
+# solver.solve(instance, tee=True)
+
+
+
+import os
+os.environ['NEOS_EMAIL'] = 'pau.garcia.motilla@upc.edu'
+opt = pyo.SolverFactory("knitro")
+solver_manager = pyo.SolverManagerFactory('neos')
+results = solver_manager.solve(instance, opt=opt)
+
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir1.Q.pprint()
