@@ -8,17 +8,19 @@ Problem:
 - Lower bound: -inf
   Upper bound: inf
   Number of objectives: 1
-  Number of constraints: 264
-  Number of variables: 248
+  Number of constraints: 0
+  Number of variables: 289
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
 # ----------------------------------------------------------
 Solver: 
 - Status: ok
-  Message: Knitro 14.0.0\x3a Locally optimal or satisfactory solution.; objective -1269.2872316395205; optimality gap -2.04e-09; 5 nodes; 12 subproblem solves
+  Message: couenne\x3a Optimal
   Termination condition: optimal
-  Id: 0
+  Id: 3
+  Error rc: 0
+  Time: 27.04235863685608
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -27,4 +29,4 @@ Solution:
   number of solutions displayed: 0
 
 GOAL VALUE:
--1269.2872316395205
+-1519.6105416203488
