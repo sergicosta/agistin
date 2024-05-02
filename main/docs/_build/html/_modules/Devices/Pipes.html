@@ -99,7 +99,7 @@
 <span class="sd">    Acts as a flow transportation device which also applies an energy loss to the fluid as:</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
-<span class="sd">        H(t) = H_0(t) + K \cdot Q(t)^2</span>
+<span class="sd">        H(t) = H_0(t) + K \, Q(t)^2</span>
 <span class="sd">    </span>
 <span class="sd">    where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.</span>
 <span class="sd">    </span>
@@ -121,21 +121,21 @@
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - K</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - Q (t)</span>
-<span class="sd">            - H (t)</span>
-<span class="sd">            - zlow (t)</span>
-<span class="sd">            - zhigh (t)</span>
-<span class="sd">            - H0 (t)</span>
-<span class="sd">            - signQ (t)</span>
+<span class="sd">            - Q (t) bounded :math:`\in [-Q_{max}, Q_{max}]`</span>
+<span class="sd">            - H (t) bounded :math:`H \ge 0`</span>
+<span class="sd">            - zlow (t) bounded :math:`z_{low} \ge 0`</span>
+<span class="sd">            - zhigh (t) bounded :math:`z_{high} \ge 0`</span>
+<span class="sd">            - H0 (t) bounded :math:`H_{0} \ge 0`</span>
+<span class="sd">            - signQ (t) :math:`\in \{0,1\}`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Q @ Q as ``Extensive``</span>
 <span class="sd">            - port_H @ H as ``Equality``</span>
 <span class="sd">            - port_zlow @ zlow as ``Equality``</span>
 <span class="sd">            - port_zhigh @ zhigh as ``Equality``</span>
 <span class="sd">        - Constraints: </span>
-<span class="sd">            - c_H: :math:`H(t) = H_0(t) + K \cdot Q(t)^2`</span>
+<span class="sd">            - c_H: :math:`H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)`</span>
 <span class="sd">            - c_H0: :math:`H_0(t) = z_{high}(t) - z_{low}(t)`</span>
-<span class="sd">            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`</span>
+<span class="sd">            - c_sign: :math:`Q(t)\, (2\, signQ(t) - 1) &gt;= 0`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
@@ -210,15 +210,15 @@
 <span class="sd">            - H0 </span>
 <span class="sd">            - K</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - Q (t)</span>
-<span class="sd">            - H (t)</span>
-<span class="sd">            - signQ (t)</span>
+<span class="sd">            - Q (t) bounded :math:`\in [-Q_{max}, Q_{max}]`</span>
+<span class="sd">            - H (t) bounded :math:`H \ge 0`</span>
+<span class="sd">            - signQ (t) :math:`\in \{0,1\}`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Q @ Q as ``Extensive``</span>
 <span class="sd">            - port_H @ H as ``Equality``</span>
 <span class="sd">        - Constraints: </span>
-<span class="sd">            - c_H: :math:`H(t) = H_0 \pm K \cdot Q(t)^2`</span>
-<span class="sd">            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`</span>
+<span class="sd">            - c_H: :math:`H(t) = H_0 + K \, Q(t)^2 \, (2\, signQ(t) - 1)`</span>
+<span class="sd">            - c_sign: :math:`Q(t)\, (2\, signQ(t) - 1) &gt;= 0`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>

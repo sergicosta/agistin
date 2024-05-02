@@ -30,8 +30,8 @@ def Source(b, t, data, init_data=None):
         - Parameters: 
             - Q (t)
         - Variables: 
-            - Qin (t)
-            - Qout (t)
+            - Qin (t) :math:`\in \mathbb{R}`
+            - Qout (t) :math:`\in \mathbb{R}`
         - Ports: 
             - port_Qin @ Qin as ``Extensive``
             - port_Qout @ Qout as ``Extensive``

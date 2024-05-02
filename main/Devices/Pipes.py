@@ -22,7 +22,7 @@ def Pipe(b, t, data, init_data):
     Acts as a flow transportation device which also applies an energy loss to the fluid as:
     
     .. math::
-        H(t) = H_0(t) + K \cdot Q(t)^2
+        H(t) = H_0(t) + K \, Q(t)^2
     
     where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.
     
@@ -44,21 +44,21 @@ def Pipe(b, t, data, init_data):
         - Parameters: 
             - K
         - Variables: 
-            - Q (t)
-            - H (t)
-            - zlow (t)
-            - zhigh (t)
-            - H0 (t)
-            - signQ (t)
+            - Q (t) bounded :math:`\in [-Q_{max}, Q_{max}]`
+            - H (t) bounded :math:`H \ge 0`
+            - zlow (t) bounded :math:`z_{low} \ge 0`
+            - zhigh (t) bounded :math:`z_{high} \ge 0`
+            - H0 (t) bounded :math:`H_{0} \ge 0`
+            - signQ (t) :math:`\in \{0,1\}`
         - Ports: 
             - port_Q @ Q as ``Extensive``
             - port_H @ H as ``Equality``
             - port_zlow @ zlow as ``Equality``
             - port_zhigh @ zhigh as ``Equality``
         - Constraints: 
-            - c_H: :math:`H(t) = H_0(t) + K \cdot Q(t)^2`
+            - c_H: :math:`H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)`
             - c_H0: :math:`H_0(t) = z_{high}(t) - z_{low}(t)`
-            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`
+            - c_sign: :math:`Q(t)\, (2\, signQ(t) - 1) >= 0`
     """
     
     # Parameters
@@ -130,15 +130,15 @@ def Pipe_Ex0(b, t, data, init_data):
             - H0 
             - K
         - Variables: 
-            - Q (t)
-            - H (t)
-            - signQ (t)
+            - Q (t) bounded :math:`\in [-Q_{max}, Q_{max}]`
+            - H (t) bounded :math:`H \ge 0`
+            - signQ (t) :math:`\in \{0,1\}`
         - Ports: 
             - port_Q @ Q as ``Extensive``
             - port_H @ H as ``Equality``
         - Constraints: 
-            - c_H: :math:`H(t) = H_0 \pm K \cdot Q(t)^2`
-            - c_sign: :math:`signQ(t) = Q / (\abs(Q))`
+            - c_H: :math:`H(t) = H_0 + K \, Q(t)^2 \, (2\, signQ(t) - 1)`
+            - c_sign: :math:`Q(t)\, (2\, signQ(t) - 1) >= 0`
     """
     
     # Parameters

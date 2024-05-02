@@ -21,8 +21,8 @@ def Pump(b, t, data, init_data):
 
     Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:
 
-    .. math:
-        H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q(t)^2
+    .. math::
+        H(t) = (n(t)/n_n)^2\, A - B \, Q(t)^2
 
     with :math:`A` and :math:`B` the characteristic coefficients that define the behaviour of the pump (i.e its curve).
 
@@ -37,7 +37,7 @@ def Pump(b, t, data, init_data):
          - 'n_n': Nominal rotational speed :math:`n_n`
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
-         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
+         - 'Qmax': Maximum allowed flow (in p.u. of Qnom) :math:`Q_{max}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
 
     init_data
@@ -54,8 +54,8 @@ def Pump(b, t, data, init_data):
             - n_n
             - eff
         - Variables:
-            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
-            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
+            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{nom}, 0]`
+            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{nom}]`
             - H (t) bounded :math:`H \ge 0`
             - n (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
@@ -67,8 +67,8 @@ def Pump(b, t, data, init_data):
             - port_H @ H with 'H' as ``Equality``
         - Constraints:
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
-            - c_H: :math:`H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{out}(t)^2`
-            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
+            - c_H: :math:`H(t) = (n(t)/n_n)^2\, A - B \, Q_{out}(t)^2`
+            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}`
             - c_Pe: :math:`P_e(t) = P_h(t)/\eta`
     """
 
@@ -115,7 +115,7 @@ def Pump(b, t, data, init_data):
 def RealPump(b, t, data, init_data):
     """
     In RealPump it's added the working flow limits of the pump.  
-    Due to binary variables the problem with RealPump must be solved with "couenne" solver.
+    Be wary of binary variables when choosing a solver.
     
     It's introduced :math:`Q_{max}` and :math:`Q_{min}` which determines the flow limits in p.u
 
@@ -130,8 +130,8 @@ def RealPump(b, t, data, init_data):
          - 'n_n': Nominal rotational speed :math:`n_n`
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
-         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
-         - 'Qmin': Minimum flow :math:`Q_{min}`
+         - 'Qmax': Maximum allowed flow (in p.u. of Qnom) :math:`Q_{max}`
+         - 'Qmin': Minimum working flow (in p.u. of Qnom) :math:`Q_{min}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
 
     init_data
@@ -150,13 +150,13 @@ def RealPump(b, t, data, init_data):
             - Qmin
             - Qmax
         - Variables:
-            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
-            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
+            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{nom}, 0]`
+            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{nom}]`
             - H (t) bounded :math:`H \ge 0`
             - n (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
-            - PumpOn (t) bounded :math:`PumpOn =  [0,1]`
+            - PumpOn (t) :math:`b_{ON}(t) \in \{0,1\}`
 
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
@@ -165,11 +165,11 @@ def RealPump(b, t, data, init_data):
             - port_H @ H with 'H' as ``Equality``
         - Constraints:
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
-            - c_H: :math:`H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{out}(t)^2`
-            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
+            - c_H: :math:`H(t) = (n(t)/n_n)^2\, A - B \, Q_{out}(t)^2`
+            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}(t)`
             - c_Pe: :math:`P_e(t) = P_h(t)/\eta`
-            - c_Qmax: :math:`Q_{out}(t) \leq Q_{nom} \cdot Q_{max} \cdot PumpOn(t)`
-            - c_Qmin: :math:`Q_{out}(t) \geq Q_{nom} \cdot Q_{min} \cdot PumpOn(t)`
+            - c_Qmax: :math:`Q_{out}(t) \leq Q_{nom} \, Q_{max} \, b_{ON}(t)`
+            - c_Qmin: :math:`Q_{out}(t) \geq Q_{nom} \, Q_{min} \, b_{ON}(t)`
     """
 
     # Parameters
@@ -182,8 +182,8 @@ def RealPump(b, t, data, init_data):
     b.Qmax = pyo.Param(initialize=data['Qmax']*data['Qnom'])
 
     # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
@@ -225,9 +225,13 @@ def RealPump(b, t, data, init_data):
 
 def RealPumpControlled(b, t, data, init_data):
     """   
-    In RealPumpControl, three working regimes are added depending on the height (z) between the surfaces of the reservoirs.
-    Due to binary variables the problem with RealPumpControlled must be solved with "couenne" solver.
+    In RealPumpControlled, three working regimes are added depending on the height (z) between the surfaces of the reservoirs.
         
+    :param b: pyomo ``Block()`` to be set
+    :param t: pyomo ``Set()`` referring to time
+    :param data: data ``dict``
+    :param init_data: init_data ``dict``
+    
     data
          - 'A': Constant characteristic coefficient of the pump :math:`A`
          - 'B': Quadratic characteristic coefficient of the pump :math:`B`
@@ -285,14 +289,7 @@ def RealPumpControlled(b, t, data, init_data):
             - c_Hmin1: :math:`H(t) \leq z_{min}  \cdot aux(t)`
             - c_Hmin2: :math:`z_{min} \leq H(t) \cdot (1 - aux(t))`
             - c_Binary: :math:`PumpOn(t) + aux(t) = 1`
-            - c_Piecewise:
-            .. math::
-                f(x)=\begin{cases}
-                        Q_{min} & \text{if} z{1} \leq z \leq z{2} \\
-                        Q_{bep} & \text{if} z{2} \leq z \leq z{3} \\
-                        Q_{pmax} & \text{if} z{3} \leq z \leq z{4} 
-                \end{cases}
-
+            - c_Piecewise: :math:`Q = \begin{cases} Q_{min} & \text{if} z{1} \le z \le z{2}\\ Q_{bep} & \text{if} z{2} \le z \le z{3}\\ Q_{pmax} & \text{if} z{3} \le z \le z{4} \end{cases}` 
     """
 
     # Parameters
@@ -383,10 +380,8 @@ def RealPumpControlled(b, t, data, init_data):
     
 def ReversiblePump(b, t, data, init_data):
     """
-    Frequency controllable hydraulic pump.
-
-    It's introduced :math:`Q_{max}` and :math:`Q_{min}` which determines the flow limits
-    in addition to the reversibility of the pump.
+    Frequency controllable reversible hydraulic pump.
+    Introduces the reversibility of the pump's flow.
 
 
     :param b: pyomo ``Block()`` to be set
@@ -401,8 +396,9 @@ def ReversiblePump(b, t, data, init_data):
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
          - 'Qmax': Maximum allowed flow :math:`Q_{max}`
-         - 'Qmin': 
+         - 'Qmin': Minimum working flow (in p.u. of Qnom) :math:`Q_{min}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
+         - 'eff_t': Efficiency at turbine mode :math:`\eta_{t}`
 
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
@@ -417,13 +413,18 @@ def ReversiblePump(b, t, data, init_data):
             - Qnom
             - n_n
             - eff
+            - eff_t
         - Variables:
-            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
-            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
+            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]`
+            - Qout (t) bounded :math:`Q_{out} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]`
+            - Qoutp (t) bounded :math:`Q_{out,p} \in [0, Q_{max}\,Q_{nom}]`
+            - Qoutt (t) bounded :math:`Q_{out,t} \in [0, Q_{max}\,Q_{nom}]`
             - H (t) bounded :math:`H \ge 0`
             - n (t) bounded :math:`n \ge 0`
-            - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
-            - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
+            - Ph (t) bounded :math:`P_h \in [-P_{max}, P_{max}]`
+            - Pe (t) bounded :math:`P_e \in [-P_{max}, P_{max}]`
+            - ModePump (t) :math:`b_{Mode}(t) \in \{0,1\}`
+            - K (t) bounded :math:`K(t) \in [0,1]`
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
             - port_Qout @ Qout with 'Q' as ``Extensive``
@@ -431,9 +432,10 @@ def ReversiblePump(b, t, data, init_data):
             - port_H @ H with 'H' as ``Equality``
         - Constraints:
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
-            - c_H: :math:`H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{out}(t)^2`
+            - c_H: :math:`H(t) = [(n(t)/n_n)^2\, A - B \, Q_{out,p}(t)^2]\,b_{Mode} + Q_{out,t}^2/(2\cdot9.81\, S^2 \, K(t))\,(1-b_{Mode})`
+            - c_Qout: :math:`Q_{out}(t) = Q_{out,p}\,b_{Mode} - Q_{out,t}(1-b_{Mode})`
             - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
-            - c_Pe: :math:`P_e(t) = P_h(t)/\eta`
+            - c_Pe: :math:`P_e(t) = P_h(t)(b_{Mode}/\eta + (1-b_{Mode})\eta_t)`
 
     """
 
@@ -527,6 +529,7 @@ def ReversibleRealPump(b, t, data, init_data):
          - 'Qmax': Maximum allowed flow in p.u. :math:`Q_{max}`
          - 'Qmin': Minimum flow in p.u. :math:`Q_{min}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
+         - 'eff_t': Efficiency at turbine mode :math:`\eta_{t}`
 
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
@@ -544,17 +547,18 @@ def ReversibleRealPump(b, t, data, init_data):
             - Qmax
             - Qmin
         - Variables:
-            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
-            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
-            - Qoutp (t)
-            - Qoutt (t) bounded :math:`Q_{outt} \in [1e-6,Q_{max}]`
+            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]`
+            - Qout (t) bounded :math:`Q_{out} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]`
+            - Qoutp (t) bounded :math:`Q_{out,p} \in [0, Q_{max}\,Q_{nom}]`
+            - Qoutt (t) bounded :math:`Q_{out,t} \in [0, Q_{max}\,Q_{nom}]`
             - H (t) bounded :math:`H \ge 0`
             - n (t) bounded :math:`n \ge 0`
-            - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
-            - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
-            - ModePump (t) bounded :math:`ModePump =  [0,1]`
-            - ModeTurbine (t) bounded :math:`ModeTurbine = [0,1]`
-            - K (t) bounded :math:`K = [0,1]`
+            - Ph (t) bounded :math:`P_h \in [-P_{max}, P_{max}]`
+            - Pe (t) bounded :math:`P_e \in [-P_{max}, P_{max}]`
+            - PumpOn (t) bounded :math:`b_{ON} \in \{0,1\}`
+            - ModePump (t) :math:`b_{Mode}(t) \in \{0,1\}`
+            - K (t) bounded :math:`K \in [0,1]`
+            - a (t) :math:`a \ge 0`
             
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
@@ -563,12 +567,12 @@ def ReversibleRealPump(b, t, data, init_data):
             - port_H @ H with 'H' as ``Equality``
         - Constraints:
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
-            - c_H: :math:`H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{outp}(t)^2 + Q_{outt}^2/(2 \cdot g \cdot S**2)*ModeTurbine(t)`
-            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`
-            - c_Pe: :math:`P_e(t) = P_h(t) \cdot (ModePump(t)/\eta_{Pump} + ModeTurbine(t) \cdot \eta_{Turbine})`
-            - c_Qmax: :math:`Q_{out}(t) \leq Q_{max} \cdot ModePump(t)`
-            - c_Qmin: :math:`Q_{out}(t) \geq Q_{min} \cdot ModePump(t)`
-            - c_WorkingBin :math:`ModeTurbine(t) + ModePump(t) = 1`
+            - c_H: :math:`H(t) = b_{ON}(t)[((n(t)/n_n)^2\, A - B \, Q_{outp}(t)^2)b_{Mode}(t) + Q_{outt}(t)^2/(2\, g \, S^2\, K(t))(1-b_{Mode}(t))] + (1-b_{ON}(t))a(t)`
+            - c_Qout: :math:`Q_{out}(t) = b_{ON}[Q_{out,p}(t)\,b_{Mode}(t) - Q_{out,t}(t)(1-b_{Mode}(t))]`
+            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}(t)`
+            - c_Pe: :math:`P_e(t) = P_h(t) (b_{Mode}(t)/\eta + (1-b_{Mode}(t))\, \eta_{t})`
+            - c_Qmaxp: :math:`Q_{out}(t) \leq Q_{max} \, b_{On}(t)\, b_{Mode}(t)`
+            - c_Qminp: :math:`Q_{out}(t) \geq Q_{min} \, b_{On}(t)\, b_{Mode}(t)`
             
     '''
 
@@ -599,8 +603,8 @@ def ReversibleRealPump(b, t, data, init_data):
     b.a = pyo.Var(t,initialize = init_data['H'][0], within=pyo.NonNegativeReals)
     b.K = pyo.Var(t,initialize = 1, bounds = (0.01,1), within=pyo.NonNegativeReals)
     
-    b.ON = pyo.Var(t,initialize=1, within=pyo.Binary)
-    b.PumpTurbine = pyo.Var(t,initialize=1, within=pyo.Binary)
+    b.PumpOn = pyo.Var(t,initialize=1, within=pyo.Binary)
+    b.ModePump = pyo.Var(t,initialize=1, within=pyo.Binary)
 
 
     # Ports
@@ -616,12 +620,12 @@ def ReversibleRealPump(b, t, data, init_data):
 
     def Constraint_H(_b, _t):
         # return _b.H[_t] == ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*_b.ModeTurbine[_t] + (1-(_b.ModePump[_t] +_b.ModeTurbine[_t]))*_b.a[_t]
-        return _b.H[_t] == _b.ON[_t]*( ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.PumpTurbine[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*(1-_b.PumpTurbine[_t]) ) + (1-_b.ON[_t])*_b.a[_t]
+        return _b.H[_t] == _b.PumpOn[_t]*( ((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + _b.Qoutt[_t]**2/(2*9.81*_b.S**2*_b.K[_t])*(1-_b.ModePump[_t]) ) + (1-_b.PumpOn[_t])*_b.a[_t]
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
     
     def Constraint_Qout(_b, _t):
         # return _b.Qout[_t] == +_b.Qoutp[_t]*_b.ModePump[_t] - _b.Qoutt[_t]*_b.ModeTurbine[_t]
-        return _b.Qout[_t] == _b.ON[_t]*(_b.Qoutp[_t]*_b.PumpTurbine[_t] - _b.Qoutt[_t]*(1-_b.PumpTurbine[_t]))
+        return _b.Qout[_t] == _b.PumpOn[_t]*(_b.Qoutp[_t]*_b.ModePump[_t] - _b.Qoutt[_t]*(1-_b.ModePump[_t]))
     b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
 
     def Constraint_Ph(_b, _t):
@@ -630,15 +634,15 @@ def ReversibleRealPump(b, t, data, init_data):
 
     def Constraint_Pe(_b, _t):
         # return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (_b.ModeTurbine[_t])*_b.eff_t)
-        return _b.Pe[_t] == _b.Ph[_t] *(_b.PumpTurbine[_t]/_b.eff + (1-_b.PumpTurbine[_t])*_b.eff_t)
+        return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (1-_b.ModePump[_t])*_b.eff_t)
     b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
     
     def Constraint_Qmaxp(_b, _t):
-        return _b.Qoutp[_t] <= (_b.Qmax *_b.ON[_t]*_b.PumpTurbine[_t])
+        return _b.Qoutp[_t] <= (_b.Qmax *_b.PumpOn[_t]*_b.ModePump[_t])
     b.c_Qmaxp = pyo.Constraint(t, rule=Constraint_Qmaxp)
     
     def Constraint_Qminp(_b, _t):
-        return _b.Qoutp[_t] >= (_b.Qmin *_b.ON[_t]*_b.PumpTurbine[_t])
+        return _b.Qoutp[_t] >= (_b.Qmin *_b.PumpOn[_t]*_b.ModePump[_t])
     b.c_Qminp = pyo.Constraint(t, rule=Constraint_Qminp)
     
     # def Constraint_WorkingBin(_b, _t):
