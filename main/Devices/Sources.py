@@ -24,7 +24,7 @@ def Source(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Q': Injected flow :math:`Q(t)` as a ``list`` #TODO isnt this actually a dict?
+         - 'Q': Injected flow :math:`Q(t)` as a ``list``
     
     Pyomo declarations    
         - Parameters: 
