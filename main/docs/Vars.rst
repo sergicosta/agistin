@@ -1,30 +1,27 @@
 Variables and units
-===============
+===================
 
 .. csv-table:: Variables and units
-	:header: "Magnitude", "Variable", "Units", "Comments"
+	:header: "Magnitude", "Symbol", "Units", "Comments"
 	
 	"**Hydraulic**"
-	"Height", ":math:`H or z`", ":math:`m`"
-	"Flow", ":math:`Q`", ":math:`m^3/s`", "*⚠ Interfering with Reactive power. Change to F ?*"
-	"Control Flow", ":math:`Q_{control}`",":math:`m^3/s`", "Height depending flow"
-	"Volume", ":math:`W`", ":math:`m^3`"
-	"Rotational speed", ":math:`n`", ":math:`rpm`"
-	"Linear pressure loss coefficient", ":math:`K`", ":math:`s/m^2`"
-	"Pump efficiency", ":math:`\eta_{i}`", ":math:`pu`"
-	"Pump On", ":math:`PumpOn`", "", "Status of the pump binary variable"
-	"Auxiliar", ":math:`aux`", "", "Binary auxiliar variable"
+	"Height", ":math:`z`", "m"
+	"Hydraulic head", ":math:`H`", "m"
+	"Flow", ":math:`Q`", "m :math:`^3`/s", "*⚠ Interfering with Reactive power. Change to F ?*"
+	"Volume", ":math:`W`", "m :math:`^3`"
+	"Rotational speed", ":math:`n`", "rpm"
+	"Linear pressure loss coefficient", ":math:`K`", "s/m :math:`^2`"
 	
 	"**Electrical**"
-	"Active power", ":math:`P`", ":math:`W`", "Defined positive if consumed by the device"
-	"Reactive power", ":math:`Q`", ":math:`VAR`", "*TBD: Q(inductive) same sign as in P?*"
-	"Current", ":math:`I`", ":math:`A`",
-	"Voltage", ":math:`V`", ":math:`V`",
-	"State of Health", ":math:`SOC`", ":math:`pu`"
-	"Battery efficiency", ":math:`\eta_{ch/dch}`", ":math:`pu`", ":math:`\eta_{dch} = 2-\eta_{ch}`"
+	"Active power", ":math:`P`", "W", "Defined positive if consumed by the device"
+	"Reactive power", ":math:`Q`", "VAR", "*TBD: Q(inductive) same sign as in P?*"
+	"Current", ":math:`I`", "A",
+	"Voltage", ":math:`V`", "V",
+	"State of charge", ":math:`SOC`", "p.u."
 	
 	"**Global**"
-	"Time", ":math:`t`", ":math:`s`"
-	"Energy", ":math:`E`", ":math:`Wh`"
-	"Forecast", ":math:`f(t)`", ":math:`pu`", "In p.u. of peak power, referenced at :math:`1000 W/m^2`"
+	"Time", ":math:`t`", "s"
+	"Energy", ":math:`E`", "Wh"
+	"Forecast", ":math:`f`", "p.u.", "Referenced at 1000 W/m :math:`^2`"
+	"Efficiency", ":math:`\eta`", "p.u.",
 

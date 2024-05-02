@@ -219,7 +219,7 @@ Electrical devices
 
 
 EB (Pumping Station)
-```````````````````
+`````````````````````
 
 .. image:: img/Block_EB.svg
    :scale: 100 %

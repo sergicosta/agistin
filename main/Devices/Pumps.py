@@ -547,7 +547,7 @@ def ReversibleRealPump(b, t, data, init_data):
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
             - Qoutp (t)
-            - Qoutt (t) bounded :math;`Q_{outt} \in [1e-6,Q_{max}]`
+            - Qoutt (t) bounded :math:`Q_{outt} \in [1e-6,Q_{max}]`
             - H (t) bounded :math:`H \ge 0`
             - n (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
