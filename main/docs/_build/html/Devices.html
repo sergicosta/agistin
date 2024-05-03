@@ -1106,9 +1106,9 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>Q (t)</p></li>
-<li><p>W (t)</p></li>
-<li><p>z (t)</p></li>
+<li><p>Q (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>W (t) bounded <span class="math notranslate nohighlight">\(W \in [W_{min},W_{max}]\)</span></p></li>
+<li><p>z (t) bounded <span class="math notranslate nohighlight">\(z \in [z_{min},z_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1125,13 +1125,13 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <dt>Constraints:</dt><dd><ul>
 <li><dl class="simple">
 <dt>c_W: </dt><dd><ul>
-<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + \Delta t \cdot Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + \Delta t \cdot Q(t) \quad\)</span> otherwise</p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W(t-1) + \Delta t \, Q(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(W(t) = W_0 + \Delta t \, Q(t) \quad\)</span> otherwise</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p>c_z: <span class="math notranslate nohighlight">\(z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}\)</span></p></li>
+<li><p>c_z: <span class="math notranslate nohighlight">\(z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\,(z_{max}-z_{min}) + z_{min}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1180,8 +1180,8 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>Q (t)</p></li>
-<li><p>W (t)</p></li>
+<li><p>Q (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>W (t) bounded <span class="math notranslate nohighlight">\(W \in [W_{min},W_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>

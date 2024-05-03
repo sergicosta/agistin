@@ -121,17 +121,17 @@
 <span class="sd">            - zmin</span>
 <span class="sd">            - zmax</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - Q (t)</span>
-<span class="sd">            - W (t)</span>
-<span class="sd">            - z (t)</span>
+<span class="sd">            - Q (t) :math:`\in \mathbb{R}`</span>
+<span class="sd">            - W (t) bounded :math:`W \in [W_{min},W_{max}]`</span>
+<span class="sd">            - z (t) bounded :math:`z \in [z_{min},z_{max}]`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Q @ Q as ``Extensive``</span>
 <span class="sd">            - port_z @ z as ``Equality``</span>
 <span class="sd">        - Constraints:</span>
 <span class="sd">            - c_W: </span>
-<span class="sd">                - :math:`W(t) = W(t-1) + \Delta t \cdot Q(t) \quad` if  :math:`t&gt;0`</span>
-<span class="sd">                - :math:`W(t) = W_0 + \Delta t \cdot Q(t) \quad` otherwise</span>
-<span class="sd">            - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\cdot(z_{max}-z_{min}) + z_{min}`</span>
+<span class="sd">                - :math:`W(t) = W(t-1) + \Delta t \, Q(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`W(t) = W_0 + \Delta t \, Q(t) \quad` otherwise</span>
+<span class="sd">            - c_z: :math:`z(t) = (W(t) - W_{min})/(W_{max} - W_{min})\,(z_{max}-z_{min}) + z_{min}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
@@ -203,8 +203,8 @@
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - W0</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - Q (t)</span>
-<span class="sd">            - W (t)</span>
+<span class="sd">            - Q (t) :math:`\in \mathbb{R}`</span>
+<span class="sd">            - W (t) bounded :math:`W \in [W_{min},W_{max}]`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Q @ Q (Extensive)</span>
 <span class="sd">        - Constraints:</span>
