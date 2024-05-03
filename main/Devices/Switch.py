@@ -27,15 +27,15 @@ def Switch(b, t, data=None, init_data=None):
         - Parameters:
             - `None`
         - Variables: 
-            - Pin0 (t)
-            - Pin1 (t)
-            - Pout (t)
+            - Pin0 (t) :math:`\in \mathbb{R}`
+            - Pin1 (t) :math:`\in \mathbb{R}`
+            - Pout (t) :math:`\in \mathbb{R}`
         - Ports: 
             - port_Pin0 @ Pin0 as ``Extensive``
             - port_Pin1 @ Pin1 as ``Extensive``
             - port_Pout @ Pout as ``Extensive``
         - Constraints: 
-            - c_State: :math:`P_{in,0}(t) \cdot P_{in,1}(t) = 0`
+            - c_State: :math:`P_{in,0}(t) \, P_{in,1}(t) = 0`
             - c_Pout: :math:`P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0`
     """
     

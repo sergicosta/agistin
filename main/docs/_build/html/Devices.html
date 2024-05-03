@@ -104,7 +104,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery_MV"><code class="docutils literal notranslate"><span class="pre">Battery_MV()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#weather">Weather</a><ul>
@@ -1494,8 +1493,8 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </dl>
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
-<li><p>‘Pinst’: Installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
 <li><p>‘Pmax’: Maximum allowed power to be installed <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Pinst’: Installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
 <li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 <li><p>‘eff’: Efficiency of the PV panels <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 </ul>
@@ -1503,6 +1502,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 <dt>Pyomo declarations</dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
+<li><p>Pmax</p></li>
 <li><p>Pinst</p></li>
 <li><p>forecast</p></li>
 <li><p>eff</p></li>
@@ -1512,8 +1512,8 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>P (t) <span class="math notranslate nohighlight">\(\in [-P_{max}, 0]\)</span></p></li>
-<li><p>Pdim <span class="math notranslate nohighlight">\(\in [0, P_{max}-P_{inst}]\)</span></p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, 0]\)</span></p></li>
+<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_{max}-P_{inst}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1527,7 +1527,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)\cdot \eta\)</span></p></li>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) \ge -(P_{inst}+P_{dim})\, f(t)\, \eta\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1568,9 +1568,9 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>Pin0 (t)</p></li>
-<li><p>Pin1 (t)</p></li>
-<li><p>Pout (t)</p></li>
+<li><p>Pin0 (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>Pin1 (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>Pout (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1586,7 +1586,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_State: <span class="math notranslate nohighlight">\(P_{in,0}(t) \cdot P_{in,1}(t) = 0\)</span></p></li>
+<li><p>c_State: <span class="math notranslate nohighlight">\(P_{in,0}(t) \, P_{in,1}(t) = 0\)</span></p></li>
 <li><p>c_Pout: <span class="math notranslate nohighlight">\(P_{out}(t) + P_{in,0}(t) + P_{in,1}(t) = 0\)</span></p></li>
 </ul>
 </dd>
@@ -1619,13 +1619,16 @@ It is used in Example21.</p>
 </dl>
 <dl class="simple">
 <dt>data:</dt><dd><ul class="simple">
+<li><p>‘dt’: time step <span class="math notranslate nohighlight">\(\Delta t\)</span></p></li>
 <li><p>‘E0’: Initial energy <span class="math notranslate nohighlight">\(E_0\)</span></p></li>
-<li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
 <li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span> in p.u.</p></li>
 <li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span> in p.u.</p></li>
 <li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
 <li><p>‘Pinst’: Power already installed <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
 <li><p>‘Einst’: Energy storage already installed <span class="math notranslate nohighlight">\(E_{inst}\)</span></p></li>
+<li><p>‘eff_ch’: Effiency of charge <span class="math notranslate nohighlight">\(\eta_{ch}\)</span></p></li>
+<li><p>‘eff_dc’: Effiency of discharge <span class="math notranslate nohighlight">\(\eta_{dc}\)</span></p></li>
 </ul>
 </dd>
 <dt>init_data:</dt><dd><ul class="simple">
@@ -1638,120 +1641,27 @@ It is used in Example21.</p>
 <dt>Parameters: </dt><dd><ul>
 <li><p>dt</p></li>
 <li><p>E0</p></li>
-<li><p>Emax</p></li>
 <li><p>SOCmin</p></li>
 <li><p>SOCmax</p></li>
 <li><p>Pmax</p></li>
-<li><p>Pdim</p></li>
-<li><p>Edim</p></li>
-<li><p>eff_ch</p></li>
-<li><p>eff_disc</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Variables: </dt><dd><ul>
-<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]\)</span></p></li>
-<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
-<li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
-<li><p>Pdisc (t) bounded <span class="math notranslate nohighlight">\(P_{disc}(t) \in [0, P_{max}]\)</span></p></li>
-<li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
-<li><p>Edim bounded <span class="math notranslate nohighlight">\(E_{dim} \in [0, E_ {max} - E_{inst}]\)</span></p></li>
-<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_ {max} - P_{inst}]\)</span></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Ports: </dt><dd><ul>
-<li><p>port_P &#64; P (Extensive)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Constraints:</dt><dd><ul>
-<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t) - P_{disc}(t)\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \cdot P_{disc}(t)\)</span></p></li>
-<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst}\)</span></p></li>
-<li><p>c_ch: <span class="math notranslate nohighlight">\(Pch(t) \leq (P{inst} + P{dim})\)</span></p></li>
-<li><p>c_disc: <span class="math notranslate nohighlight">\(Pdisc(t) \leq (P{inst} + P{dim})\)</span></p></li>
-<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\cdot SOC{max}\)</span></p></li>
-<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\cdot SOC{min}\)</span></p></li>
-<li><dl class="simple">
-<dt>c_E: </dt><dd><ul>
-<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \cdot P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="Devices.Batteries.Battery_MV">
-<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">Battery_MV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#Battery_MV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.Battery_MV" title="Link to this definition"></a></dt>
-<dd><p>This battery model in intended to be used for he optmization examples using frequency data, for example
-for the provision of frecuency containtment reserve. The model was implemented by Manuel Valois he 19.03.2024</p>
-<p>The current version is missing he deliitaion of a maximun and minimium SOC</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
-<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
-<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
-<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>data:</dt><dd><ul class="simple">
-<li><p>‘E0’: Initial energy <span class="math notranslate nohighlight">\(E_0\)</span></p></li>
-<li><p>‘Einst’: Energy storage already installed <span class="math notranslate nohighlight">\(E_{inst}\)</span></p></li>
-<li><p>‘Emax’: Maximum battery energy that can be installed <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
-<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span> in p.u.</p></li>
-<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span> in p.u.</p></li>
-<li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
-<li><p>‘Pinst’: Power already installed <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
-</ul>
-</dd>
-<dt>init_data:</dt><dd><ul class="simple">
-<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt>Pyomo declaration</dt><dd><ul class="simple">
-<li><dl class="simple">
-<dt>Parameters: </dt><dd><ul>
-<li><p>dt</p></li>
-<li><p>E0</p></li>
 <li><p>Emax</p></li>
-<li><p>Pmax</p></li>
-<li><p>Pdim</p></li>
-<li><p>Edim</p></li>
+<li><p>Pinst</p></li>
+<li><p>Einst</p></li>
 <li><p>eff_ch</p></li>
-<li><p>eff_disc</p></li>
+<li><p>eff_dc</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]\)</span></p></li>
+<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\, SOC_{min}, E_{max}\, SOC_{max}]\)</span></p></li>
 <li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
 <li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
-<li><p>Pdisc (t) bounded <span class="math notranslate nohighlight">\(P_{disc}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>Pdc (t) bounded <span class="math notranslate nohighlight">\(P_{dc}(t) \in [0, P_{max}]\)</span></p></li>
 <li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
-<li><p>Edim bounded <span class="math notranslate nohighlight">\(E_{dim} \in [0, E_ {max} - E_{inst}]\)</span> : Aditional Energy Capacity to be determined by the optimization</p></li>
-<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_ {max} - P_{inst}]\)</span></p></li>
+<li><p>Edim bounded <span class="math notranslate nohighlight">\(E_{dim} \in [0, E_{max} - E_{inst}]\)</span></p></li>
+<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_{max} - P_{inst}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1765,17 +1675,17 @@ for the provision of frecuency containtment reserve. The model was implemented b
 </li>
 <li><dl class="simple">
 <dt>Constraints:</dt><dd><ul>
-<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t) - P_{disc}(t)\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \cdot P_{disc}(t)\)</span></p></li>
-<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst}\)</span></p></li>
-<li><p>c_ch: <span class="math notranslate nohighlight">\(Pch(t) \leq (P{inst} + P{dim})\)</span></p></li>
-<li><p>c_disc: <span class="math notranslate nohighlight">\(Pdisc(t) \leq (P{inst} + P{dim})\)</span></p></li>
-<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\cdot SOC{max}\)</span></p></li>
-<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\cdot SOC{min}\)</span></p></li>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)\, \eta_{dc}\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \, P_{dc}(t)\)</span></p></li>
+<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst})\)</span></p></li>
+<li><p>c_ch: <span class="math notranslate nohighlight">\(P_{ch}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
+<li><p>dc: <span class="math notranslate nohighlight">\(P_{dc}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
+<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\, SOC{max}\)</span></p></li>
+<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \geq (E{inst} + E{dim})\, SOC{min}\)</span></p></li>
 <li><dl class="simple">
 <dt>c_E: </dt><dd><ul>
-<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \cdot P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \cdot P(t) \quad\)</span> otherwise</p></li>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \, P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \, P(t) \quad\)</span> otherwise</p></li>
 </ul>
 </dd>
 </dl>

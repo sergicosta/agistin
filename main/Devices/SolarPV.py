@@ -27,23 +27,24 @@ def SolarPV(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Pinst': Installed power :math:`P_{inst}`
          - 'Pmax': Maximum allowed power to be installed :math:`P_{max}`
+         - 'Pinst': Installed power :math:`P_{inst}`
          - 'forecast': Forecast as power in p.u. :math:`f(t)` as a ``list``
          - 'eff': Efficiency of the PV panels :math:`\eta`
     
     Pyomo declarations
         - Parameters: 
+            - Pmax
             - Pinst
             - forecast
             - eff
         - Variables: 
-            - P (t) :math:`\in [-P_{max}, 0]`
-            - Pdim :math:`\in [0, P_{max}-P_{inst}]`
+            - P (t) bounded :math:`P(t) \in [-P_{max}, 0]`
+            - Pdim bounded :math:`P_{dim} \in [0, P_{max}-P_{inst}]`
         - Ports: 
             - port_P @ P as ``Extensive``
         - Constraints: 
-            - c_P: :math:`P(t) \ge -(P_{inst}+P_{dim})\cdot f(t)\cdot \eta`
+            - c_P: :math:`P(t) \ge -(P_{inst}+P_{dim})\, f(t)\, \eta`
     """
     
     # Parameters
