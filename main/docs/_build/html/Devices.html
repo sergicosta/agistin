@@ -1373,7 +1373,7 @@ This version</p>
 </dl>
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
-<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power</p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
@@ -1386,9 +1386,9 @@ This version</p>
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>P (t)</p></li>
-<li><p>Psell (t)</p></li>
-<li><p>Pbuy (t)</p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+<li><p>Psell (t) bounded <span class="math notranslate nohighlight">\(P_{sell}(t) \in (0, P_{max})\)</span></p></li>
+<li><p>Pbuy (t) bounded <span class="math notranslate nohighlight">\(P_{sell}(t) \in (0, P_{max})\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1403,7 +1403,7 @@ This version</p>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \cdot  P_{buy}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \,  P_{buy}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1431,7 +1431,7 @@ It also defines whether the power is consumed from the grid <span class="math no
 </dl>
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
-<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power</p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
@@ -1444,9 +1444,9 @@ It also defines whether the power is consumed from the grid <span class="math no
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>P (t)</p></li>
-<li><p>Psell (t)</p></li>
-<li><p>Pbuy (t)</p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in (-P_{max}, P_{max})\)</span></p></li>
+<li><p>Psell (t) bounded <span class="math notranslate nohighlight">\(P_{sell}(t) \in (0, P_{max})\)</span></p></li>
+<li><p>Pbuy (t) bounded <span class="math notranslate nohighlight">\(P_{sell}(t) \in (0, P_{max})\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1461,7 +1461,7 @@ It also defines whether the power is consumed from the grid <span class="math no
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \cdot  P_{buy}(t)\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \,  P_{buy}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>

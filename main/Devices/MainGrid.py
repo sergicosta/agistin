@@ -27,20 +27,20 @@ def Grid(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Pmax': Maximum allowed power :math:`P(t) \in (-P_{max}, P_{max})`
+         - 'Pmax': Maximum allowed power
     
     Pyomo declarations    
         - Parameters: 
             - Pmax
         - Variables: 
-            - P (t)
-            - Psell (t)
-            - Pbuy (t)
+            - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`
+            - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`
+            - Pbuy (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`
         - Ports: 
             - port_P @ P as ``Extensive``
         - Constraints: 
             - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`
-            - c_P0: :math:`0 = P_{sell}(t) \cdot  P_{buy}(t)`
+            - c_P0: :math:`0 = P_{sell}(t) \,  P_{buy}(t)`
     """
     
     # Parameters
@@ -66,6 +66,7 @@ def Grid(b, t, data, init_data=None):
     
 
 def FlexibleGrid(b, t, data, init_data=None):
+    # TODO doc flexible grid
 
     """
     Point of connection to the grid.
@@ -80,20 +81,20 @@ def FlexibleGrid(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Pmax': Maximum allowed power :math:`P(t) \in (-P_{max}, P_{max})`
+         - 'Pmax': Maximum allowed power
     
     Pyomo declarations    
         - Parameters: 
             - Pmax
         - Variables: 
-            - P (t)
-            - Psell (t)
-            - Pbuy (t)
+            - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`
+            - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`
+            - Pbuy (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`
         - Ports: 
             - port_P @ P as ``Extensive``
         - Constraints: 
             - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`
-            - c_P0: :math:`0 = P_{sell}(t) \cdot  P_{buy}(t)`
+            - c_P0: :math:`0 = P_{sell}(t) \,  P_{buy}(t)`
     """
     
     # Parameters

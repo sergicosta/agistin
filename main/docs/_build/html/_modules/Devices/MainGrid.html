@@ -104,20 +104,20 @@
 <span class="sd">    :param init_data: ``None``</span>
 <span class="sd">        </span>
 <span class="sd">    data</span>
-<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power :math:`P(t) \in (-P_{max}, P_{max})`</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power</span>
 <span class="sd">    </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - Pmax</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - P (t)</span>
-<span class="sd">            - Psell (t)</span>
-<span class="sd">            - Pbuy (t)</span>
+<span class="sd">            - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`</span>
+<span class="sd">            - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`</span>
+<span class="sd">            - Pbuy (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_P @ P as ``Extensive``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`</span>
-<span class="sd">            - c_P0: :math:`0 = P_{sell}(t) \cdot  P_{buy}(t)`</span>
+<span class="sd">            - c_P0: :math:`0 = P_{sell}(t) \,  P_{buy}(t)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
@@ -146,6 +146,7 @@
 <div class="viewcode-block" id="FlexibleGrid">
 <a class="viewcode-back" href="../../Devices.html#Devices.MainGrid.FlexibleGrid">[docs]</a>
 <span class="k">def</span> <span class="nf">FlexibleGrid</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># TODO doc flexible grid</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Point of connection to the grid.</span>
@@ -160,20 +161,20 @@
 <span class="sd">    :param init_data: ``None``</span>
 <span class="sd">        </span>
 <span class="sd">    data</span>
-<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power :math:`P(t) \in (-P_{max}, P_{max})`</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power</span>
 <span class="sd">    </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - Pmax</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - P (t)</span>
-<span class="sd">            - Psell (t)</span>
-<span class="sd">            - Pbuy (t)</span>
+<span class="sd">            - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`</span>
+<span class="sd">            - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`</span>
+<span class="sd">            - Pbuy (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_P @ P as ``Extensive``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`</span>
-<span class="sd">            - c_P0: :math:`0 = P_{sell}(t) \cdot  P_{buy}(t)`</span>
+<span class="sd">            - c_P0: :math:`0 = P_{sell}(t) \,  P_{buy}(t)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
