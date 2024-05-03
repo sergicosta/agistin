@@ -1215,10 +1215,6 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </section>
 <section id="turbines">
 <h3>Turbines<a class="headerlink" href="#turbines" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>🚧 WIP</p>
-</div>
 <a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Turbine block" height="126" src="_images/Block_Turbine.svg" width="189" /></a>
 <p id="module-Devices.Turbines">Turbine pyomo block contains characteristics of a turbine.</p>
 <dl class="py function">
@@ -1258,12 +1254,12 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>Pdim</p></li>
-<li><p>Qin (t)</p></li>
-<li><p>Qout (t)</p></li>
-<li><p>H (t)</p></li>
-<li><p>Ph (t)</p></li>
-<li><p>Pe (t)</p></li>
+<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \ge 0\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \le 0\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \ge 0\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_{h} \le 0\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_{e} \le 0\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1281,9 +1277,10 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q_{out}(t)\)</span></p></li>
-<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\cdot H(t)\cdot Q_{out}\)</span></p></li>
-<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)*\eta\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)\, \eta\)</span></p></li>
 <li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \ge -P_e(t)\)</span></p></li>
+<li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \le P_{max}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1329,7 +1326,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>P_bal (t)</p></li>
+<li><p>P_bal (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
 </ul>
 </dd>
 </dl>

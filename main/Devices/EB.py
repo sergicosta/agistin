@@ -36,7 +36,7 @@ def EB(b, t, data=None, init_data=None):
     - Parameters: 
         - *None*
     - Variables: 
-        - P_bal (t)
+        - P_bal (t) :math:`\in \mathbb{R}`
     - Ports: 
         - port_P @ P_bal (Extensive)
     - Constraints: 

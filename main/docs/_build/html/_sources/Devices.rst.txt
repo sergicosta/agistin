@@ -200,9 +200,6 @@ Reservoirs
 
 Turbines
 ```````````````````
-
-.. note::
-   🚧 WIP
    
 .. image:: img/Block_Turbine.svg
    :scale: 100 %

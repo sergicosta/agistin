@@ -115,12 +115,12 @@
 <span class="sd">            - eff </span>
 <span class="sd">            - Pmax</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - Pdim</span>
-<span class="sd">            - Qin (t)</span>
-<span class="sd">            - Qout (t)</span>
-<span class="sd">            - H (t)</span>
-<span class="sd">            - Ph (t)</span>
-<span class="sd">            - Pe (t)</span>
+<span class="sd">            - Pdim bounded :math:`P_{dim} \ge 0`</span>
+<span class="sd">            - Qin (t) bounded :math:`Q_{in} \le 0`</span>
+<span class="sd">            - Qout (t) bounded :math:`Q_{out} \ge 0`</span>
+<span class="sd">            - H (t) bounded :math:`H \ge 0`</span>
+<span class="sd">            - Ph (t) bounded :math:`P_{h} \le 0`</span>
+<span class="sd">            - Pe (t) bounded :math:`P_{e} \le 0`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Qin @ Qin as ``Extensive``</span>
 <span class="sd">            - port_Qout @ Qout as ``Extensive``</span>
@@ -128,9 +128,10 @@
 <span class="sd">            - port_H @ H as ``Equality``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`</span>
-<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\cdot H(t)\cdot Q_{out}`</span>
-<span class="sd">            - c_Pe: :math:`P_e(t) = P_h(t)*\eta`</span>
+<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}`</span>
+<span class="sd">            - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`</span>
 <span class="sd">            - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`</span>
+<span class="sd">            - c_Pdim: :math:`P_{dim}(t) \le P_{max}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
