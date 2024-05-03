@@ -92,8 +92,8 @@ EB(m.EB, m.t)
 data = {'E0':1000,'SOCmax':1,
         'SOCmin':0.2,'Pmax':9810*2,
         'Einst':1962,'Pinst':4905,
-        'Emax':9810*2,'rend_ch':0.9,
-        'rend_dc':0.9}
+        'Emax':9810*2,'eff_ch':0.9,
+        'eff_dc':0.9}
 
 init_data = {'E':[500]*T,'P':0}
 Battery(m.Battery, m.t, data, init_data)
