@@ -283,17 +283,3 @@ Battery
    :undoc-members:
    :show-inheritance:
    
-.. _Weather:
-
-Weather
-```````````````````
-
-.. image:: img/Block_Weather.svg
-   :scale: 100 %
-   :alt: Weather block
-   
-.. automodule:: Devices.Evaporation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
