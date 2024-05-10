@@ -13,57 +13,57 @@ from pyomo.network import Arc, Port
     
 def Battery(b, t, data, init_data):
     
-    """
-    Simple Battery.
+    # """
+    # Simple Battery.
     
-    Modifies its energy state :math:`E(t)` from an initial state :math:`E_0` according to 
-    the charge or discharge power :math:`P(t)>0` is :math:`P_{ch}(t)` and :math:`P(t)<0` is :math:`P_{disc}(t)`.
+    # Modifies its energy state :math:`E(t)` from an initial state :math:`E_0` according to 
+    # the charge or discharge power :math:`P(t)>0` is :math:`P_{ch}(t)` and :math:`P(t)<0` is :math:`P_{disc}(t)`.
     
-    The state of charge `SOC(t)` is computed and taken into account as well.
+    # The state of charge `SOC(t)` is computed and taken into account as well.
     
-    :param b: pyomo ``Block()`` to be set
-    :param t: pyomo ``Set()`` referring to time
-    :param data: data ``dict``
-    :param init_data: init_data ``dict``
+    # :param b: pyomo ``Block()`` to be set
+    # :param t: pyomo ``Set()`` referring to time
+    # :param data: data ``dict``
+    # :param init_data: init_data ``dict``
     
-    data
-         - 'dt': time delta :math:`\Delta t`
-         - 'E0': Initial energy :math:`E_0`
-         - 'Emax': Maximum battery energy :math:`E_{max}`
-         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
-         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
-         - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
+    # data
+    #      - 'dt': time delta :math:`\Delta t`
+    #      - 'E0': Initial energy :math:`E_0`
+    #      - 'Emax': Maximum battery energy :math:`E_{max}`
+    #      - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
+    #      - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
+    #      - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
          
-    init_data
-         - 'E': Energy :math:`E(t)` as a ``list``
-         - 'P': Power :math:`P(t)` as a ``list``
+    # init_data
+    #      - 'E': Energy :math:`E(t)` as a ``list``
+    #      - 'P': Power :math:`P(t)` as a ``list``
     
-    Pyomo declarations    
-        - Parameters: 
-            - dt
-            - E0
-            - Emax
-            - SOCmin
-            - SOCmax
-            - Pmax
-            - eff_ch
-            - eff_disc
-        - Variables: 
-            - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
-            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
-            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
-            - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
-            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
-        - Ports: 
-            - port_P @ P (Extensive)
-        - Constraints:
-            - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
-            - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
-            - c_SOC: :math:`SOC(t) = E(t) / E_{max}`
-            - c_E: 
-                - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
-                - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
-    """
+    # Pyomo declarations    
+    #     - Parameters: 
+    #         - dt
+    #         - E0
+    #         - Emax
+    #         - SOCmin
+    #         - SOCmax
+    #         - Pmax
+    #         - eff_ch
+    #         - eff_disc
+    #     - Variables: 
+    #         - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
+    #         - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
+    #         - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
+    #         - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
+    #         - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
+    #     - Ports: 
+    #         - port_P @ P (Extensive)
+    #     - Constraints:
+    #         - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
+    #         - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
+    #         - c_SOC: :math:`SOC(t) = E(t) / E_{max}`
+    #         - c_E: 
+    #             - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
+    #             - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
+    # """
     
     #b.dt = data['dt']
     
@@ -134,63 +134,63 @@ def Battery(b, t, data, init_data):
 #%% Battery_Ex0
 
 def Battery_Ex0(b, t, data, init_data):
-    """
-    Simple Battery for testing and example purposes.
-    It is used in Example21.
+    # """
+    # Simple Battery for testing and example purposes.
+    # It is used in Example21.
     
-    :param b: pyomo ``Block()`` to be set
-    :param t: pyomo ``Set()`` referring to time
-    :param data: data ``dict``
-    :param init_data: init_data ``dict``
+    # :param b: pyomo ``Block()`` to be set
+    # :param t: pyomo ``Set()`` referring to time
+    # :param data: data ``dict``
+    # :param init_data: init_data ``dict``
         
-    data:
-         - 'E0': Initial energy :math:`E_0`
-         - 'Emax': Maximum battery energy :math:`E_{max}`
-         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
-         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
-         - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
-         - 'Pinst': Power already installed :math:`P_{inst}`
-         - 'Einst': Energy storage already installed :math:`E_{inst}`
+    # data:
+    #      - 'E0': Initial energy :math:`E_0`
+    #      - 'Emax': Maximum battery energy :math:`E_{max}`
+    #      - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
+    #      - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
+    #      - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
+    #      - 'Pinst': Power already installed :math:`P_{inst}`
+    #      - 'Einst': Energy storage already installed :math:`E_{inst}`
              
-    init_data:
-         - 'E': Energy :math:`E(t)` as a ``list``
-         - 'P': Power :math:`P(t)` as a ``list``
+    # init_data:
+    #      - 'E': Energy :math:`E(t)` as a ``list``
+    #      - 'P': Power :math:`P(t)` as a ``list``
          
-    Pyomo declaration
-        - Parameters: 
-            - dt
-            - E0
-            - Emax
-            - SOCmin
-            - SOCmax
-            - Pmax
-            - Pdim
-            - Edim
-            - eff_ch
-            - eff_disc
-        - Variables: 
-            - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
-            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
-            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
-            - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
-            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
-            - Edim bounded :math:`E_{dim} \in [0, E_ {max} - E_{inst}]`
-            - Pdim bounded :math:`P_{dim} \in [0, P_ {max} - P_{inst}]`
-        - Ports: 
-            - port_P @ P (Extensive)
-        - Constraints:
-            - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
-            - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
-            - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst}`
-            - c_ch: :math:`Pch(t) \leq (P{inst} + P{dim})`
-            - c_disc: :math:`Pdisc(t) \leq (P{inst} + P{dim})`
-            - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{max}`
-            - c_Emin: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{min}`
-            - c_E: 
-                - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
-                - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
+    # Pyomo declaration
+    #     - Parameters: 
+    #         - dt
+    #         - E0
+    #         - Emax
+    #         - SOCmin
+    #         - SOCmax
+    #         - Pmax
+    #         - Pdim
+    #         - Edim
+    #         - eff_ch
+    #         - eff_disc
+    #     - Variables: 
+    #         - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
+    #         - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
+    #         - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
+    #         - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
+    #         - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
+    #         - Edim bounded :math:`E_{dim} \in [0, E_ {max} - E_{inst}]`
+    #         - Pdim bounded :math:`P_{dim} \in [0, P_ {max} - P_{inst}]`
+    #     - Ports: 
+    #         - port_P @ P (Extensive)
+    #     - Constraints:
+    #         - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
+    #         - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
+    #         - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst}`
+    #         - c_ch: :math:`Pch(t) \leq (P{inst} + P{dim})`
+    #         - c_disc: :math:`Pdisc(t) \leq (P{inst} + P{dim})`
+    #         - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{max}`
+    #         - c_Emin: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{min}`
+    #         - c_E: 
+    #             - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
+    #             - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
 
-     """       
+    #  """       
                 
 
     
@@ -262,64 +262,64 @@ def Battery_Ex0(b, t, data, init_data):
 
 def Battery_MV(b, t, data, init_data):
     
-    """
-    This battery model in intended to be used for he optmization examples using frequency data, for example
-    for the provision of frecuency containtment reserve. The model was implemented by Manuel Valois he 19.03.2024
+    # """
+    # This battery model in intended to be used for he optmization examples using frequency data, for example
+    # for the provision of frecuency containtment reserve. The model was implemented by Manuel Valois he 19.03.2024
     
-    The current version is missing he deliitaion of a maximun and minimium SOC 
+    # The current version is missing he deliitaion of a maximun and minimium SOC 
     
-    :param b: pyomo ``Block()`` to be set
-    :param t: pyomo ``Set()`` referring to time
-    :param data: data ``dict``
-    :param init_data: init_data ``dict``
+    # :param b: pyomo ``Block()`` to be set
+    # :param t: pyomo ``Set()`` referring to time
+    # :param data: data ``dict``
+    # :param init_data: init_data ``dict``
         
-    data:
-         - 'E0': Initial energy :math:`E_0`
-         - 'Einst': Energy storage already installed :math:`E_{inst}`
-         - 'Emax': Maximum battery energy that can be installed :math:`E_{max}`
-         - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
-         - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
-         - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
-         - 'Pinst': Power already installed :math:`P_{inst}`
+    # data:
+    #      - 'E0': Initial energy :math:`E_0`
+    #      - 'Einst': Energy storage already installed :math:`E_{inst}`
+    #      - 'Emax': Maximum battery energy that can be installed :math:`E_{max}`
+    #      - 'SOCmin': Minimum allowed SOC :math:`SOC_{min}` in p.u.
+    #      - 'SOCmax': Maximum allowed SOC :math:`SOC_{max}` in p.u.
+    #      - 'Pmax': Maximum delivered/absorbed power :math:`P_{max}`
+    #      - 'Pinst': Power already installed :math:`P_{inst}`
 
              
-    init_data:
-         - 'E': Energy :math:`E(t)` as a ``list``
-         - 'P': Power :math:`P(t)` as a ``list``
+    # init_data:
+    #      - 'E': Energy :math:`E(t)` as a ``list``
+    #      - 'P': Power :math:`P(t)` as a ``list``
          
-    Pyomo declaration
-        - Parameters: 
-            - dt
-            - E0
-            - Emax
-            - Pmax
-            - Pdim
-            - Edim
-            - eff_ch
-            - eff_disc
-        - Variables: 
-            - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
-            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
-            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
-            - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
-            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
-            - Edim bounded :math:`E_{dim} \in [0, E_ {max} - E_{inst}]` : Aditional Energy Capacity to be determined by the optimization
-            - Pdim bounded :math:`P_{dim} \in [0, P_ {max} - P_{inst}]`
-        - Ports: 
-            - port_P @ P (Extensive)
-        - Constraints:
-            - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
-            - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
-            - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst}`
-            - c_ch: :math:`Pch(t) \leq (P{inst} + P{dim})`
-            - c_disc: :math:`Pdisc(t) \leq (P{inst} + P{dim})`
-            - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{max}`
-            - c_Emin: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{min}`
-            - c_E: 
-                - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
-                - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
+    # Pyomo declaration
+    #     - Parameters: 
+    #         - dt
+    #         - E0
+    #         - Emax
+    #         - Pmax
+    #         - Pdim
+    #         - Edim
+    #         - eff_ch
+    #         - eff_disc
+    #     - Variables: 
+    #         - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`
+    #         - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
+    #         - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
+    #         - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`
+    #         - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
+    #         - Edim bounded :math:`E_{dim} \in [0, E_ {max} - E_{inst}]` : Aditional Energy Capacity to be determined by the optimization
+    #         - Pdim bounded :math:`P_{dim} \in [0, P_ {max} - P_{inst}]`
+    #     - Ports: 
+    #         - port_P @ P (Extensive)
+    #     - Constraints:
+    #         - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`
+    #         - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`
+    #         - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst}`
+    #         - c_ch: :math:`Pch(t) \leq (P{inst} + P{dim})`
+    #         - c_disc: :math:`Pdisc(t) \leq (P{inst} + P{dim})`
+    #         - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{max}`
+    #         - c_Emin: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{min}`
+    #         - c_E: 
+    #             - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t>0`
+    #             - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise
 
-     """     
+    #  """     
     
     # Parameters
     b.E0 = pyo.Param(initialize=data['E0'])       # Energy storage at the battery at the beggiing of the simulation (_t=0)
@@ -366,7 +366,9 @@ def Battery_MV(b, t, data, init_data):
 
     def Constraint_EstrgOut(b, t): 
         if t==0:                                               # This constraint calculated the power at the end of the time step
+           # can you print the value of b.EstrgOut[t] here?
            return b.EstrgOut[t] ==  (b.E0) + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
+        
         else:
            return b.EstrgOut[t] ==  b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
     b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)
