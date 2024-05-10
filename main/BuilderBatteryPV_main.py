@@ -61,7 +61,7 @@ def data_parser(NameTest, dt):
     df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
     df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
     df_cost = pd.read_excel(f'Cases/{NameTest}_cost.xlsx', sheet_name=None)
-    special = ['SolarPV','Source', 'Battery_MV']
+    special = ['SolarPV','Source','Battery_MV']
     T = df_time['Reservoir'].shape[0]
     
     with open(f'Cases/{NameTest}.json', 'w') as f:
@@ -81,7 +81,7 @@ def data_parser(NameTest, dt):
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
                         
-                if k in ('Reservoir'): # Elements that have constraints modelled as differential equations
+                if k in ('Reservoir', 'Battery_MV'): # Elements that have constraints modelled as differential equations
                     f.write(f',"dt":{dt}')
                 if k in special: # Elements with parameters that change during the simulation
                     f.write(',')
@@ -151,15 +151,14 @@ def builder(m, test_case):
     #from Devices.Pumps import Pump
     #from Devices.Reservoirs import Reservoir
     #from Devices.Reservoirs import Reservoir_Ex0
-    #from Devices.SolarPV import SolarPV
+    from Devices.SolarPV import SolarPV
     #from Devices.Sources import Source
     #from Devices.Switch import Switch
     #from Devices.Turbines import Turbine
     #from Devices.Batteries import Battery
-    #from Devices.Batteries import Battery_MV
-    from Devices.Nishat_Battery import Battery_MV
+    from Devices.Batteries import Battery_MV
 
-    with open(f'Cases\{test_case}.json', 'r') as jfile:
+    with open(f'Cases/{test_case}.json', 'r') as jfile:
         system = json.load(jfile)
 
     for it in list(system.keys()):
@@ -179,7 +178,7 @@ def builder(m, test_case):
     
     pyo.TransformationFactory("network.expand_arcs").apply_to(m)
     
-    with open(f'Cases\{test_case}_cost.json', 'r') as jfile:
+    with open(f'Cases/{test_case}_cost.json', 'r') as jfile:
         cost = json.load(jfile)
         
     for it in cost.keys():
@@ -196,7 +195,7 @@ def run(name, dt):
     """
     def obj_fun(m):
         return sum(-m.MainGrid.P[t]*m.cost_MainGrid[t] for t in list(range(T))) + m.Turb1.Pdim*m.cost_Turb1[0] + m.PumpNew.Pdim*m.cost_PumpNew[0]
-   # m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+    m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
     
     instance = m.create_instance()
     solver = pyo.SolverFactory('ipopt')
@@ -205,7 +204,7 @@ def run(name, dt):
     solver.solve(instance, tee=False)
     
     return instance
-#"""
+"""
 
 
 # if __name__ == '__main__':
