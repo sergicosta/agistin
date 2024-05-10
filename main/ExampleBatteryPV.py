@@ -72,9 +72,9 @@ solver.solve(instance, tee=False)
 
 #instance.Grid.P.pprint()
 
-instance.Battery.Pdemanded.pprint()
-instance.Battery.Pcharged.pprint()
-instance.Battery.Pdischarged.pprint()
+# instance.Battery.Pdemanded.pprint()
+# instance.Battery.Pcharged.pprint()
+# instance.Battery.Pdischarged.pprint()
 instance.Battery.EstrgOut.pprint()
 #instance.Battery.EstrgIni.pprint()
 
@@ -84,7 +84,7 @@ instance.Battery.SOCmin.pprint()
 instance.Battery.SOCmax.pprint()
 
 instance.Battery.Pout.pprint()
-#instance.Battery.Edim.pprint()
+instance.Battery.Edim.pprint()
 
 #instance.PV.P.pprint()
 #instance.PV.Pdim.pprint()
