@@ -642,6 +642,6 @@ def ReversibleRealPump(b, t, data, init_data):
         return _b.Qoutp[_t] >= (_b.Qmin*_b.ModePump[_t])
     b.c_Qminp = pyo.Constraint(t, rule=Constraint_Qminp)
     
-    # def Constraint_Qmaxt(_b, _t):
-    #     return _b.Qoutt[_t] <= (_b.H[_t]*2*9.81)**0.5*_b.S*(1-_b.ModePump[_t])
-    # b.c_Qmaxt = pyo.Constraint(t, rule=Constraint_Qmaxt)
+    def Constraint_Qmaxt(_b, _t):
+        return _b.Qoutt[_t] <= (_b.H[_t]*2*9.81)**0.5*_b.S*(1-_b.ModePump[_t])
+    b.c_Qmaxt = pyo.Constraint(t, rule=Constraint_Qmaxt)
