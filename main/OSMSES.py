@@ -156,6 +156,9 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
+
+start_time = time.time()
+
 # solver = pyo.SolverFactory('asl:couenne') #ipopt asl:couenne gdpopt.enumerate
 # solver.options['branch_fbbt'] = 'no'
 # solver.solve(instance, tee=True)
@@ -183,52 +186,13 @@ results.write()
 # solver = pyo.SolverFactory('ipopt')
 # results = solver.solve(instance, tee=True)
 
+exec_time = time.time() - start_time
+
 #%%
-
-from pyomo.environ import value
-
-df_out = pd.DataFrame(l_t, columns=['t'])
-df_param = pd.DataFrame()
-df_size = pd.DataFrame()
-for i in range(len(instance._decl_order)):
-    e = instance._decl_order[i][0]
-    if e is None:
-        continue
-    name = e.name
-    
-    if "pyomo.core.base.block.ScalarBlock" not in str(e.type):
-        continue
-    
-    for ii in range(len(e._decl_order)):
-        v = e._decl_order[ii][0]
-        vals = 0
-        
-        if "pyomo.core.base.var.IndexedVar" in str(v.type): #Var(t)
-            vals = v.get_values()
-        elif "pyomo.core.base.param.IndexedParam" in str(v.type): #Param(t)
-            vals = v.extract_values()
-        elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Var
-            vals = v.get_values()
-            df_size = pd.concat([df_size, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
-            continue
-        elif "pyomo.core.base.param.ScalarParam" in str(v.type): #Param
-            vals = v.extract_values()
-            df_param = pd.concat([df_param, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
-            continue
-        else:
-            continue
-        
-        df_out = pd.concat([df_out, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
-
+from Utilities import get_results
 
 file = './results/OSMSES/OSMSES'
-df_out.to_csv(file+'.csv')
-df_param.to_csv(file+'_param.csv')
-df_size.to_csv(file+'_size.csv')
-results.write(filename=file+'_results.txt')
-with open(file+'_results.txt','a') as f:
-    f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
-    f.close()
+df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%%Battery test
 
