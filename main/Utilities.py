@@ -63,8 +63,6 @@ def get_results(file, instance, results, l_t, exec_time):
             
             df_out = pd.concat([df_out, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
     
-    
-    file = './results/LesPlanes_PVPump_and_Reversible'
     df_out.to_csv(file+'.csv')
     df_param.to_csv(file+'_param.csv')
     df_size.to_csv(file+'_size.csv')
