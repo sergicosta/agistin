@@ -203,7 +203,6 @@ def NewBattery(b, t, data, init_data):
     b.P = pyo.Var(t, initialize= init_data['P'], bounds = (-data['Pmax'],data['Pmax']), within=pyo.Reals)
     b.Pch = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds = (0,data['Pmax']), within=pyo.NonNegativeReals)
     b.Pdc = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds = (0,data['Pmax']), within=pyo.NonNegativeReals)
-    # b.SOC = pyo.Var(t, initialize={k:(init_data['E'][h]/1) for h,k in enumerate(range(len(t)))}, bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)
     b.Pdim = pyo.Var(initialize = 0, bounds = (0,data['Pmax']),within = pyo.NonNegativeReals)
     b.Edim = pyo.Var(initialize = 1, bounds = (0,data['Emax']),within = pyo.NonNegativeReals)
 
@@ -218,10 +217,6 @@ def NewBattery(b, t, data, init_data):
     def Constraint_P0(_b, _t):
         return 0 == _b.Pch[_t] * _b.Pdc[_t]
     b.c_P0 = pyo.Constraint(t, rule = Constraint_P0)
-    
-    # def Constraint_SOC(_b, _t):
-    #     return _b.SOC[_t] == _b.E[_t]/(1*_b.Edim) # 1: energia de bateria unitaria. Edim= nombre de bateries unitaries
-    # b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)
     
     def Constraint_E(_b, _t):
         if _t>0:
