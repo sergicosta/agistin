@@ -58,7 +58,7 @@ def NewPump(b, t, data, init_data):
     
     # Variables
     b.Pdim = pyo.Var(initialize=0, within=pyo.NonNegativeReals)
-    b.Qin  = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.Qin  = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.H    = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.Ph   = pyo.Var(t, initialize=init_data['Pe'], within=pyo.NonNegativeReals)
