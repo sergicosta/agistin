@@ -53,7 +53,6 @@ def Turbine(b, t, data, init_data):
             - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}`
             - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`
             - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`
-            - c_Pdim: :math:`P_{dim}(t) \le P_{max}`
     """
     
     # Parameters
