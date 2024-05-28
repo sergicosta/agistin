@@ -167,7 +167,7 @@ m.Pipe1 = pyo.Block()
 m.PV = pyo.Block()
 m.Grid = pyo.Block()
 m.EBg = pyo.Block()
-m.EBpv = pyo.Block()
+# m.EBpv = pyo.Block()
 m.Bat = pyo.Block()
 
 
@@ -205,7 +205,7 @@ NewBattery(m.Bat, m.t, data_bat, init_bat)
 Grid(m.Grid, m.t, {'Pmax':100e6}) # grid
 
 EB(m.EBg, m.t)
-EB(m.EBpv, m.t)
+# EB(m.EBpv, m.t)
 
 
 def ConstraintW1min(m):
@@ -240,7 +240,7 @@ m.p1eb = Arc(ports=(m.Pump1.port_P, m.EBg.port_P), directed=True)
 m.p2r0 = Arc(ports=(m.Pump2.port_Qin, m.ReservoirEbre.port_Q), directed=True)
 m.p2c1_Q = Arc(ports=(m.Pump2.port_Qout, m.Pipe1.port_Q), directed=True)
 m.p2c1_H = Arc(ports=(m.Pump2.port_H, m.Pipe1.port_H), directed=True)
-m.p2eb = Arc(ports=(m.Pump2.port_P, m.EBpv.port_P), directed=True)
+m.p2eb = Arc(ports=(m.Pump2.port_P, m.EBg.port_P), directed=True)
 
 m.t1r0 = Arc(ports=(m.Turb1.port_Qout, m.ReservoirEbre.port_Q), directed=True)
 m.t1c1_Q = Arc(ports=(m.Turb1.port_Qin, m.Pipe1.port_Q), directed=True)
@@ -254,8 +254,8 @@ m.c1r0_z = Arc(ports=(m.ReservoirEbre.port_z, m.Pipe1.port_zlow), directed=True)
 m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Q), directed=True)
 
 m.grideb = Arc(ports=(m.Grid.port_P, m.EBg.port_P), directed=True)
-m.pveb = Arc(ports=(m.PV.port_P, m.EBpv.port_P), directed=True)
-m.baten = Arc(ports=(m.Bat.port_P, m.EBpv.port_P), directed=True)
+m.pveb = Arc(ports=(m.PV.port_P, m.EBg.port_P), directed=True)
+m.baten = Arc(ports=(m.Bat.port_P, m.EBg.port_P), directed=True)
 
 pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
@@ -268,7 +268,7 @@ import time
 # Objective function
 def obj_fun(m):
 # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
-	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) for t in l_t ) + (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat) + m.PV.Pdim*cost_new_pv
+	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) for t in l_t ) + (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
@@ -301,13 +301,13 @@ results.write()
 
 exec_time = time.time() - start_time
 
-#%% Get results
+#%% GET RESULTS
 from Utilities import get_results
 
-file = './results/ISGT/ISGT_turbinepar_140irr'
+file = './results/ISGT/gridconnected_ISGT_turbinepar_140irr'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
-#%%
+#%% PLOTS
 
 plt.rcParams.update({
     "text.usetex": True,
@@ -318,7 +318,7 @@ plt.rcParams.update({
     'axes.spines.right': False
 })
 
-file = 'ISGT_turbinepar'
+file = 'ISGT_turbinepar_140irr'
 
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
 df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv').head(24)
@@ -338,27 +338,52 @@ df['PV.Pf'] = -df_meteo['Irr']/1000*215.28e3*0.98
 df['Rev1.Qout'] = df['Pump1.Qout'] - df['Turb1.Qout']
 df['Rev1.Pe'] = df['Pump1.Pe'] + df['Turb1.Pe']
 
-fig = plt.figure(figsize=(3.4, 2.5))
-ax1 = fig.add_subplot(1,1,1)
-df.apply(lambda x: x/1000).plot(y=['Rev1.Pe','Pump2.Pe','PV.P'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)')
-df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', color='tab:green', alpha=0.3)
-ax1.legend(['$P_{p1}$','$P_{p2}$','$P_{PV}$','$\hat{P}_{PV}$'],loc='upper center', bbox_to_anchor=(0.5, -0.2),
-          fancybox=False, shadow=False, ncol=5)
-ax1.axhline(0,color='k')
-# ax1.set_xticklabels([])
-# ax1.set_xticks(range(24), labels=range(24), rotation=90)
-# ax2 = fig.add_subplot(2,1,2, sharex=ax1)
-ax2 = plt.twinx()
-sns.lineplot(df_grid,x='Hour',y='PVPC', ax=ax2, color='tab:red')#, label='Buy')
-# sns.lineplot(df_grid,x='Hour',y='Excedentes', ax=ax2, color='tab:blue', label='Sell')
-ax2.set_xticks(range(24), labels=range(24), rotation=90)
-plt.ylabel('Price (€/MWh)')
-plt.xlabel('Hour')
-plt.title('Power consumption')
-plt.show()
-plt.tight_layout()
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('results/ISGT/' + file + '_P', dpi=300)
+df_S = df.iloc[0:24].reset_index(drop=True)
+df_W = df.iloc[24:].reset_index(drop=True)
+df_W['t'] = df_W.index
+df_S['PVPC'] = df_grid['PVPC'][0:24].reset_index(drop=True)
+df_W['PVPC'] = df_grid['PVPC'][24:48].reset_index(drop=True)
+df_S['Excedentes'] = df_grid['Excedentes'][0:24].reset_index(drop=True)
+df_W['Excedentes'] = df_grid['Excedentes'][24:48].reset_index(drop=True)
+
+i=0
+season=['S','W']
+for df in [df_S, df_W]:
+    
+    fig = plt.figure(figsize=(3.4, 2.5))
+    plt.rcParams['axes.spines.right'] = True
+    ax1 = fig.add_subplot(1,1,1)
+    df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', 
+                                color='#F0F0F0', alpha=1, edgecolor='#808080')
+    df.apply(lambda x: x/1000).plot(y=['PV.P','Pump2.Pe','Rev1.Pe'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)',
+                                    color=['lightgrey','#606060','#454545'], edgecolor='#808080')
+    ax1.axhline(0,color='k')
+    ax1.set_ylim(-200,200)
+    bars = ax1.patches
+    patterns =(None, None,'/////',None)
+    hatches = [p for p in patterns for i in range(len(df))]
+    for bar, hatch in zip(bars, hatches):
+        bar.set_hatch(hatch)
+    ax1.legend(['_','$\hat{P}_{PV}$','$P_{PV}$','$P_{p,PV}$','$P_{p,g}$'],loc='upper center', bbox_to_anchor=(0.5, -0.2),
+          fancybox=False, shadow=False, ncol=4)
+    
+    ax2 = plt.twinx()
+    ax2.set_ylim(45,300)
+    sns.lineplot(df,x='t' ,y='PVPC', ax=ax2, color='#101010')#, label='Buy')
+    sns.lineplot(df,x='t' ,y='Excedentes', ax=ax2, color='#101010', linestyle='dashed')#, label='Buy')
+    ax2.set_xticks(range(24), labels=range(24), rotation=90)
+    
+    plt.ylabel('Price (€/MWh)')
+    plt.xlabel('Hour')
+    # plt.title('Power consumption')
+    plt.show()
+    plt.tight_layout()
+    
+    plt.rcParams['savefig.format']='pdf'
+    plt.savefig('results/ISGT/' + file + season[i] + '_P', dpi=300)
+    
+    i=i+1
+
 
 fig = plt.figure(figsize=(3.4, 4))
 plt.rc('font',size=9)
