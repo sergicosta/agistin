@@ -48,36 +48,6 @@ from Utilities import clear_clc
 # model
 m = pyo.ConcreteModel()
 
-
-# for i in range(1,13):
-#     # plt.figure()
-#     # sns.boxplot(df.query('month==@i & weekday<=4'), x='hour',y='Cabal impulsio')
-#     # plt.ylim(0, 275)
-#     # plt.title('Mes: '+str(i))
-    
-#     # plt.figure()
-#     # sns.boxplot(df.query('month==@i & weekday<=4'), x='hour',y='Consum bomba 2')
-#     # plt.ylim(0, 160)
-#     # plt.title('Mes: '+str(i))
-    
-#     # plt.figure()
-#     # sns.boxplot(df.query('month==@i & weekday<=4'), x='hour',y='Volum bassa')
-#     # plt.ylim(0, 13000)
-#     # plt.title('Mes: '+str(i))
-    
-#     plt.figure()
-#     ax=sns.lineplot(df.query('month==@i'), x='hour',y='Qreg') # la diferencia entre wknd i lab es nula en el reg
-#     plt.axhline(0, color='k')
-#     plt.ylim(-100, 500)
-#     plt.title('Mes: '+str(i))
-
-
-# # df2=df.copy(deep=True)
-# # df2 = df2[['hour','month','Qreg']]
-# # df2=df2.groupby(by=['month','hour']).median()
-# # df2['Qreg'] = df2['Qreg'].apply(lambda x: 0 if x<0 else x)
-# # df2.to_csv('data/reg.csv')
-
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
 df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv').head(24)
 df_grid_aug = pd.read_csv('data/costs/PVPC_aug.csv').head(24)
