@@ -308,7 +308,7 @@ file = './results/ISGT/gridconnected_ISGT_turbinepar_140irr'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%% PLOTS
-
+from matplotlib import gridspec
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "serif",
@@ -348,6 +348,7 @@ df_W['Excedentes'] = df_grid['Excedentes'][24:48].reset_index(drop=True)
 
 i=0
 season=['S','W']
+labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
 for df in [df_S, df_W]:
     
     fig = plt.figure(figsize=(3.4, 2.5))
@@ -371,7 +372,7 @@ for df in [df_S, df_W]:
     ax2.set_ylim(45,300)
     sns.lineplot(df,x='t' ,y='PVPC', ax=ax2, color='#101010')#, label='Buy')
     sns.lineplot(df,x='t' ,y='Excedentes', ax=ax2, color='#101010', linestyle='dashed')#, label='Buy')
-    ax2.set_xticks(range(24), labels=range(24), rotation=90)
+    ax2.set_xticks(range(24), labels=labels_hours, rotation=90)
     
     plt.ylabel('Price (€/MWh)')
     plt.xlabel('Hour')
@@ -382,27 +383,44 @@ for df in [df_S, df_W]:
     plt.rcParams['savefig.format']='pdf'
     plt.savefig('results/ISGT/' + file + season[i] + '_P', dpi=300)
     
+    
+    
+    fig = plt.figure(figsize=(3.4, 3))
+    plt.rcParams['axes.spines.right'] = False
+    gs = gridspec.GridSpec(2,1,height_ratios=[2,1])
+    
+    ax1 = fig.add_subplot(gs[0])
+    ax1.set_ylim(-0.25,0.2)
+    df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
+            color=['#606060','lightgrey','#454545'], edgecolor='#808080')
+    bars = ax1.patches
+    patterns =('/////',None,None)
+    hatches = [p for p in patterns for i in range(len(df))]
+    for bar, hatch in zip(bars, hatches):
+        bar.set_hatch(hatch)
+    ax1.legend(['$Q_{p,PV}$', '$Q_{irr}$', '$Q_{p,g}$'], ncols=2)
+    ax1.axhline(0,color='k')
+    ax1.set_xticks(range(24), labels=labels_hours, rotation=90)
+    
+    ax2 = fig.add_subplot(gs[1],sharex=ax1)
+    ax2.figsize=(3.4,1)
+    ax2.set_ylim(7500,14000)
+    ax2.axhline(8500,color='#AAAAAA', alpha=1)
+    ax2.axhline(13000,color='#AAAAAA', alpha=1)
+    ax2.axhline(10000*0.95, color='#AAAAAA', linestyle='--', alpha=1)
+    ax2.axhline(10000*1.05, color='#AAAAAA', linestyle='--', alpha=1)
+    sns.lineplot(df, x='t', y='Reservoir1.W', ax=ax2, color='k')
+    
+    plt.ylabel('R1 Volume (m$^3$)')
+    plt.xlabel('Hour')
+    plt.xticks(range(24),labels=labels_hours,rotation=90)
+    plt.tight_layout()
+    plt.show()
+
+    plt.rcParams['savefig.format']='pdf'
+    plt.savefig('results/ISGT/' + file + season[i] + '_Q', dpi=300)
+    
     i=i+1
-
-
-fig = plt.figure(figsize=(3.4, 4))
-plt.rc('font',size=9)
-# plt.suptitle('State of Reservoir 1 (Aug)')
-ax1 = fig.add_subplot(2,1,1)
-df.plot(y=['Pump1.Qout','Pump2.Qout','Irrigation1.Qin'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)')
-ax1.legend(['Pump1', 'Pump2', 'Irrig.'])
-ax1.axhline(0,color='k')
-ax2 = fig.add_subplot(2,1,2, sharex=ax1)
-ax2.axhline(9500,color='k', alpha=0.5)
-ax2.axhline(10000*0.95, color='k', linestyle='--', alpha=0.5)
-ax2.axhline(10000*1.05, color='k', linestyle='--', alpha=0.5)
-sns.lineplot(df, x='t', y='Reservoir1.W', ax=ax2, color='tab:red')
-plt.ylabel('R1 Volume (m$^3$)')
-plt.xlabel('Hour')
-plt.xticks(range(24),rotation=90)
-plt.tight_layout()
-plt.show()
-plt.savefig('results/CIRED/' + file + '_Q', dpi=300)
 
 
 
