@@ -449,7 +449,6 @@ def ReversiblePump(b, t, data, init_data):
     b.S = pyo.Param(initialize=data['S'])
     b.K = pyo.Var(t,initialize = 1, bounds = (1e-6,1), within=pyo.NonNegativeReals)
 
-
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
@@ -467,14 +466,6 @@ def ReversiblePump(b, t, data, init_data):
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
     b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
     b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
-
-    # Constraints
-    # def Constraint_aux1(_b, _t):
-    #     return _b.alpha[_t] + _b.ModePump[_t] == 1
-    # b.c_aux1 = pyo.Constraint(t, rule=Constraint_aux1)
-    # def Constraint_aux2(_b, _t):
-    #     return _b.alpha[_t] * _b.ModePump[_t] == 0
-    # b.c_aux2 = pyo.Constraint(t, rule=Constraint_aux2)
         
     
     def Constraint_Q(_b, _t):
@@ -587,8 +578,7 @@ def ReversibleRealPump(b, t, data, init_data):
     b.S = pyo.Param(initialize=data['S'])
     b.Qmin = pyo.Param(initialize=data['Qmin']*data['Qnom'])
     b.Qmax = pyo.Param(initialize=data['Qmax']*data['Qnom'])
-
-
+    
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax']*data['Qnom'], data['Qmax']*data['Qnom']), within=pyo.Reals)
@@ -598,14 +588,11 @@ def ReversibleRealPump(b, t, data, init_data):
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
-    # b.ModePump = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.ModeTurbine = pyo.Var(t,initialize=0, within=pyo.Binary)
     b.a = pyo.Var(t,initialize = 0, within=pyo.NonNegativeReals)
-    # b.K = pyo.Var(t,initialize = 1, bounds = (0.01,1), within=pyo.NonNegativeReals)
-    
-    # b.PumpOn = pyo.Var(t,initialize=1, within=pyo.Binary)
     b.ModePump = pyo.Var(t,initialize=1, within=pyo.Binary)
-
+    
+    b.aux = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.auxa = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -619,8 +606,33 @@ def ReversibleRealPump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] ==((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qout[_t]**2)*_b.ModePump[_t] + (1-_b.ModePump[_t])*_b.a[_t]
+        # return _b.H[_t] ==((_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]**2)*_b.ModePump[_t] + (1-_b.ModePump[_t])*_b.a[_t]
+        # return _b.H[_t] ==(_b.n[_t]/_b.n_n)**2*_b.A*_b.ModePump[_t] - _b.B*_b.Qoutp[_t]*_b.aux[_t] + (1-_b.ModePump[_t])*_b.a[_t]
+        # return _b.H[_t] ==(_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]*_b.aux[_t] + (1-_b.ModePump[_t])*_b.a[_t]
+        return _b.H[_t] ==(_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qoutp[_t]*_b.aux[_t] + (_b.a[_t]-_b.auxa[_t])
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
+    
+    # From AIMMS Ch 7.7: Elimination of products of variables
+    def Constraint_aux1(_b,_t):
+        return _b.aux[_t] <= _b.Qmax*_b.ModePump[_t]
+    b.c_aux1 = pyo.Constraint(t, rule=Constraint_aux1)
+    def Constraint_aux2(_b,_t):
+        return _b.aux[_t] <= _b.Qoutp[_t]
+    b.c_aux2 = pyo.Constraint(t, rule=Constraint_aux2)
+    def Constraint_aux3(_b,_t):
+        return _b.aux[_t] >= _b.Qoutp[_t] - _b.Qmax*(1-_b.ModePump[_t])
+    b.c_aux3 = pyo.Constraint(t, rule=Constraint_aux3)
+    
+    # From AIMMS Ch 7.7: Elimination of products of variables
+    def Constraint_auxa1(_b,_t):
+        return _b.auxa[_t] <= _b.A*_b.ModePump[_t]
+    b.c_auxa1 = pyo.Constraint(t, rule=Constraint_auxa1)
+    def Constraint_auxa2(_b,_t):
+        return _b.auxa[_t] <= _b.a[_t]
+    b.c_auxa2 = pyo.Constraint(t, rule=Constraint_auxa2)
+    def Constraint_auxa3(_b,_t):
+        return _b.auxa[_t] >= _b.a[_t] - _b.A*(1-_b.ModePump[_t])
+    b.c_auxa3 = pyo.Constraint(t, rule=Constraint_auxa3)
     
     def Constraint_Qout(_b, _t):
         return _b.Qout[_t] == _b.Qoutp[_t] - _b.Qoutt[_t]
@@ -634,10 +646,10 @@ def ReversibleRealPump(b, t, data, init_data):
         return _b.Pe[_t] == _b.Ph[_t] *(_b.ModePump[_t]/_b.eff + (1-_b.ModePump[_t])*_b.eff_t)
     b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
     
-    def Constraint_Qmaxp(_b, _t):
+    # From AIMMS Ch 7.1: Variable taking discontinuous values
+    def Constraint_Qmaxp(_b, _t): 
         return _b.Qoutp[_t] <= (_b.Qmax*_b.ModePump[_t])
     b.c_Qmaxp = pyo.Constraint(t, rule=Constraint_Qmaxp)
-    
     def Constraint_Qminp(_b, _t):
         return _b.Qoutp[_t] >= (_b.Qmin*_b.ModePump[_t])
     b.c_Qminp = pyo.Constraint(t, rule=Constraint_Qminp)

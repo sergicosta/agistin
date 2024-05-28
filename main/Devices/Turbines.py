@@ -27,6 +27,8 @@ def Turbine(b, t, data, init_data):
         
     data
          - 'eff': Efficiency of the turbine :math:`\eta`
+         - 'Pmax': Maximum allowed power :math:`P_{max}`
+         - 'Qmax': Maximum allowed flow :math:`Q_{max}`
     
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
