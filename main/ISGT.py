@@ -48,52 +48,6 @@ from Utilities import clear_clc
 # model
 m = pyo.ConcreteModel()
 
-# plt.rcParams.update({
-#     "text.usetex": True,
-#     "font.family": "serif",
-#     "font.serif": ["Times New Roman"],
-#     "font.size": 9,
-#     'axes.spines.top': False,
-#     'axes.spines.right': False
-# })
-
-# df = pd.read_csv('data/Analogiques.csv')
-# df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
-# df['month'] = df['date'].dt.month
-# df['weekday'] = df['date'].dt.dayofweek
-# df['Volum bassa'] = df['Nivell bassa']*13000/4.5
-# df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
-# df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
-# df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
-# df['Qreg_lag'] = df['Qreg'].shift(1)
-# df.loc[df['Qreg']>300,'Qreg'] = df['Qreg_lag']
-
-# df['Season'] = df['month']/4
-# df['Season'] = df['Season'].astype(int)
-# fig = plt.figure(figsize=(3.4, 2.3))
-# sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
-# plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1)
-# plt.xlabel('Hour')
-# plt.ylabel('Irrigation demand (m$^3$/h)')
-# plt.xticks(range(24),range(24), rotation=90)
-# plt.ylim([0,250])
-# plt.tight_layout()
-# plt.show()
-# plt.rcParams['savefig.format']='pdf'
-# plt.savefig('fig/CRPA_Irrigation', dpi=300)
-
-# df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
-# fig = plt.figure(figsize=(3.4, 2))
-# sns.lineplot(df, x='hour', y='Qreg', style='Winter', color='tab:grey', errorbar=('ci',90))
-# plt.legend(labels=['S','_','W','_'], ncol=1)
-# plt.xlabel('Hour')
-# plt.ylabel('Irrigation demand (m$^3$/h)')
-# plt.xticks(range(24),range(24), rotation=90)
-# # plt.ylim([0,250])
-# plt.tight_layout()
-# plt.show()
-# plt.rcParams['savefig.format']='pdf'
-# plt.savefig('fig/CRPA_Irrigation_WS', dpi=300)
 
 # for i in range(1,13):
 #     # plt.figure()
@@ -317,6 +271,7 @@ plt.rcParams.update({
     'axes.spines.top': False,
     'axes.spines.right': False
 })
+labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
 
 file = 'ISGT_turbinepar_140irr'
 
@@ -348,7 +303,6 @@ df_W['Excedentes'] = df_grid['Excedentes'][24:48].reset_index(drop=True)
 
 i=0
 season=['S','W']
-labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
 for df in [df_S, df_W]:
     
     fig = plt.figure(figsize=(3.4, 2.5))
@@ -424,65 +378,43 @@ for df in [df_S, df_W]:
 
 
 
-# df['cost'] = df_grid['PVPC']
-# df['cost'] = df['cost']*df['Grid.Pbuy']/1e6
-# print(sum(df['cost']))
+df = pd.read_csv('data/Analogiques.csv')
+df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
+df['month'] = df['date'].dt.month
+df['weekday'] = df['date'].dt.dayofweek
+df['Volum bassa'] = df['Nivell bassa']*13000/4.5
+df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
+df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
+df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
+df['Qreg_lag'] = df['Qreg'].shift(1)
+df.loc[df['Qreg']>300,'Qreg'] = df['Qreg_lag']
 
-# df_results = pd.DataFrame([[8500,19.42],[8600,19.34],[8700,19.10],[8800,18.94],[8900,18.86],[9000,18.79],[9100,18.77],[9200,18.85],[9300,22.81],[9400,27.62],[9500,32.47],[9600,37.31]],
-#                   columns=['V','obj'])
-# df_results['cost diff'] = df_results['obj']-19.42
-# fig = plt.figure(figsize=(3.4, 2))
-# sns.lineplot(df_results,x='V',y='cost diff', marker='o')
-# plt.xlabel('$W_{min}$ (m$^3$)')
-# plt.ylabel('cost difference (€/day)')
-# plt.tight_layout()
-# plt.show()
-
-df_grid = pd.read_csv('data/costs/PVPC_aug.csv').head(24)
-
-df_85 = pd.read_csv('results/CIRED/'+'8500m3_aug_150_PVpen'+'.csv')
-df_85['cost'] = df_grid['PVPC']
-df_85['cost'] = df_85['cost']*df_85['Grid.Pbuy']/1e6
-df_85['cum_cost'] = df_85['cost'].cumsum()
-
-df_90 = pd.read_csv('results/CIRED/'+'9000m3_aug_150_PVpen'+'.csv')
-df_90['cost'] = df_grid['PVPC']
-df_90['cost'] = df_90['cost']*df_90['Grid.Pbuy']/1e6
-df_90['cum_cost'] = df_90['cost'].cumsum()
-
-df_95 = pd.read_csv('results/CIRED/'+'9500m3_aug_150_PVpen'+'.csv')
-df_95['cost'] = df_grid['PVPC']
-df_95['cost'] = df_95['cost']*df_95['Grid.Pbuy']/1e6
-df_95['cum_cost'] = df_95['cost'].cumsum()
-
-fig = plt.figure(figsize=(3.4, 2))
-plt.rc('font',size=9)
-sns.lineplot(df_85,x='t',y='Reservoir1.W',color='#57C13F', label='8500m$^3$')
-sns.lineplot(df_90,x='t',y='Reservoir1.W',color='tab:blue', label='9000m$^3$')
-sns.lineplot(df_95,x='t',y='Reservoir1.W',color='tab:red', label='9500m$^3$')
-plt.axhline(8500, color='tab:green', linestyle='--', alpha=0.5)
-plt.axhline(9000, color='tab:blue', linestyle='--', alpha=0.5)
-plt.axhline(9500, color='tab:red', linestyle='--', alpha=0.5)
-plt.xticks(range(24),rotation=90)
-plt.ylabel('R1 Volume (m$^3$)')
+df['Season'] = df['month']/4
+df['Season'] = df['Season'].astype(int)
+fig = plt.figure(figsize=(3.4, 2.3))
+sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
+plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1)
 plt.xlabel('Hour')
-plt.tight_layout()
-
-
-
-df = pd.read_csv('data/LesPlanes_irrigation.csv')
-df['Qreg'] = df['Qreg']/3600
-
-fig=plt.figure(figsize=(3.4, 2))
-plt.rc('font',size=9)
-sns.lineplot(df.query('month in [11,12,1,2]'), x='hour', y='Qreg', color='tab:blue', errorbar=('ci',90), label='W')
-sns.lineplot(df.query('month in [6,7,8,9]'), x='hour', y='Qreg', color='tab:orange', errorbar=('ci',90), label='S')
-plt.ylabel('Irrigation (m$^3$/s)')
-plt.xlabel('Hour')
-plt.xticks(range(24),rotation=90)
+plt.ylabel('Irrigation demand (m$^3$/h)')
+plt.xticks(range(24),labels=labels_hours, rotation=90)
+plt.ylim([0,250])
 plt.tight_layout()
 plt.show()
+plt.rcParams['savefig.format']='pdf'
+plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
+df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
+fig = plt.figure(figsize=(3.4, 1.8))
+sns.lineplot(df, x='hour', y='Qreg', style='Winter', color='tab:grey', errorbar=('ci',90))
+plt.legend(labels=['S','_','W','_'], ncol=1)
+plt.xlabel('Hour')
+plt.ylabel('Irrigation demand (m$^3$/h)')
+plt.xticks(range(24),labels=labels_hours, rotation=90)
+# plt.ylim([0,200])
+plt.tight_layout()
+plt.show()
+plt.rcParams['savefig.format']='pdf'
+plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
 
 
 #%%
