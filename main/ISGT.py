@@ -404,7 +404,7 @@ plt.rcParams['savefig.format']='pdf'
 plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
 df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
-fig = plt.figure(figsize=(3.4, 1.8))
+fig = plt.figure(figsize=(3.4, 2))
 sns.lineplot(df, x='hour', y='Qreg', style='Winter', color='tab:grey', errorbar=('ci',90))
 plt.legend(labels=['S','_','W','_'], ncol=1)
 plt.xlabel('Hour')
