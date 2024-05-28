@@ -1,0 +1,33 @@
+# ==========================================================
+# = Solver Results                                         =
+# ==========================================================
+# ----------------------------------------------------------
+#   Problem Information
+# ----------------------------------------------------------
+Problem: 
+- Lower bound: -inf
+  Upper bound: inf
+  Number of objectives: 1
+  Number of constraints: 2644
+  Number of variables: 2355
+  Sense: unknown
+# ----------------------------------------------------------
+#   Solver Information
+# ----------------------------------------------------------
+Solver: 
+- Status: ok
+  Message: MINLP-B&B (20100607)\x3a Optimal solution found; 123 subproblems, objective = 48.544970790382536; Evals\x3a obj = 572, constr = 827, grad = 526, Hes = 590
+  Termination condition: optimal
+  Id: 0
+# ----------------------------------------------------------
+#   Solution Information
+# ----------------------------------------------------------
+Solution: 
+- number of solutions: 0
+  number of solutions displayed: 0
+
+Execution time:
+101.71244287490845 s
+
+GOAL VALUE:
+48.544970790382536
