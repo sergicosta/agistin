@@ -92,7 +92,7 @@ m.PV = pyo.Block()
 m.Grid = pyo.Block()
 m.EBg = pyo.Block()
 # m.EBpv = pyo.Block()
-m.Bat = pyo.Block()
+# m.Bat = pyo.Block()
 
 
 data_irr = {'Q':df_cons['Qirr']/3600*1.4} # irrigation
@@ -122,9 +122,9 @@ Turbine(m.Turb1, m.t, data_t, init_t)
 data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo['Irr']/1000, 'eff':0.98} # PV
 SolarPV(m.PV, m.t, data_pv)
 
-data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
-init_bat = {'E':[0.5]*T, 'P':[0]*T}
-NewBattery(m.Bat, m.t, data_bat, init_bat)
+# data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+# init_bat = {'E':[0.5]*T, 'P':[0]*T}
+# NewBattery(m.Bat, m.t, data_bat, init_bat)
 
 Grid(m.Grid, m.t, {'Pmax':100e6}) # grid
 
@@ -179,7 +179,7 @@ m.r1i1 = Arc(ports=(m.Irrigation1.port_Qin, m.Reservoir1.port_Q), directed=True)
 
 m.grideb = Arc(ports=(m.Grid.port_P, m.EBg.port_P), directed=True)
 m.pveb = Arc(ports=(m.PV.port_P, m.EBg.port_P), directed=True)
-m.baten = Arc(ports=(m.Bat.port_P, m.EBg.port_P), directed=True)
+# m.baten = Arc(ports=(m.Bat.port_P, m.EBg.port_P), directed=True)
 
 pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
@@ -192,7 +192,7 @@ import time
 # Objective function
 def obj_fun(m):
 # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
-	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) for t in l_t ) + (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
@@ -243,6 +243,8 @@ plt.rcParams.update({
 })
 labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
 
+cbcolors = sns.color_palette('colorblind')
+
 file = 'ISGT_turbinepar_140irr'
 
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
@@ -262,6 +264,8 @@ df = pd.read_csv('results/ISGT/'+file+'.csv')
 df['PV.Pf'] = -df_meteo['Irr']/1000*215.28e3*0.98
 df['Rev1.Qout'] = df['Pump1.Qout'] - df['Turb1.Qout']
 df['Rev1.Pe'] = df['Pump1.Pe'] + df['Turb1.Pe']
+for c in df.columns:
+    df[c] = df[c].apply(lambda x: 0 if (x>-1e-10 and x<1e-10) else x)
 
 df_S = df.iloc[0:24].reset_index(drop=True)
 df_W = df.iloc[24:].reset_index(drop=True)
@@ -271,6 +275,7 @@ df_W['PVPC'] = df_grid['PVPC'][24:48].reset_index(drop=True)
 df_S['Excedentes'] = df_grid['Excedentes'][0:24].reset_index(drop=True)
 df_W['Excedentes'] = df_grid['Excedentes'][24:48].reset_index(drop=True)
 
+
 i=0
 season=['S','W']
 for df in [df_S, df_W]:
@@ -278,14 +283,19 @@ for df in [df_S, df_W]:
     fig = plt.figure(figsize=(3.4, 2.5))
     plt.rcParams['axes.spines.right'] = True
     ax1 = fig.add_subplot(1,1,1)
+    # df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', 
+    #                             color='#F0F0F0', alpha=1, edgecolor='#808080')
+    # df.apply(lambda x: x/1000).plot(y=['PV.P','Pump2.Pe','Rev1.Pe'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)',
+    #                                 color=['lightgrey','#606060','#454545'], edgecolor='#808080')
     df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', 
-                                color='#F0F0F0', alpha=1, edgecolor='#808080')
+                                color='#C0E3C0', alpha=1, edgecolor=None)
     df.apply(lambda x: x/1000).plot(y=['PV.P','Pump2.Pe','Rev1.Pe'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)',
-                                    color=['lightgrey','#606060','#454545'], edgecolor='#808080')
+                                                                    color=[cbcolors[2],cbcolors[0],cbcolors[1]], edgecolor=None)
     ax1.axhline(0,color='k')
     ax1.set_ylim(-200,200)
     bars = ax1.patches
-    patterns =(None, None,'/////',None)
+    # patterns =(None, None,'/////',None)
+    patterns =(None, None, None, None)
     hatches = [p for p in patterns for i in range(len(df))]
     for bar, hatch in zip(bars, hatches):
         bar.set_hatch(hatch)
@@ -294,8 +304,8 @@ for df in [df_S, df_W]:
     
     ax2 = plt.twinx()
     ax2.set_ylim(45,300)
-    sns.lineplot(df,x='t' ,y='PVPC', ax=ax2, color='#101010')#, label='Buy')
-    sns.lineplot(df,x='t' ,y='Excedentes', ax=ax2, color='#101010', linestyle='dashed')#, label='Buy')
+    sns.lineplot(df,x='t' ,y='PVPC', ax=ax2, color='tab:red')#, label='Buy')
+    sns.lineplot(df,x='t' ,y='Excedentes', ax=ax2, color='tab:red', linestyle='dashed')#, label='Buy')
     ax2.set_xticks(range(24), labels=labels_hours, rotation=90)
     
     plt.ylabel('Price (€/MWh)')
@@ -315,10 +325,12 @@ for df in [df_S, df_W]:
     
     ax1 = fig.add_subplot(gs[0])
     ax1.set_ylim(-0.25,0.2)
+    # df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
+    #         color=['#606060','lightgrey','#454545'], edgecolor='#808080')
     df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
-            color=['#606060','lightgrey','#454545'], edgecolor='#808080')
+            color=[cbcolors[0],cbcolors[2],cbcolors[1]], edgecolor=None)
     bars = ax1.patches
-    patterns =('/////',None,None)
+    patterns =(None,None,None)
     hatches = [p for p in patterns for i in range(len(df))]
     for bar, hatch in zip(bars, hatches):
         bar.set_hatch(hatch)
@@ -329,11 +341,11 @@ for df in [df_S, df_W]:
     ax2 = fig.add_subplot(gs[1],sharex=ax1)
     ax2.figsize=(3.4,1)
     ax2.set_ylim(7500,14000)
-    ax2.axhline(8500,color='#AAAAAA', alpha=1)
-    ax2.axhline(13000,color='#AAAAAA', alpha=1)
-    ax2.axhline(10000*0.95, color='#AAAAAA', linestyle='--', alpha=1)
-    ax2.axhline(10000*1.05, color='#AAAAAA', linestyle='--', alpha=1)
-    sns.lineplot(df, x='t', y='Reservoir1.W', ax=ax2, color='k')
+    ax2.axhline(8500,color='#AFAFAF', alpha=1)
+    ax2.axhline(13000,color='#AFAFAF', alpha=1)
+    ax2.axhline(10000*0.95, color='#AFAFAF', linestyle='--', alpha=1)
+    ax2.axhline(10000*1.05, color='#AFAFAF', linestyle='--', alpha=1)
+    sns.lineplot(df, x='t', y='Reservoir1.W', ax=ax2, color='tab:red')
     
     plt.ylabel('R1 Volume (m$^3$)')
     plt.xlabel('Hour')
@@ -375,7 +387,7 @@ plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
 df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
 fig = plt.figure(figsize=(3.4, 2))
-sns.lineplot(df, x='hour', y='Qreg', style='Winter', color='tab:grey', errorbar=('ci',90))
+sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
 plt.legend(labels=['S','_','W','_'], ncol=1)
 plt.xlabel('Hour')
 plt.ylabel('Irrigation demand (m$^3$/h)')
