@@ -53,7 +53,7 @@ You may find the full documentation at ``./main/docs/_build/html/index.html`` [h
 ## Contributors
 In alphabetical order:
 
-[<img src="https://citcea.upc.edu/logoPropi.png" height="32px" align="center" alt="CITCEA-UPC logo">](https://citcea.upc.edu/ca)
+[<img src="https://citcea.upc.edu/ca/shared/logos/logocitceaupc.png" height="48px" align="center" alt="CITCEA-UPC logo">](https://citcea.upc.edu/ca)
 * Sergi Costa Dilmé (sergi.costa.dilme@upc.edu)
 * Pau García Motilla (pau.garcia.motilla@upc.edu)
 * Paula Muñoz Peña (paula.munoz.pena@upc.edu)
