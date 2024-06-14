@@ -62,6 +62,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#pipes">Pipes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.PipeValve"><code class="docutils literal notranslate"><span class="pre">PipeValve()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe_Ex0"><code class="docutils literal notranslate"><span class="pre">Pipe_Ex0()</span></code></a></li>
 </ul>
 </li>
@@ -104,6 +105,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.NewBattery"><code class="docutils literal notranslate"><span class="pre">NewBattery()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -450,6 +452,80 @@
 <dd><p>Pipe that transports water and has implicit energy losses.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
 <div class="math notranslate nohighlight">
+\[H(t) = H_0(t) \pm K \, Q(t)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(H_0(t)\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘K’: Linear pressure loss coefficient of the pipe <span class="math notranslate nohighlight">\(K\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘H0’: Static height <span class="math notranslate nohighlight">\(H_0\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>K</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Q (t) bounded <span class="math notranslate nohighlight">\(\in [-Q_{max}, Q_{max}]\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>zlow (t) bounded <span class="math notranslate nohighlight">\(z_{low} \ge 0\)</span></p></li>
+<li><p>zhigh (t) bounded <span class="math notranslate nohighlight">\(z_{high} \ge 0\)</span></p></li>
+<li><p>H0 (t) bounded <span class="math notranslate nohighlight">\(H_{0} \ge 0\)</span></p></li>
+<li><p>signQ (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Q &#64; Q as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+<li><p>port_zlow &#64; zlow as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+<li><p>port_zhigh &#64; zhigh as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)\)</span></p></li>
+<li><p>c_H0: <span class="math notranslate nohighlight">\(H_0(t) = z_{high}(t) - z_{low}(t)\)</span></p></li>
+<li><p>c_sign: <span class="math notranslate nohighlight">\(Q(t)\, (2\, signQ(t) - 1) &gt;= 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pipes.PipeValve">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">PipeValve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#PipeValve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.PipeValve" title="Link to this definition"></a></dt>
+<dd><p>Pipe that transports water and has implicit energy losses.</p>
+<p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
+<div class="math notranslate nohighlight">
 \[H(t) = H_0(t) + K \, Q(t)^2\]</div>
 <p>where <span class="math notranslate nohighlight">\(H_0(t)\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
 <dl class="field-list simple">
@@ -683,7 +759,7 @@ It is utilised in Example0.</p>
 <span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPump" title="Link to this definition"></a></dt>
 <dd><p>In RealPump it’s added the working flow limits of the pump.  
 Be wary of binary variables when choosing a solver.</p>
-<p>It’s introduced <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the flow limits in p.u</p>
+<p>It’s introduced <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the working limits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -729,8 +805,8 @@ Be wary of binary variables when choosing a solver.</p>
 </li>
 <li><dl class="simple">
 <dt>Variables:</dt><dd><ul>
-<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{nom}, 0]\)</span></p></li>
-<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{nom}]\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{n}, 0]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{n}]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>n (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
 <li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
@@ -756,8 +832,8 @@ Be wary of binary variables when choosing a solver.</p>
 <li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = (n(t)/n_n)^2\, A - B \, Q_{out}(t)^2\)</span></p></li>
 <li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}(t)\)</span></p></li>
 <li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)/\eta\)</span></p></li>
-<li><p>c_Qmax: <span class="math notranslate nohighlight">\(Q_{out}(t) \leq Q_{nom} \, Q_{max} \, b_{ON}(t)\)</span></p></li>
-<li><p>c_Qmin: <span class="math notranslate nohighlight">\(Q_{out}(t) \geq Q_{nom} \, Q_{min} \, b_{ON}(t)\)</span></p></li>
+<li><p>c_Qmax: <span class="math notranslate nohighlight">\(Q_{out}(t) \leq Q_{n} \, Q_{max} \, b_{ON}(t)\)</span></p></li>
+<li><p>c_Qmin: <span class="math notranslate nohighlight">\(Q_{out}(t) \geq Q_{n} \, Q_{min} \, b_{ON}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -956,10 +1032,29 @@ Introduces the reversibility of the pump’s flow.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.ReversibleRealPump">
 <span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">ReversibleRealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#ReversibleRealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.ReversibleRealPump" title="Link to this definition"></a></dt>
-<dd><p>Frequency controllable hydraulic pump with water flow limits.</p>
-<p>Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:
-A</p>
+<dd><p>Frequency controllable reversible hydraulic pump with water flow limits.</p>
+<p>Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:</p>
+<div class="math notranslate nohighlight">
+\[H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q(t)^2\]</div>
 <p>with <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> the characteristic coefficients that define the behaviour of the pump (i.e its curve).</p>
+<p>Since it is a reversible pump it may operate as a turbine. This is defined with a binary variable <span class="math notranslate nohighlight">\(b_{Mode}\)</span> (1 for pump, 0 for turbine).</p>
+<div class="math notranslate nohighlight">
+\[H(t) = ( (n(t)/n_n)^2\, A - B \, Q_{out,p}(t)^2 )\, b_{Mode}(t) + (1 - b_{Mode}(t))\, a_h(t)\]</div>
+<p>with <span class="math notranslate nohighlight">\(a_h\)</span> a free variable which will take the appropiate head value when operating as a turbine.</p>
+<p>The code makes use of two auxiliary variables, <span class="math notranslate nohighlight">\(a_q\)</span> and <span class="math notranslate nohighlight">\(a_a\)</span>, to reduce the order such that:</p>
+<div class="math notranslate nohighlight">
+\[a_q(t) = Q_{out,p}(t)\, b_{Mode}(t)\]</div>
+<div class="math notranslate nohighlight">
+\[a_a(t) = a_h(t)\, b_{Mode}(t)\]</div>
+<div class="math notranslate nohighlight">
+\[H(t) = (n(t)/n_n)^2\, A - B\, Q_{out,p}(t)\,a_q(t) + (a_h(t) - a_a(t)) \]</div>
+<p>It also introduces <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the flow limits when working as a pump:</p>
+<div class="math notranslate nohighlight">
+\[Q_{min}\, Q_n\, b_{Mode} \leq Q_{out,p}(t) \leq Q_{max}\, Q_n\, b_{Mode}\]</div>
+<p>and the upper limit of running as a turbine:</p>
+<div class="math notranslate nohighlight">
+\[Q_{out,t}(t) \leq S\,\sqrt{2\cdot 9.81\,H(t)}\,(1-b_{Mode}(t))\]</div>
+<p>The way both flows for pump and turbine modes, <span class="math notranslate nohighlight">\(Q_{out,p}\)</span> and <span class="math notranslate nohighlight">\(Q_{out,t}\)</span> respectively,</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -998,26 +1093,28 @@ A</p>
 <li><p>Qnom</p></li>
 <li><p>n_n</p></li>
 <li><p>eff</p></li>
-<li><p>Qmax</p></li>
+<li><p>eff_t</p></li>
+<li><p>S</p></li>
 <li><p>Qmin</p></li>
+<li><p>Qmax</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Variables:</dt><dd><ul>
-<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]\)</span></p></li>
-<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [-Q_{max}\,Q_{nom}, Q_{max}\,Q_{nom}]\)</span></p></li>
-<li><p>Qoutp (t) bounded <span class="math notranslate nohighlight">\(Q_{out,p} \in [0, Q_{max}\,Q_{nom}]\)</span></p></li>
-<li><p>Qoutt (t) bounded <span class="math notranslate nohighlight">\(Q_{out,t} \in [0, Q_{max}\,Q_{nom}]\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_n, Q_{max}\,Q_n]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [-Q_{max}\,Q_n, Q_{max}\,Q_n]\)</span></p></li>
+<li><p>Qoutp (t) bounded <span class="math notranslate nohighlight">\(Q_{out,p} \in [0, Q_{max}\,Q_n]\)</span></p></li>
+<li><p>Qoutt (t) bounded <span class="math notranslate nohighlight">\(Q_{out,t} \in [0, Q_{max}\,Q_n]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>n (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
 <li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [-P_{max}, P_{max}]\)</span></p></li>
 <li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [-P_{max}, P_{max}]\)</span></p></li>
-<li><p>PumpOn (t) bounded <span class="math notranslate nohighlight">\(b_{ON} \in \{0,1\}\)</span></p></li>
 <li><p>ModePump (t) <span class="math notranslate nohighlight">\(b_{Mode}(t) \in \{0,1\}\)</span></p></li>
-<li><p>K (t) bounded <span class="math notranslate nohighlight">\(K \in [0,1]\)</span></p></li>
 <li><p>a (t) <span class="math notranslate nohighlight">\(a \ge 0\)</span></p></li>
+<li><p>aux (t) <span class="math notranslate nohighlight">\(a_q \ge 0\)</span></p></li>
+<li><p>auxa (t) <span class="math notranslate nohighlight">\(a_a \ge 0\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1035,12 +1132,19 @@ A</p>
 <li><dl class="simple">
 <dt>Constraints:</dt><dd><ul>
 <li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = - Q_{out}(t)\)</span></p></li>
-<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = b_{ON}(t)[((n(t)/n_n)^2\, A - B \, Q_{outp}(t)^2)b_{Mode}(t) + Q_{outt}(t)^2/(2\, g \, S^2\, K(t))(1-b_{Mode}(t))] + (1-b_{ON}(t))a(t)\)</span></p></li>
-<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) = b_{ON}[Q_{out,p}(t)\,b_{Mode}(t) - Q_{out,t}(t)(1-b_{Mode}(t))]\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = (n(t)/n_n)^2\, A - B\, Q_{out,p}(t)\,a_q(t) + (a_h(t) - a_a(t))\)</span></p></li>
+<li><p>c_aux1: <span class="math notranslate nohighlight">\(a_q(t) \leq Q_{max}\, b_{Mode}(t)\)</span></p></li>
+<li><p>c_aux2: <span class="math notranslate nohighlight">\(a_q(t) \leq Q_{out,p}(t)\)</span></p></li>
+<li><p>c_aux3: <span class="math notranslate nohighlight">\(a_q(t) \geq Q_{out,p}(t) - Q_{max}\,(1 - b_{Mode}(t))\)</span></p></li>
+<li><p>c_auxa1: <span class="math notranslate nohighlight">\(a_a(t) \leq A\, b_{Mode}(t)\)</span></p></li>
+<li><p>c_auxa2: <span class="math notranslate nohighlight">\(a_a(t) \leq a_h(t)\)</span></p></li>
+<li><p>c_auxa3: <span class="math notranslate nohighlight">\(a_a(t) \geq a_h(t) - A\,(1 - b_{Mode}(t))\)</span></p></li>
+<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) = Q_{out,p}(t) - Q_{out,t}(t)\)</span></p></li>
 <li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}(t)\)</span></p></li>
 <li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t) (b_{Mode}(t)/\eta + (1-b_{Mode}(t))\, \eta_{t})\)</span></p></li>
-<li><p>c_Qmaxp: <span class="math notranslate nohighlight">\(Q_{out}(t) \leq Q_{max} \, b_{On}(t)\, b_{Mode}(t)\)</span></p></li>
-<li><p>c_Qminp: <span class="math notranslate nohighlight">\(Q_{out}(t) \geq Q_{min} \, b_{On}(t)\, b_{Mode}(t)\)</span></p></li>
+<li><p>c_Qmaxp: <span class="math notranslate nohighlight">\(Q_{out,p}(t) \leq Q_{max} \, b_{Mode}(t)\)</span></p></li>
+<li><p>c_Qminp: <span class="math notranslate nohighlight">\(Q_{out,p}(t) \geq Q_{min} \, b_{Mode}(t)\)</span></p></li>
+<li><p>c_Qmaxt: <span class="math notranslate nohighlight">\(Q_{out,t}(t) \leq S\,\sqrt{2\cdot 9.81\,H(t)}\,(1-b_{Mode}(t))\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1230,6 +1334,8 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘eff’: Efficiency of the turbine <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
@@ -1242,7 +1348,6 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
 <li><p>eff</p></li>
-<li><p>Pmax</p></li>
 </ul>
 </dd>
 </dl>
@@ -1272,10 +1377,9 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q_{out}(t)\)</span></p></li>
-<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{in}\)</span></p></li>
 <li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)\, \eta\)</span></p></li>
 <li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \ge -P_e(t)\)</span></p></li>
-<li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \le P_{max}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1651,7 +1755,7 @@ It is used in Example21.</p>
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [E_{max}\, SOC_{min}, E_{max}\, SOC_{max}]\)</span></p></li>
+<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [0, E_{max}\, SOC_{max}]\)</span></p></li>
 <li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
 <li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
 <li><p>Pdc (t) bounded <span class="math notranslate nohighlight">\(P_{dc}(t) \in [0, P_{max}]\)</span></p></li>
@@ -1682,6 +1786,97 @@ It is used in Example21.</p>
 <dt>c_E: </dt><dd><ul>
 <li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \, P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(E(t) = E_0 + \Delta t \, P(t) \quad\)</span> otherwise</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Batteries.NewBattery">
+<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">NewBattery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#NewBattery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.NewBattery" title="Link to this definition"></a></dt>
+<dd><p>Battery set for sizing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data:</dt><dd><ul class="simple">
+<li><p>‘dt’: time step <span class="math notranslate nohighlight">\(\Delta t\)</span></p></li>
+<li><p>‘SOCmin’: Minimum allowed SOC <span class="math notranslate nohighlight">\(SOC_{min}\)</span> in p.u.</p></li>
+<li><p>‘SOCmax’: Maximum allowed SOC <span class="math notranslate nohighlight">\(SOC_{max}\)</span> in p.u.</p></li>
+<li><p>‘Pmax’: Maximum delivered/absorbed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Emax’: Maximum battery energy <span class="math notranslate nohighlight">\(E_{max}\)</span></p></li>
+<li><p>‘eff_ch’: Effiency of charge <span class="math notranslate nohighlight">\(\eta_{ch}\)</span></p></li>
+<li><p>‘eff_dc’: Effiency of discharge <span class="math notranslate nohighlight">\(\eta_{dc}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data:</dt><dd><ul class="simple">
+<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declaration</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>dt</p></li>
+<li><p>SOCmin</p></li>
+<li><p>SOCmax</p></li>
+<li><p>Pmax</p></li>
+<li><p>Emax</p></li>
+<li><p>eff_ch</p></li>
+<li><p>eff_dc</p></li>
+<li><p>T</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>E (t) bounded <span class="math notranslate nohighlight">\(E(t) \in [0, E_{max}\, SOC_{max}]\)</span></p></li>
+<li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
+<li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>Pdc (t) bounded <span class="math notranslate nohighlight">\(P_{dc}(t) \in [0, P_{max}]\)</span></p></li>
+<li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
+<li><p>Edim bounded <span class="math notranslate nohighlight">\(E_{dim} \in [0, E_{max}]\)</span></p></li>
+<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_{max}]\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_P &#64; P (Extensive)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)\, \eta_{dc}\)</span></p></li>
+<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \, P_{dc}(t)\)</span></p></li>
+<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst})\)</span></p></li>
+<li><p>c_ch: <span class="math notranslate nohighlight">\(P_{ch}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
+<li><p>dc: <span class="math notranslate nohighlight">\(P_{dc}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
+<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\, SOC{max}\)</span></p></li>
+<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \geq (E{inst} + E{dim})\, SOC{min}\)</span></p></li>
+<li><dl class="simple">
+<dt>c_E: </dt><dd><ul>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \, P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(E(t) = E(T) + \Delta t \, P(t) \quad\)</span> otherwise</p></li>
 </ul>
 </dd>
 </dl>

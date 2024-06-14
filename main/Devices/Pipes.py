@@ -112,7 +112,7 @@ def Pipe(b, t, data, init_data):
     Acts as a flow transportation device which also applies an energy loss to the fluid as:
     
     .. math::
-        H(t) = H_0(t) + K \, Q(t)^2
+        H(t) = H_0(t) \pm K \, Q(t)^2
     
     where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.
     

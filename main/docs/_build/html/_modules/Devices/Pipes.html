@@ -89,6 +89,99 @@
 <span class="c1"># data: K, Qmax</span>
 <span class="c1"># init_data: H0(t), Q(t), H(t)</span>
 
+
+<div class="viewcode-block" id="PipeValve">
+<a class="viewcode-back" href="../../Devices.html#Devices.Pipes.PipeValve">[docs]</a>
+<span class="k">def</span> <span class="nf">PipeValve</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pipe that transports water and has implicit energy losses.</span>
+<span class="sd">    </span>
+<span class="sd">    Acts as a flow transportation device which also applies an energy loss to the fluid as:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        H(t) = H_0(t) + K \, Q(t)^2</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">        </span>
+<span class="sd">    data</span>
+<span class="sd">         - &#39;K&#39;: Linear pressure loss coefficient of the pipe :math:`K`</span>
+<span class="sd">         - &#39;Qmax&#39;: Maximum allowed flow :math:`Q_{max}`</span>
+<span class="sd">         </span>
+<span class="sd">    init_data</span>
+<span class="sd">         - &#39;H0&#39;: Static height :math:`H_0` as a ``list``</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
+<span class="sd">         - &#39;H&#39;: Head :math:`H(t)` as a ``list``</span>
+<span class="sd">    </span>
+<span class="sd">    Pyomo declarations    </span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - K</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - Q (t) bounded :math:`\in [-Q_{max}, Q_{max}]`</span>
+<span class="sd">            - H (t) bounded :math:`H \ge 0`</span>
+<span class="sd">            - zlow (t) bounded :math:`z_{low} \ge 0`</span>
+<span class="sd">            - zhigh (t) bounded :math:`z_{high} \ge 0`</span>
+<span class="sd">            - H0 (t) bounded :math:`H_{0} \ge 0`</span>
+<span class="sd">            - signQ (t) :math:`\in \{0,1\}`</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_Q @ Q as ``Extensive``</span>
+<span class="sd">            - port_H @ H as ``Equality``</span>
+<span class="sd">            - port_zlow @ zlow as ``Equality``</span>
+<span class="sd">            - port_zhigh @ zhigh as ``Equality``</span>
+<span class="sd">        - Constraints: </span>
+<span class="sd">            - c_H: :math:`H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)`</span>
+<span class="sd">            - c_H0: :math:`H_0(t) = z_{high}(t) - z_{low}(t)`</span>
+<span class="sd">            - c_sign: :math:`Q(t)\, (2\, signQ(t) - 1) &gt;= 0`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;K&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Cv</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Cv&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Qmax&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Qmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
+    <span class="n">b</span><span class="o">.</span><span class="n">zlow</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;zlow&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
+    <span class="n">b</span><span class="o">.</span><span class="n">zhigh</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;zhigh&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
+    <span class="n">b</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;H0&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="c1"># b.signQ = pyo.Var(t, initialize=1, bounds=(-1,1), within=pyo.Reals)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">signQ</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Binary</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+
+    
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_H</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Equality</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_zlow</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">zlow</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Equality</span><span class="p">)})</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_zhigh</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">zhigh</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Equality</span><span class="p">)})</span>
+    
+    <span class="c1"># Constraints</span>
+    <span class="c1"># def Constraint_H(_b, _t):</span>
+    <span class="c1">#     return _b.H[_t] == _b.H0[_t] + _b.K*_b.Q[_t]**2*(2*_b.signQ[_t]-1)</span>
+    <span class="c1"># b.c_H = pyo.Constraint(t, rule = Constraint_H)</span>
+    
+    <span class="k">def</span> <span class="nf">Constraint_H0</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">H0</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">zhigh</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">zlow</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_H0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_H0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Constraint_sign</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="c1"># return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5</span>
+        <span class="c1"># return _b.signQ[_t] == 2 * ( 1/(1+2.718281828**(-5*_b.Q[_t])) - 0.5)</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">signQ</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_sign</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_sign</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Constraint_valve</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">H0</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">K</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">Cv</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="n">_t</span><span class="p">]))</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">signQ</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_valve</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_valve</span><span class="p">)</span></div>
+
+    
+
+
 <div class="viewcode-block" id="Pipe">
 <a class="viewcode-back" href="../../Devices.html#Devices.Pipes.Pipe">[docs]</a>
 <span class="k">def</span> <span class="nf">Pipe</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
@@ -99,7 +192,7 @@
 <span class="sd">    Acts as a flow transportation device which also applies an energy loss to the fluid as:</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
-<span class="sd">        H(t) = H_0(t) + K \, Q(t)^2</span>
+<span class="sd">        H(t) = H_0(t) \pm K \, Q(t)^2</span>
 <span class="sd">    </span>
 <span class="sd">    where :math:`H_0(t)` is the static height and is computed as the difference of heights between both pipe extremes.</span>
 <span class="sd">    </span>

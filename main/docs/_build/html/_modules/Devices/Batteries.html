@@ -125,7 +125,7 @@
 <span class="sd">            - eff_ch</span>
 <span class="sd">            - eff_dc</span>
 <span class="sd">        - Variables: </span>
-<span class="sd">            - E (t) bounded :math:`E(t) \in [E_{max}\, SOC_{min}, E_{max}\, SOC_{max}]`</span>
+<span class="sd">            - E (t) bounded :math:`E(t) \in [0, E_{max}\, SOC_{max}]`</span>
 <span class="sd">            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`</span>
 <span class="sd">            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`</span>
 <span class="sd">            - Pdc (t) bounded :math:`P_{dc}(t) \in [0, P_{max}]`</span>
@@ -150,7 +150,7 @@
     
     <span class="c1"># Parameters</span>
     <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">])</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">E0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">])</span>
+    <span class="c1"># b.E0 = pyo.Param(initialize=data[&#39;E0&#39;])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">SOCmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">SOCmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">])</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Pmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">])</span>
@@ -161,11 +161,11 @@
     <span class="n">b</span><span class="o">.</span><span class="n">eff_dc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff_dc&#39;</span><span class="p">])</span>
     
     <span class="c1"># Variables</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">E</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">E</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">],</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">],</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Pch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Pdc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">SOC</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">h</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Einst&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOC</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:(</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">h</span><span class="p">]</span><span class="o">/</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Einst&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Einst&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pinst&#39;</span><span class="p">]),</span><span class="n">within</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Edim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Einst&#39;</span><span class="p">]),</span><span class="n">within</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
 
@@ -189,7 +189,8 @@
         <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E0</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmax</span><span class="o">+</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmin</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Einst</span><span class="o">+</span><span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="p">)</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+            <span class="c1"># return b.E[_t] == _b.E0 + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]*_b.eff_dc)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_E</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_E</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">Constraint_ch</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
@@ -209,455 +210,117 @@
     <span class="n">b</span><span class="o">.</span><span class="n">MinEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_min</span><span class="p">)</span></div>
 
   
-<span class="c1">#__________________________________________________________________________________________________________________________________</span>
-<span class="c1"># #%% Battery_MV </span>
-
-<span class="c1"># def Battery_MV(b, t, data, init_data):</span>
     
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     This battery model in intended to be used for he optmization examples using frequency data, for example</span>
-<span class="c1">#     for the provision of frecuency containtment reserve. The model was implemented by Manuel Valois he 19.03.2024</span>
+<div class="viewcode-block" id="NewBattery">
+<a class="viewcode-back" href="../../Devices.html#Devices.Batteries.NewBattery">[docs]</a>
+<span class="k">def</span> <span class="nf">NewBattery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Battery set for sizing.</span>
+<span class="sd">    </span>
+<span class="sd">    :param b: pyomo ``Block()`` to be set</span>
+<span class="sd">    :param t: pyomo ``Set()`` referring to time</span>
+<span class="sd">    :param data: data ``dict``</span>
+<span class="sd">    :param init_data: init_data ``dict``</span>
+<span class="sd">        </span>
+<span class="sd">    data:</span>
+<span class="sd">         - &#39;dt&#39;: time step :math:`\Delta t`</span>
+<span class="sd">         - &#39;SOCmin&#39;: Minimum allowed SOC :math:`SOC_{min}` in p.u.</span>
+<span class="sd">         - &#39;SOCmax&#39;: Maximum allowed SOC :math:`SOC_{max}` in p.u.</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum delivered/absorbed power :math:`P_{max}`</span>
+<span class="sd">         - &#39;Emax&#39;: Maximum battery energy :math:`E_{max}`</span>
+<span class="sd">         - &#39;eff_ch&#39;: Effiency of charge :math:`\eta_{ch}`</span>
+<span class="sd">         - &#39;eff_dc&#39;: Effiency of discharge :math:`\eta_{dc}`</span>
+<span class="sd">             </span>
+<span class="sd">    init_data:</span>
+<span class="sd">         - &#39;E&#39;: Energy :math:`E(t)` as a ``list``</span>
+<span class="sd">         - &#39;P&#39;: Power :math:`P(t)` as a ``list``</span>
+<span class="sd">         </span>
+<span class="sd">    Pyomo declaration</span>
+<span class="sd">        - Parameters: </span>
+<span class="sd">            - dt</span>
+<span class="sd">            - SOCmin</span>
+<span class="sd">            - SOCmax</span>
+<span class="sd">            - Pmax</span>
+<span class="sd">            - Emax</span>
+<span class="sd">            - eff_ch</span>
+<span class="sd">            - eff_dc</span>
+<span class="sd">            - T</span>
+<span class="sd">        - Variables: </span>
+<span class="sd">            - E (t) bounded :math:`E(t) \in [0, E_{max}\, SOC_{max}]`</span>
+<span class="sd">            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`</span>
+<span class="sd">            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`</span>
+<span class="sd">            - Pdc (t) bounded :math:`P_{dc}(t) \in [0, P_{max}]`</span>
+<span class="sd">            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`</span>
+<span class="sd">            - Edim bounded :math:`E_{dim} \in [0, E_{max}]`</span>
+<span class="sd">            - Pdim bounded :math:`P_{dim} \in [0, P_{max}]`</span>
+<span class="sd">        - Ports: </span>
+<span class="sd">            - port_P @ P (Extensive)</span>
+<span class="sd">        - Constraints:</span>
+<span class="sd">            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)\, \eta_{dc}`</span>
+<span class="sd">            - c_P0: :math:`0 = P_{ch}(t) \, P_{dc}(t)`</span>
+<span class="sd">            - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst})`</span>
+<span class="sd">            - c_ch: :math:`P_{ch}(t) \leq (P_{inst} + P_{dim})`</span>
+<span class="sd">            - dc: :math:`P_{dc}(t) \leq (P_{inst} + P_{dim})`</span>
+<span class="sd">            - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\, SOC{max}`</span>
+<span class="sd">            - c_Emin: :math:`E(t) \geq (E{inst} + E{dim})\, SOC{min}`</span>
+<span class="sd">            - c_E: </span>
+<span class="sd">                - :math:`E(t) = E(t-1) + \Delta t \, P(t) \quad` if  :math:`t&gt;0`</span>
+<span class="sd">                - :math:`E(t) = E(T) + \Delta t \, P(t) \quad` otherwise</span>
+<span class="sd">     &quot;&quot;&quot;</span>       
     
-<span class="c1">#     The current version is missing he deliitaion of a maximun and minimium SOC </span>
+    <span class="c1"># Parameters</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOCmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">SOCmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmin&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Emax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff_ch&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">eff_dc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff_dc&#39;</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
     
-<span class="c1">#     :param b: pyomo ``Block()`` to be set</span>
-<span class="c1">#     :param t: pyomo ``Set()`` referring to time</span>
-<span class="c1">#     :param data: data ``dict``</span>
-<span class="c1">#     :param init_data: init_data ``dict``</span>
-        
-<span class="c1">#     data:</span>
-<span class="c1">#          - &#39;E0&#39;: Initial energy :math:`E_0`</span>
-<span class="c1">#          - &#39;Einst&#39;: Energy storage already installed :math:`E_{inst}`</span>
-<span class="c1">#          - &#39;Emax&#39;: Maximum battery energy that can be installed :math:`E_{max}`</span>
-<span class="c1">#          - &#39;SOCmin&#39;: Minimum allowed SOC :math:`SOC_{min}` in p.u.</span>
-<span class="c1">#          - &#39;SOCmax&#39;: Maximum allowed SOC :math:`SOC_{max}` in p.u.</span>
-<span class="c1">#          - &#39;Pmax&#39;: Maximum delivered/absorbed power :math:`P_{max}`</span>
-<span class="c1">#          - &#39;Pinst&#39;: Power already installed :math:`P_{inst}`</span>
+    <span class="c1"># Variables</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">E</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOCmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">],</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">],</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pdc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span><span class="n">within</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Edim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Emax&#39;</span><span class="p">]),</span><span class="n">within</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
 
-             
-<span class="c1">#     init_data:</span>
-<span class="c1">#          - &#39;E&#39;: Energy :math:`E(t)` as a ``list``</span>
-<span class="c1">#          - &#39;P&#39;: Power :math:`P(t)` as a ``list``</span>
-         
-<span class="c1">#     Pyomo declaration</span>
-<span class="c1">#         - Parameters: </span>
-<span class="c1">#             - dt</span>
-<span class="c1">#             - E0</span>
-<span class="c1">#             - Emax</span>
-<span class="c1">#             - Pmax</span>
-<span class="c1">#             - Pdim</span>
-<span class="c1">#             - Edim</span>
-<span class="c1">#             - eff_ch</span>
-<span class="c1">#             - eff_disc</span>
-<span class="c1">#         - Variables: </span>
-<span class="c1">#             - E (t) bounded :math:`E(t) \in [E_{max}\cdot SOC_{min}, E_{max}\cdot SOC_{max}]`</span>
-<span class="c1">#             - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`</span>
-<span class="c1">#             - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`</span>
-<span class="c1">#             - Pdisc (t) bounded :math:`P_{disc}(t) \in [0, P_{max}]`</span>
-<span class="c1">#             - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`</span>
-<span class="c1">#             - Edim bounded :math:`E_{dim} \in [0, E_ {max} - E_{inst}]` : Aditional Energy Capacity to be determined by the optimization</span>
-<span class="c1">#             - Pdim bounded :math:`P_{dim} \in [0, P_ {max} - P_{inst}]`</span>
-<span class="c1">#         - Ports: </span>
-<span class="c1">#             - port_P @ P (Extensive)</span>
-<span class="c1">#         - Constraints:</span>
-<span class="c1">#             - c_P: :math:`P(t) = P_{ch}(t) - P_{disc}(t)`</span>
-<span class="c1">#             - c_P0: :math:`0 = P_{ch}(t) \cdot P_{disc}(t)`</span>
-<span class="c1">#             - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst}`</span>
-<span class="c1">#             - c_ch: :math:`Pch(t) \leq (P{inst} + P{dim})`</span>
-<span class="c1">#             - c_disc: :math:`Pdisc(t) \leq (P{inst} + P{dim})`</span>
-<span class="c1">#             - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{max}`</span>
-<span class="c1">#             - c_Emin: :math:`E(t) \leq (E{inst} + E{dim})\cdot SOC{min}`</span>
-<span class="c1">#             - c_E: </span>
-<span class="c1">#                 - :math:`E(t) = E(t-1) + \Delta t \cdot P(t) \quad` if  :math:`t&gt;0`</span>
-<span class="c1">#                 - :math:`E(t) = E_0 + \Delta t \cdot P(t) \quad` otherwise</span>
+    <span class="c1"># Ports</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">port_P</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">P</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
 
-<span class="c1">#      &quot;&quot;&quot;     </span>
+    <span class="c1"># Constraints</span>
+    <span class="k">def</span> <span class="nf">Constraint_P</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P</span><span class="p">)</span>
     
-<span class="c1">#     # Parameters</span>
-<span class="c1">#     b.E0 = pyo.Param(initialize=data[&#39;E0&#39;])       # Energy storage at the battery at the beggiing of the simulation (_t=0)</span>
-<span class="c1">#     b.Pmax = pyo.Param(initialize=data[&#39;Pmax&#39;])   # Battery maximun charging and discharging power  </span>
-<span class="c1">#     b.Emax = pyo.Param(initialize=data[&#39;Emax&#39;])   # Battery maximun energy capacity</span>
-<span class="c1">#     b.Einst = pyo.Param(initialize=data[&#39;Einst&#39;]) # Battery installed rated energy</span>
-<span class="c1">#     b.Pinst = pyo.Param(initialize=data[&#39;Pinst&#39;]) # Battery installed rated power</span>
-<span class="c1">#     b.slope_fcr = pyo.Param(initialize=data[&#39;slope_fcr&#39;]) # statik for the FCR ( 100%  power by a 200mH deviation)</span>
-<span class="c1">#     b.F = pyo.Param(t, initialize=data[&#39;F&#39;])      # Grid frequency (time serie)</span>
+    <span class="k">def</span> <span class="nf">Constraint_P0</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">*</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_P0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P0</span><span class="p">)</span>
     
-<span class="c1">#     b.SOCmin = pyo.Param(initialize=0.25*(data[&#39;Pinst&#39;])/(data[&#39;Einst&#39;])) </span>
-<span class="c1">#     b.SOCmax = pyo.Param(initialize=((data[&#39;Einst&#39;]) - 0.25*(data[&#39;Pinst&#39;]))/(data[&#39;Einst&#39;])) # bounds = (0.0,data[&#39;SOCmax&#39;]),</span>
+    <span class="k">def</span> <span class="nf">Constraint_E</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_E</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_E</span><span class="p">)</span>
     
-<span class="c1">#     # Variables</span>
-      
-<span class="c1">#     b.Pdemanded = pyo.Var(t, initialize= 0.0,  within=pyo.Reals) </span>
-<span class="c1">#     b.Pcharged = pyo.Var(t, initialize= 0.0,  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     b.Pdischarged = pyo.Var(t, initialize= 0.0,  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     #b.EstrgOut = pyo.Var(t, initialize= 0.0,  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     b.EstrgOut = pyo.Var(t, initialize= 0.0, bounds = (0.0,data[&#39;Einst&#39;]),  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     b.SOC = pyo.Var(t, initialize= 0.0, bounds = (data[&#39;SOCmin&#39;],data[&#39;SOCmax&#39;]),  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     #b.SOC = pyo.Var(t, initialize= 0.0,  within=pyo.NonNegativeReals)</span>
-<span class="c1">#     b.Pout = pyo.Var(t, initialize= 0.0,  within=pyo.Reals)</span>
+    <span class="k">def</span> <span class="nf">Constraint_ch</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_ch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_ch</span><span class="p">)</span>
     
+    <span class="k">def</span> <span class="nf">Constraint_disc</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_dc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_disc</span><span class="p">)</span>
     
-<span class="c1">#     # Ports</span>
-<span class="c1">#     b.port_P = Port(initialize={&#39;P&#39;: (b.Pout, Port.Extensive)})                                     # Output signal of the model</span>
-  
-<span class="c1">#   # Constraints</span>
-<span class="c1">#     #b.constraint_lower = Constraint(expr=b.EstrgOut[t] &gt;= 0.0)</span>
+    <span class="k">def</span> <span class="nf">ConstraintE_max</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmax</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">MaxEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_max</span><span class="p">)</span>
     
-<span class="c1">#     def Constraint_P(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return b.Pdemanded[t] == (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P) </span>
-    
-<span class="c1">#     def Constraint_Pbalance(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return b.Pdemanded[t] - b.Pcharged[t] + b.Pdischarged[t] == 0.0</span>
-<span class="c1">#     b.Constraint_Pbalance = pyo.Constraint(t, rule=Constraint_Pbalance) </span>
-    
-<span class="c1">#     def Constraint_Pbalance_1(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return b.Pcharged[t]*b.Pdischarged[t] == 0.0</span>
-<span class="c1">#     b.Constraint_Pbalance_1 = pyo.Constraint(t, rule=Constraint_Pbalance_1)</span>
- 
+    <span class="k">def</span> <span class="nf">ConstraintE_min</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmin</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">MinEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_min</span><span class="p">)</span></div>
 
-<span class="c1">#     def Constraint_EstrgOut(b, t): </span>
-<span class="c1">#         if t==0:                                               # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#            return b.EstrgOut[t] ==  (b.E0) + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#            return b.EstrgOut[t] ==  b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#     b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
-     
-   
-<span class="c1">#     def Constraint_SOC(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return b.SOC[t] == b.EstrgOut[t]/(b.Einst)</span>
-<span class="c1">#     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)</span>
-
-<span class="c1"># # From this point we start having problems</span>
-
-<span class="c1"># # When including this constraint, the result from t=14 to 20 are not correct</span>
-<span class="c1"># #    the battery is supposed to be empty  </span>
-
-<span class="c1"># # Problem definition: The outpout power is not calculated correctly since the SOC is also not correct.</span>
-<span class="c1"># # The SCO and the EstrgOut are not matching, which cause the minimun and maximun SOC and not respected</span>
-<span class="c1"># # Additionally, after the full charging or discharging of the battery, the results of the next time step are 0 or 24000, which not correct. </span>
-<span class="c1"># # The results after reaching the maximun or the minimun must be for example the minimum SOC + Edemanded</span>
-<span class="c1"># # Constraint could defined within the variables or as a fuction, but some how the results are deferent, and for example the SOCmin when defined within the variable, is not taken into account</span>
-<span class="c1"># # give a look to time step 1, 21-22, 23-26, 14-20, 49-50, which the error are usually occurring </span>
-<span class="c1">#     def Constraint_Pout(b, t,):          # the                                           # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if t==0:</span>
-<span class="c1">#             return b.Pout[t] == (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return b.Pout[t] == (b.SOC[t] - b.SOC[t-1])*(b.Einst)</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)  </span>
-<span class="c1"># &quot;&quot;&quot;      </span>
-<span class="c1">#     def Constraint_SOC_2(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return b.SOC[t] &lt;= b.SOCmax</span>
-<span class="c1">#     b.c_SOC_2 = pyo.Constraint(t, rule = Constraint_SOC_2)</span>
-    
-<span class="c1">#     def Constraint_SOC_1(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return b.SOC[t] &gt;= b.SOCmin</span>
-<span class="c1">#     b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1)</span>
-
-  
-<span class="c1">#     def Constraint_SOC_3(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  b.EstrgOut[t] &lt;= b.SOCmax*(b.Einst)</span>
-<span class="c1">#     b.c_SOC_3 = pyo.Constraint(t, rule = Constraint_SOC_3)</span>
-
-
-<span class="c1"># ----------------------------------------------------------------------------------- </span>
-
-
-
-
-
-
-
-
-
-    
-  
-<span class="c1">#     def Constraint_SOC_1(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return b.EstrgOut[t] &gt;= b.SOCmin*(b.Einst)</span>
-<span class="c1">#     b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1)</span>
-
-
-
-<span class="c1">#     def Constraint_Pbalance_2(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return b.Pcharged[t] &lt;= b.Pinst</span>
-<span class="c1">#     b.Constraint_Pbalance_2 = pyo.Constraint(t, rule=Constraint_Pbalance_2)</span>
-    
-<span class="c1">#     def Constraint_Pbalance_3(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return b.Pdischarged[t] &lt;= b.Pinst</span>
-<span class="c1">#     b.Constraint_Pbalance_3 = pyo.Constraint(t, rule=Constraint_Pbalance_3)</span>
-  
-<span class="c1">#     def Constraint_EstrgOut(b, t): </span>
-<span class="c1">#         if t==0:                                               # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#            return b.EstrgOut[t] ==  (b.E0) + b.Pcharged[t] - b.Pdischarged[t]</span>
-<span class="c1">#         else:</span>
-<span class="c1">#            return b.EstrgOut[t] ==  b.EstrgOut[t-1] + b.Pcharged[t] - b.Pdischarged[t]</span>
-<span class="c1">#     b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
-
-
-  
-    
-
-
-
-<span class="c1">#     def Constraint_EstrgOut_1(b, t):                                               # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#          return b.EstrgOut[t] &gt;= b.SOCmin*b.Einst</span>
-<span class="c1">#     b.Constraint_EstrgOut_1 = pyo.Constraint(t, rule = Constraint_EstrgOut_1)</span>
-
-
-<span class="c1"># &quot;&quot;&quot;    </span>
-
-
-<span class="c1"># &quot;&quot;&quot;</span>
-<span class="c1">#     def Constraint_EstrgOut(b, t): </span>
-<span class="c1">#         if t==0:                                               # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#            return b.EstrgOut[t] ==  (b.E0) + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#            return b.EstrgOut[t] ==  b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#     b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
-
-<span class="c1">#     def Constraint_EstrgOut_2(b, t):                                               # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#          return b.EstrgOut[t] &lt;= b.SOCmax*b.Einst</span>
-<span class="c1">#     b.Constraint_EstrgOut_2 = pyo.Constraint(t, rule = Constraint_EstrgOut_2)</span>
-    
-
- 
-
-
-    
-<span class="c1">#     def Constraint_Pbalance_4(b, t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return  b.EstrgOut[t] &gt;= b.Pdischarged[t]</span>
-<span class="c1">#     b.Constraint_Pbalance_4 = pyo.Constraint(t, rule=Constraint_Pbalance_4)</span>
- 
-
-  
-
-
-
-
-
-
-
-     
-<span class="c1">#     def Constraint_EstrgOut(b, t):                                                # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#         if t==0:</span>
-<span class="c1">#             return b.EstrgOut[t] == b.E0 + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr </span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return b.EstrgOut[t] == b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr</span>
-<span class="c1">#     b.c_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
- 
-
-
-
-<span class="c1">#     def Constraint_SOC(b, t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#         if t==0:</span>
-<span class="c1">#             return b.SOC[t] == (b.E0 + ((50 - (b.F[t]))*(b.Pinst)*b.slope_fcr))/ b.Einst</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return b.SOC[t] == (b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr)/ b.Einst</span>
-<span class="c1">#     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)</span>
-
-
-
-
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.EstrgOut[_t] - _b.EstrgOut[_t-1])</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout) </span>
-
-<span class="c1">#     def Constraint_EstrgOut_1(_b, _t):                                                # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#            return _b.EstrgOut[_t] &gt;= 0.0</span>
-<span class="c1">#     b.c_EstrgOut_1 = pyo.Constraint(t, rule = Constraint_EstrgOut_1)</span>
-
- 
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.EstrgOut[_t] - _b.EstrgOut[_t-1])</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)  </span>
-    
-
-
- 
-
-
-
- 
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == -(50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.EstrgOut[_t] - _b.EstrgOut[_t-1])</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)   </span>
-
-
-
-    
-<span class="c1">#     def Constraint_SOC_1(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return _b.EstrgOut[_t] &gt;= _b.SOCmin*(_b.Einst)</span>
-<span class="c1">#     b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1) </span>
-
-
-
-<span class="c1">#     def Constraint_SOC_3(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  _b.SOC[_t] &lt;= _b.SOCmax[_t]</span>
-<span class="c1">#     b.c_SOC_3 = pyo.Constraint(t, rule = Constraint_SOC_3)</span>
-
-<span class="c1">#     def Constraint_SOC_4(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  _b.SOC[_t] &gt;= _b.SOCmin[_t]</span>
-<span class="c1">#     b.c_SOC_4 = pyo.Constraint(t, rule = Constraint_SOC_4)</span>
-  
-<span class="c1">#  &quot;&quot;&quot; </span>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
-
-
-
-<span class="c1"># &quot;&quot;&quot;  </span>
-<span class="c1">#     def Constraint_P(_b, _t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#             return _b.Pdemanded[_t] == (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P) </span>
-
-<span class="c1">#     def Constraint_SOCmin(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return _b.SOCmin[_t] == 0.25*(_b.Pinst)/b.Einst</span>
-<span class="c1">#     b.c_SOCmin = pyo.Constraint(t, rule = Constraint_SOCmin)</span>
-    
-<span class="c1">#     def Constraint_SOCmax(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return _b.SOCmax[_t] == (b.Einst - 0.25*(_b.Pinst))/b.Einst</span>
-<span class="c1">#     b.c_SOCmax = pyo.Constraint(t, rule = Constraint_SOCmax)</span>
-      
-<span class="c1">#     def Constraint_EstrgOut(_b, _t):                                                # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.EstrgOut[_t] == _b.E0 + (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr </span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.EstrgOut[_t] == _b.EstrgOut[_t-1] + (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#     b.c_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
-
-<span class="c1">#     def Constraint_SOC_1(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return _b.EstrgOut[_t] &gt;= _b.SOCmin[_t]*(_b.Einst)</span>
-<span class="c1">#     b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1) </span>
-
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == -(50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.EstrgOut[_t] - _b.EstrgOut[_t-1])</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)   </span>
-    
-<span class="c1">#     def Constraint_SOC_2(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  _b.EstrgOut[_t] &lt;= _b.SOCmax[_t]*(_b.Einst)</span>
-<span class="c1">#     b.c_SOC_2 = pyo.Constraint(t, rule = Constraint_SOC_2)</span>
- 
-    
-<span class="c1">#     def Constraint_SOC(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.SOC[_t] == (_b.E0 + ((50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr))/ b.Einst</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.SOC[_t] == (_b.EstrgOut[_t-1] + (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr)/ b.Einst</span>
-<span class="c1">#     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)</span>
-    
-<span class="c1">#     def Constraint_SOC_3(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  _b.SOC[_t] &lt;= _b.SOCmax[_t]</span>
-<span class="c1">#     b.c_SOC_3 = pyo.Constraint(t, rule = Constraint_SOC_3)</span>
-
-<span class="c1">#     def Constraint_SOC_4(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#             return  _b.SOC[_t] &gt;= _b.SOCmin[_t]</span>
-<span class="c1">#     b.c_SOC_4 = pyo.Constraint(t, rule = Constraint_SOC_4)</span>
-
-
-<span class="c1"># &quot;&quot;&quot;</span>
-
-
-
-
-
-<span class="c1"># &quot;&quot;&quot; </span>
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == -(50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.SOC[_t] - _b.SOC[_t-1])*(_b.Einst)</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)   </span>
-  
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == -(50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.SOC[_t] - _b.SOC[_t-1])*(_b.Einst)</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)   </span>
-
-    
-
- 
-
-    
-
-
-    
-
-
-    
- 
-<span class="c1"># &quot;&quot;&quot;</span>
-    
-
-
-    
-<span class="c1"># &quot;&quot;&quot;</span>
-<span class="c1">#     def Constraint_P(_b, _t):                                                       #This constraint calculates the amount of power to be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pdemanded[_t] == (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pdemanded[_t] == (50 - (_b.F[_t]))*(_b.Pinst)*_b.slope_fcr</span>
-<span class="c1">#     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P) </span>
-
-<span class="c1">#     def Constraint_EstrgIni(_b, _t):                                                # This constraint calculated the power at the beginning of the time step</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.EstrgIni[_t] == _b.E0 </span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.EstrgIni[_t] == _b.EstrgIni[_t-1] + b.Pdemanded[_t-1]</span>
-<span class="c1">#     b.c_EstrgIni = pyo.Constraint(t, rule = Constraint_EstrgIni) </span>
-
-    
-<span class="c1">#     def Constraint_EstrgOut(_b, _t):                                                # This constraint calculated the power at the end of the time step</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.EstrgOut[_t] == _b.E0 + b.Pdemanded[_t] </span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.EstrgOut[_t] == _b.EstrgOut[_t-1] + b.Pdemanded[_t]</span>
-<span class="c1">#     b.c_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)</span>
-    
-      
-<span class="c1">#     def Constraint_SOC(_b, _t,):                                                    # This constraint calculated the current SOC of the battery</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.SOC[_t] == (_b.E0 + b.Pdemanded[_t])/ b.Einst</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.SOC[_t] == _b.EstrgOut[_t]/ b.Einst</span>
-<span class="c1">#     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)</span>
-
-   
-<span class="c1">#     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered</span>
-<span class="c1">#         if _t==0:</span>
-<span class="c1">#             return _b.Pout[_t] == _b.Pdemanded[_t]</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             return _b.Pout[_t] == (_b.SOC[_t] - _b.SOC[_t-1])*(_b.Einst)</span>
-<span class="c1">#     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)</span>
-
-<span class="c1"># &quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

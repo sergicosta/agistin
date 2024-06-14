@@ -52,7 +52,7 @@ def Turbine(b, t, data, init_data):
             - port_H @ H as ``Equality``
         - Constraints: 
             - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`
-            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}`
+            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}`
             - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`
             - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`
     """

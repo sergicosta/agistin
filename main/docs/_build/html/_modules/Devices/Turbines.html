@@ -104,6 +104,8 @@
 <span class="sd">        </span>
 <span class="sd">    data</span>
 <span class="sd">         - &#39;eff&#39;: Efficiency of the turbine :math:`\eta`</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power :math:`P_{max}`</span>
+<span class="sd">         - &#39;Qmax&#39;: Maximum allowed flow :math:`Q_{max}`</span>
 <span class="sd">    </span>
 <span class="sd">    init_data</span>
 <span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
@@ -113,7 +115,6 @@
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - eff </span>
-<span class="sd">            - Pmax</span>
 <span class="sd">        - Variables: </span>
 <span class="sd">            - Pdim bounded :math:`P_{dim} \ge 0`</span>
 <span class="sd">            - Qin (t) bounded :math:`Q_{in} \le 0`</span>
@@ -128,18 +129,16 @@
 <span class="sd">            - port_H @ H as ``Equality``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`</span>
-<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}`</span>
+<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}`</span>
 <span class="sd">            - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`</span>
 <span class="sd">            - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`</span>
-<span class="sd">            - c_Pdim: :math:`P_{dim}(t) \le P_{max}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
     <span class="n">b</span><span class="o">.</span><span class="n">eff</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff&#39;</span><span class="p">])</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">Pmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">])</span>
     
     <span class="c1"># Variables</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Qin</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Qout</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">H</span>    <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
@@ -167,11 +166,7 @@
 
     <span class="k">def</span> <span class="nf">Constraint_Pdim</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Pe</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">c_Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Pdim</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">Constraint_TurbPmax</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pmax</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">c_TurbPmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_TurbPmax</span><span class="p">)</span></div>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Pdim</span><span class="p">)</span></div>
 
 </pre></div>
 
