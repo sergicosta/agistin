@@ -42,7 +42,7 @@ data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(5)) #TODO this should be inferred from the number of rows in the excel time series,
+l_t = list(range(55)) #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 

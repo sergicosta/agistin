@@ -156,7 +156,8 @@ def builder(m, test_case):
     #from Devices.Switch import Switch
     #from Devices.Turbines import Turbine
     #from Devices.Batteries import Battery
-    from Devices.Batteries import Battery_MV
+    #from Devices.Batteries import Battery_MV
+    from Devices.Nishat_Battery import Battery_MV
 
     with open(f'Cases\{test_case}.json', 'r') as jfile:
         system = json.load(jfile)
