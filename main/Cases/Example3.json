@@ -40,7 +40,7 @@
 	 "conns":{}
 	 },
 "PV":{
-	 "data":{"type":"SolarPV","Pinst":50000,"Pmax":100000,"forecast":[0.4, 1.0, 1.7, 1.2, 0.5]},
+	 "data":{"type":"SolarPV","Pinst":50000,"eff":0.98,"Pmax":100000,"forecast":[0.4, 1.0, 1.7, 1.2, 0.5]},
 	 "init_data":{},
 	 "conns":{"P":["EB","P"]}
 	 },

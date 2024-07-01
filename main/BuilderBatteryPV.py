@@ -194,7 +194,7 @@ def run(name, dt):
     builder(m, name)
     """
     def obj_fun(m):
-        return sum(-m.MainGrid.P[t]*m.cost_MainGrid[t] for t in list(range(T))) + m.Turb1.Pdim*m.cost_Turb1[0] + m.PumpNew.Pdim*m.cost_PumpNew[0]
+        return sum(-m.MainGrid.P[t][t] for t in list(range(T))) + m.Turb1.Pdim*m.cost_Turb1[0] + m.PumpNew.Pdim*m.cost_PumpNew[0]
     m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
     
     instance = m.create_instance()

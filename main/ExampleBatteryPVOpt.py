@@ -13,20 +13,19 @@ Created on Thu Mar  7 10:07:16 2024
     
     Authors: Manuel Valois (Uni-Kassel), Nishat Jillani (Uni-Kassel)
 """
-# Import pyomo
+# Import pyomo2
 import pyomo.environ as pyo
 from pyomo.network import Arc, Port
 
 # Import builder
-from BuilderBatteryPV import data_parser, builder
+from BuilderBatteryPVOpt import data_parser, builder
 
 # Import devices
 from Devices.MainGrid import Grid
 from Devices.EB import EB
 from Devices.Batteries import Battery_MV
-#from Devices.SolarPV import SolarPV
+from Devices.SolarPV import SolarPV
 #from Devices.Pumps import Pump
-
 
 
 # Import useful functions
@@ -46,6 +45,7 @@ m = pyo.ConcreteModel()
 l_t = list(range(55)) #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
+
 builder(m, data_filename)
 
 """
@@ -61,54 +61,40 @@ pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to mod
 #%% RUN THE OPTIMIZATION
 #""
 #Objective function
-#def obj_fun(m):
-	#return sum((m.Battery.EENS[t]*10000) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]
-    #return sum((m.Grid.Pbuy[t]*m.cost_MainGrid[t] - m.Grid.Psell[t]*m.cost_MainGrid[t]/2  + m.Battery.EENS[t]*10000) for t in l_t ) + m.PV.Pdim*m.cost_PV1[0]
-    #return sum((m.Grid.Pbuy) for t in l_t )
-#m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
-#"""
-#instance = m.create_instance()
-#solver = pyo.SolverFactory('ipopt')
-#solver.solve(instance, tee=False)
+
 
 def obj_fun(m):
-    return sum(((m.Battery.PowerFCRCharge[t]*5) + (m.Battery.PowerFCRDisCharge[t])*-10 + m.Battery.Pfeedin[t]*-6 + m.Battery.Pfeedout[t]*-8)  for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
-m.goal = pyo.Objective(rule=obj_fun, sense=pyo.maximize)
-    #"""
+	return sum(( (m.cost_MainGrid[t])*m.Grid.Pbuy[t]) - (m.Battery.Pout[t]*m.rev_FCR[t]) - (m.cost_feed_in[t]*m.Grid.Psell[t]) for t in l_t ) - ( m.Battery.Edim*m.cost_Battery1[0] )#+ m.Battery.Edim*m.cost_Battery1[0])
+m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+
+# m.Battery.Edim: Additional battery capacity to be installed as result of the optimization
+
+#"""
 instance = m.create_instance()
-solver = pyo.SolverFactory('ipopt')
+solver = pyo.SolverFactory('ipopt') #  glpk'
 solver.solve(instance, tee=False)
 
- #   return sum(((m.Battery.PowerFCRCharge[t]*10 + m.Battery.P_SCcharged[t]*5 ) + (m.Battery.PowerFCRDisCharge[t] + m.Battery.P_SCdischarged[t])) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]  
-#    return ((m.Batteries.BCharge[t] + m.Batteries.BDischarge[t]) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
-#instance.Grid.P.pprint()
+instance.Grid.P.pprint()
+#instance.Grid.Psell.pprint()
+#instance.Grid.Pbuy.pprint()
 
+#instance.Battery.Pdemanded.pprint()
+instance.Battery.EstrgOut.pprint()
+instance.Battery.Pout.pprint()
 
-#instance.Battery.EENS.pprint()
-#instance.Battery.Pcharged.pprint()
-#instance.Battery.Pdischarged.pprint()
-#instance.Battery.EstrgOut.pprint()
-#instance.Battery.EstrgIni.pprint()
 
 instance.Battery.SOC.pprint()
-instance.Battery.PowerFCRDisCharge.pprint()
-instance.Battery.PowerFCRCharge.pprint()
-instance.Battery.Pfeedin.pprint()
-instance.Battery.Pfeedout.pprint()
-#instance.Battery.FeedinMax.pprint()
+instance.Battery.Edim.pprint()
+#instance.Battery.POutdischarged.pprint()
+#instance.Battery.POutcharged.pprint()
 
-#print(instance.Battery.Max)
-
-MaxPfeedout = max(m.Battery.Pfeedout)
-print(MaxPfeedout)
-#print(instance.Battery.MaxPfeedout) # Working
-
-#instance.Battery.Pout.pprint()
 #instance.Battery.Edim.pprint()
 
 #instance.PV.P.pprint()
 #instance.PV.Pdim.pprint()
+#instance.Battery.Edim.pprint()
 #instance.PV.Pinst.pprint()
+
 
 
 

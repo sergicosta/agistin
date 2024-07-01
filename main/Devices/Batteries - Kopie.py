@@ -323,370 +323,47 @@ def Battery_MV(b, t, data, init_data):
     
     # Parameters
     b.E0 = pyo.Param(initialize=data['E0'])       # Energy storage at the battery at the beggiing of the simulation (_t=0)
-    b.Pmax = pyo.Param(initialize=data['Pmax'])   # Battery maximun charging and discharging power  1000 MW
-    b.Emax = pyo.Param(initialize=data['Emax'])   # Battery maximun energy capacity --> 24000 MWh
+    b.Pmax = pyo.Param(initialize=data['Pmax'])   # Battery maximun power that can be delivered 
+    b.Emax = pyo.Param(initialize=data['Emax'])   # Battery maximun energy capacity
     b.Einst = pyo.Param(initialize=data['Einst']) # Battery installed rated energy
     b.Pinst = pyo.Param(initialize=data['Pinst']) # Battery installed rated power
     b.slope_fcr = pyo.Param(initialize=data['slope_fcr']) # statik for the FCR ( 100%  power by a 200mH deviation)
     b.F = pyo.Param(t, initialize=data['F'])      # Grid frequency (time serie)
-    b.PowerFCRCharge = pyo.Param(t, initialize=data['FCRCharge'])
-    b.PowerFCRDisCharge = pyo.Param(t, initialize=data['FCRDisCharge'])
-    
     
     b.SOCmin = pyo.Param(initialize=0.25*(data['Pinst'])/(data['Einst'])) 
-    b.SOCmax = pyo.Param(initialize=((data['Einst']) - 0.25*(data['Pinst']))/(data['Einst'])) # bounds = (0.0,data['SOCmax']),
+    b.SOCmax = pyo.Param(initialize=((data['Einst']) - 0.25*(data['Pinst']))/(data['Einst'])) 
     
     # Variables
-    b.Pfeedin = pyo.Var(t, bounds=(-1000, 0))
-    b.Pfeedout = pyo.Var(t, bounds=(0, 1000))
       
+ 
+    #b.EstrgOut = pyo.Var(t, initialize= 0.0, bounds = (0,data['Einst']),  domain=pyo.NonNegativeReals)    
+    #b.EstrgOut = pyo.Var(t, initialize= 0.0,  domain=pyo.NonNegativeReals)
+    b.EstrgOut = pyo.Var(t, initialize= 0.0,  domain=pyo.Reals) 
+    #b.EstrgOutPositive = pyo.Var(t, initialize= 0.0,  domain=pyo.NonNegativeReals)
+    
+    #b.SOC = pyo.Var(t, initialize={k:init_data['E'][h]/(data['Emax']) for h,k in enumerate(range(len(t)))}, bounds=(data['SOCmin'], data['SOCmax']), within=pyo.NonNegativeReals)                                 # Energy storaged in the batery at the end of the time step without considering the limitation of the SOC
+    
+    b.SOC = pyo.Var(t, initialize= 0.0, bounds = (0,1), within=pyo.NonNegativeReals)                                # SOC of the battery for the respective time step 
+    #b.SOCmin = pyo.Var(t, initialize={k: 0.25*(data['Pinst'])/(data['Einst']) for h,k in enumerate(range(len(t)))}, domain=pyo.NonNegativeReals)  
+    #b.SOCmax = pyo.Var(t, initialize={k: (data['Einst']-0.25*(data['Pinst']))/(data['Einst']) for h,k in enumerate(range(len(t)))}, domain=pyo.NonNegativeReals)  
+    #b.SOCmin = pyo.Var(t, initialize= 0.0, bounds = (0,1), within=pyo.NonNegativeReals) 
+    #b.SOCmax = pyo.Var(t, initialize= 0.0, bounds = (0,1), within=pyo.NonNegativeReals) 
+    b.EstrgIni = pyo.Var(t, initialize= 0.0, bounds = (0,data['Einst']),  domain=pyo.NonNegativeReals)         # Energy storaged at the batery at the beginning of the time step without considering the limitation of the SOC
+    b.Pdemanded = pyo.Var(t, initialize={k: 0.0 for k in range(len(t))}, domain=pyo.Reals) 
+    #b.Pdemanded = pyo.Var(t, initialize={k:(50 - data['F'][h])*(data['Pinst'])*(data['slope_fcr']) for h,k in enumerate(range(len(t)))}, domain=pyo.Reals) 
+    b.Pout = pyo.Var(t, initialize={k: 0.0 for k in range(len(t))},bounds = (-data['Pinst'],data['Pinst']), domain=pyo.Reals)         # Power demanded according the current freqeuncy
+    #b.Pout = pyo.Var(t, initialize= 0.0 , domain=pyo.Reals)                                         # Power supplied and storage considering the frequency and the state of charge, if battery is empy power can not be supplied
+    b.Edim = pyo.Var(initialize = 0, bounds = (0,data['Emax']),within = pyo.NonNegativeReals)       # Additional energy capacity to be determined by the optimization problem
 
-    b.P_SCcharged = pyo.Var(t, bounds = (0.0, 1000),  within=pyo.NonNegativeReals)
-    #b.P_SCdischarged = pyo.Var(t, bounds = (0.0, -1000),  within=pyo.NonPositiveReals)
-    #b.BCharge=pyo.Var(t, within = pyo.Binary)
-    #b.BDischarge=pyo.Var(t, within = pyo.Binary)
-    #b.BCharge=pyo.Var(t, initialize= 1.0, bounds = (0.0,data['Einst']), within=pyo.NonNegativeReals)
-    #b.BDischarge=pyo.Var(t, initialize= 1.0, bounds = (0.0,data['Einst']), within=pyo.NonNegativeReals)
-    b.EstrgOut = pyo.Var(t, within=pyo.NonNegativeReals)
-    #b.EstrgOut = pyo.Var(t, initialize= 0.0, bounds = (0.0,data['Einst']),  within=pyo.NonNegativeReals)
-    #b.SOC = pyo.Var(t, initialize= 0.0, bounds = (data['SOCmin'],data['SOCmax']),  within=pyo.NonNegativeReals)
-    #b.SOC = pyo.Var(t, initialize= 0.0, bounds = (0.0104,0.9895833333333334),  within=pyo.NonNegativeReals)
-    b.SOC = pyo.Var(t, initialize= 0.0, bounds = (249,23750))
-    #b.SOC = pyo.Var(t,   within=pyo.NonNegativeReals) # bounds = (0.0,data['Einst']) , within=pyo.NonNegativeReals
-    b.Pout = pyo.Var(t, initialize= 0.0,  within=pyo.Reals)
-    b.EENS = pyo.Var(t, within=pyo.NonNegativeReals)
-    
-    b.POutcharged = pyo.Var (t,  within=pyo.NonNegativeReals)
-    #b.POutdischarged = pyo.Var(t, initialize= b.Pout,  within=pyo.NonNegativeReals)
-    
-    # Free Variables
-    
-    b.Edim = pyo.Var(initialize=0 , bounds=(0, data['Emax']), domain=pyo.NonNegativeReals)
-    
-    
     # Ports
     b.port_P = Port(initialize={'P': (b.Pout, Port.Extensive)})                                     # Output signal of the model
   
-    def Constraint_SOC(b, t):
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.SOC[t] == (b.E0) + (b.PowerFCRCharge[t]) + (b.PowerFCRDisCharge[t] +  b.Pfeedin[t] + b.Pfeedout[t]  ) 
-        else:
-           return b.SOC[t]  ==  b.SOC[t-1] + (b.PowerFCRCharge[t]) + (b.PowerFCRDisCharge[t] +  b.Pfeedin[t] + b.Pfeedout[t])                                           # This constraint calculated the current SOC of the battery
-    b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)
-    
-    def Constraint_FeedIn(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.PowerFCRCharge[t]*b.Pfeedin[t] == 0.0)
-    b.Constraint_FeedIn = pyo.Constraint(t, rule=Constraint_FeedIn)
-    
-    #def Constraint_FeedIn1(b, t):                                                       #This constraint calculates the amount of power to be delivered
-    #        return (b.Pfeedin[t] <= -b.Pmax*2)
-    #b.Constraint_FeedIn1 = pyo.Constraint(t, rule=Constraint_FeedIn1)
-    
-    def Constraint_FeedOut1(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.PowerFCRDisCharge[t]*b.Pfeedout[t] == 0.0)
-    b.Constraint_FeedOut1 = pyo.Constraint(t, rule=Constraint_FeedOut1)
-    
-   # def Constraint_FeedOut2(b, t):                                                       #This constraint calculates the amount of power to be delivered
-   #         return (b.Pfeedout[t] <= b.Pmax)
-   # b.Constraint_FeedOut2 = pyo.Constraint(t, rule=Constraint_FeedOut2)
-    
-    def Constraint_FeedInOut(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.Pfeedin[t]*b.Pfeedout[t] == 0.0)
-    b.Constraint_FeedInOut = pyo.Constraint(t, rule=Constraint_FeedInOut)
-    
-
-    #FeedinMax = [(b.Pfeedin[t]) for t in t]
-    #FeedinMax2 = max(FeedinMax)
-    #b.MAX = max(b.Pfeedin)
-    #b.MaxPfeedout = max(b.Pfeedout) # Working
-    
-    
-
-    
-        
-""" 
-    def C_1(b, t):
-           return b.P_SCcharged[t]*b.P_SCdischarged[t] == 0                                          # This constraint calculated the current SOC of the battery
-    b.c_C_1 = pyo.Constraint(t, rule = C_1)  
-
-
-    def C_2(b, t):
-           return b.SOC[0] == b.SOC[54]                                         # This constraint calculated the current SOC of the battery
-    b.c_C_2 = pyo.Constraint(t, rule = C_2)  
-    
-    def Constraint_SOC(b, t):
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.SOC[t] == (b.E0) + (b.PowerFCRCharge[t]+ b.P_SCcharged[t] ) + (b.PowerFCRDisCharge[t] + b.P_SCdischarged[t]) 
-        else:
-           return b.SOC[t]  ==  b.SOC[t-1] + (b.PowerFCRCharge[t]+ b.P_SCcharged[t] ) + (b.PowerFCRDisCharge[t] + b.P_SCdischarged[t])                                           # This constraint calculated the current SOC of the battery
-    b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)  
-
-
-     
-
-
-    
-    def Constraint_C4(b, t):
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] == (b.E0) + b.Pdemanded[t] + b.P_Discharged[t]  
-        else:
-           return b.EstrgOut[t]  == b.EstrgOut[t-1] + b.Pdemanded[t] + b.P_Discharged[t]                                                        #This constraint calculates the amount of power to be delivered
-    b.Constraint_C4 = pyo.Constraint(t, rule=Constraint_C4)     
-
-
-
-# From this point we start having problems
-
-# When including this constraint, the result from t=14 to 20 are not correct
-#    the battery is supposed to be empty  
-
-# Problem definition: The outpout power is not calculated correctly since the SOC is also not correct.
-# The SCO and the EstrgOut are not matching, which cause the minimun and maximun SOC and not respected
-# Additionally, after the full charging or discharging of the battery, the results of the next time step are 0 or 24000, which not correct. 
-# The results after reaching the maximun or the minimun must be for example the minimum SOC + Edemanded
-# Constraint could defined within the variables or as a fuction, but some how the results are deferent, and for example the SOCmin when defined within the variable, is not taken into account
-# give a look to time step 1, 21-22, 23-26, 14-20, 49-50, which the error are usually occurring 
-
+  # Constraints
+    #b.constraint_lower = Constraint(expr=b.EstrgOut[t] >= 0.0)
   
-
-    
- 
-
-
-
     def Constraint_P(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.P_Charged[t] == (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr 
+            return b.Pdemanded[t] == (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
     b.Constraint_P = pyo.Constraint(t, rule=Constraint_P) 
-
-
-    def Constraint_Pbalance_1(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.Pcharged[t]*b.Pdischarged[t] == 0.0
-    b.Constraint_Pbalance_1 = pyo.Constraint(t, rule=Constraint_Pbalance_1)
-    
-
-    
-
-    
-
-    
-
-
-
-
-
-
-
-    def Constraint_Pbalance(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.Pdemanded[t] - b.Pcharged[t] + b.Pdischarged[t] == 0.0
-    b.Constraint_Pbalance = pyo.Constraint(t, rule=Constraint_Pbalance) 
-
-    def Constraint_Pbalance(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.Pdemanded[t] - b.Pcharged[t] + b.Pdischarged[t] == 0.0
-    b.Constraint_Pbalance = pyo.Constraint(t, rule=Constraint_Pbalance) 
-
-
-
-    def Constraint_C1(b, t):
-            return b.EstrgOut[t] <= b.SOC[t]
-    b.Constraint_C1 = pyo.Constraint(t, rule=Constraint_C1)
-
-    def Constraint_EstrgOut(b, t): 
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] ==  (b.E0) + b.Pdemanded[t]
-        else:
-           return b.EstrgOut[t] ==  b.EstrgOut[t-1] + b.Pdemanded[t] + b.EENS[t] 
-    b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut) 
-    
-    
-    def Constraint_EstrgOut1(b, t):
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] >=  b.SOCmin*b.Einst
-        else:
-           return b.EstrgOut[t-1] + b.Pdemanded[t]  >=  b.SOCmin*b.Einst
-    b.Constraint_EstrgOut1 = pyo.Constraint(t, rule = Constraint_EstrgOut1) 
-
-
-
-    def Constraint_EstrgOut2(b, t):
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] + b.EENS[t]  <=  b.SOCmax*b.Einst
-        else:
-           return b.EstrgOut[t-1] + b.Pdemanded[t] + b.EENS[t]  <=  b.SOCmax*b.Einst
-    b.Constraint_EstrgOut2 = pyo.Constraint(t, rule = Constraint_EstrgOut2) 
-    
-    
-
-
-    
-
-  
-
-    def Constraint_SOC_1(b, t):                                                    # This constraint calculated the current SOC of the battery
-            return b.SOC[t] >= b.SOCmin
-    b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1)
-
-    def Constraint_SOC_2(b, t,):                                                    # This constraint calculated the current SOC of the battery
-            return b.SOC[t] <= b.SOCmax
-    b.c_SOC_2 = pyo.Constraint(t, rule = Constraint_SOC_2)    
-
-
-
-    def Constraint_EstrgOut1(b, t): 
-        return b.EstrgOut[t] + b.Pdemanded[t] + b.EENS[t]  >=  0.0
-    b.Constraint_EstrgOut1 = pyo.Constraint(t, rule = Constraint_EstrgOut1) 
- 
-    def Constraint_EstrgOut1(b, t): 
-        return b.EstrgOut[t] >=  0.0
-    b.Constraint_EstrgOut1 = pyo.Constraint(t, rule = Constraint_EstrgOut1) 
-
-    def Constraint_EstrgOut1(b, t): 
-        return b.EstrgOut[t] >=  0.0
-    b.Constraint_EstrgOut1 = pyo.Constraint(t, rule = Constraint_EstrgOut1)  
-
-    def Constraint_EstrgOut(b, t): 
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] ==  (b.E0) + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
-        else:
-           return b.EstrgOut[t] ==  b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
-    b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)    
-
- 
- 
-
-
-
-    def Constraint_POutcharged(b, t):          # the                                           # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered
-         if t==0:   
-            return b.POutcharged[t] >= (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
-         else:
-            return b.POutcharged[t] >= (b.SOC[t] - b.SOC[t-1])*(b.Einst + b.Edim)
-    b.c_POutcharged = pyo.Constraint(t, rule = Constraint_POutcharged) 
-
- 
-
-
-     
-   
-
-    
-
-    
-    def Constraint_SOC_3(b, t):                                                    # This constraint calculated the current SOC of the battery
-            return  b.EstrgOut[t] <= b.SOCmax*(b.Einst + b.Edim)
-    b.c_SOC_3 = pyo.Constraint(t, rule = Constraint_SOC_3)
-    
-    
-    
-   
-
-    
-
-
-
-    def Constraint_SOC(b, t):                                                    # This constraint calculated the current SOC of the battery
-            return b.SOC[t] == b.EstrgOut[t]/(b.Einst + b.Edim)
-    b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)
-
-  
-     
-    def Constraint_Pout1(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.POutdischarged[t] == b.Pout[t]
-    b.Constraint_Pout1 = pyo.Constraint(t, rule=Constraint_Pout1)  
-    
-    def Constraint_Pout2(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.POutcharged[t] == b.Pout[t]
-    b.Constraint_Pout2 = pyo.Constraint(t, rule=Constraint_Pout2) 
-     
- 
-
-    
-
-    def Constraint_SOC_4(b, t,):                                                    # This constraint calculated the current SOC of the battery
-            return  b.EstrgOut[t] >= b.SOCmin*(b.Einst)
-    b.c_SOC_4 = pyo.Constraint(t, rule = Constraint_SOC_4)
-  
-
-    def Constraint_SOC_4(b, t,):                                                    # This constraint calculated the current SOC of the battery
-            return  b.EstrgOut[t] + b.Pdemanded[t] >= b.SOCmin*(b.Einst)
-    b.c_SOC_4 = pyo.Constraint(t, rule = Constraint_SOC_4)
-
-
------------------------------------------------------------------------------------ 
-
-
-
-
-
-
-
-
-
-    
-  
-    def Constraint_SOC_1(b, t,):                                                    # This constraint calculated the current SOC of the battery
-            return b.EstrgOut[t] >= b.SOCmin*(b.Einst)
-    b.c_SOC_1 = pyo.Constraint(t, rule = Constraint_SOC_1)
-
-
-
-    def Constraint_Pbalance_2(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.Pcharged[t] <= b.Pinst
-    b.Constraint_Pbalance_2 = pyo.Constraint(t, rule=Constraint_Pbalance_2)
-    
-    def Constraint_Pbalance_3(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return b.Pdischarged[t] <= b.Pinst
-    b.Constraint_Pbalance_3 = pyo.Constraint(t, rule=Constraint_Pbalance_3)
-  
-    def Constraint_EstrgOut(b, t): 
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] ==  (b.E0) + b.Pcharged[t] - b.Pdischarged[t]
-        else:
-           return b.EstrgOut[t] ==  b.EstrgOut[t-1] + b.Pcharged[t] - b.Pdischarged[t]
-    b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)
-
-
-  
-    
-
-
-
-    def Constraint_EstrgOut_1(b, t):                                               # This constraint calculated the power at the end of the time step
-         return b.EstrgOut[t] >= b.SOCmin*b.Einst
-    b.Constraint_EstrgOut_1 = pyo.Constraint(t, rule = Constraint_EstrgOut_1)
-
-
-"""    
-
-
-"""
-    def Constraint_EstrgOut(b, t): 
-        if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.EstrgOut[t] ==  (b.E0) + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
-        else:
-           return b.EstrgOut[t] ==  b.EstrgOut[t-1] + (50 - (b.F[t]))*(b.Pinst)*b.slope_fcr
-    b.Constraint_EstrgOut = pyo.Constraint(t, rule = Constraint_EstrgOut)
-
-    def Constraint_EstrgOut_2(b, t):                                               # This constraint calculated the power at the end of the time step
-         return b.EstrgOut[t] <= b.SOCmax*b.Einst
-    b.Constraint_EstrgOut_2 = pyo.Constraint(t, rule = Constraint_EstrgOut_2)
-    
-
- 
-
-
-    
-    def Constraint_Pbalance_4(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return  b.EstrgOut[t] >= b.Pdischarged[t]
-    b.Constraint_Pbalance_4 = pyo.Constraint(t, rule=Constraint_Pbalance_4)
- 
-
-  
-
-
-
-
-
-
 
      
     def Constraint_EstrgOut(b, t):                                                # This constraint calculated the power at the end of the time step
@@ -707,7 +384,7 @@ def Battery_MV(b, t, data, init_data):
     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)
 
 
-
+"""
 
     def Constraint_Pout(_b, _t,):                                                   # Based on the SCO and the power demanded, this constraint computes te amoung of energy/power that can be delivered
         if _t==0:
@@ -742,7 +419,9 @@ def Battery_MV(b, t, data, init_data):
             return _b.Pout[_t] == (_b.EstrgOut[_t] - _b.EstrgOut[_t-1])
     b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)   
 
-
+    def Constraint_SOC_2(_b, _t,):                                                    # This constraint calculated the current SOC of the battery
+            return  _b.EstrgOut[_t] <= _b.SOCmax*(_b.Einst)
+    b.c_SOC_2 = pyo.Constraint(t, rule = Constraint_SOC_2)
 
     
     def Constraint_SOC_1(_b, _t,):                                                    # This constraint calculated the current SOC of the battery
@@ -854,7 +533,10 @@ def Battery_MV(b, t, data, init_data):
 
     
 
- 
+
+    
+
+    
 
     
 
