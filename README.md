@@ -63,5 +63,25 @@ In alphabetical order:
 [<img src="https://www.epri.com/static/media/epri-logo-2021-white.324099d1.svg" height="32px" align="center" alt="EPRI logo">](https://www.epri.com/)
 * Daniel Pombo (dpombo@epri.com)
 
+## Citation
+
+If used in a scientific publication, we appreciate a citation on the following paper:
+
+S. Costa, C. Olives, P. Muñoz, P. García, O. Gomis, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems,” in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), 2024
+
+```
+@INPROCEEDINGS{AGISTIN_opt_tool,
+  author={Costa, Sergi and Olives, Carlos and Muñoz, Paula and García, Pau and Gomis, Oriol and Prieto-Araujo, Eduardo},
+  booktitle={2024 Open Source Modelling and Simulation of Energy Systems (OSMSES)}, 
+  title={{Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}},
+  year={2024},
+  volume={},
+  number={},
+  pages={},
+  keywords={Open source, Multi-physics simulation, Power system analysis, Optimisation tool, Python, Object-oriented, Irrigation systems},
+  doi={}
+}
+```
+
 ## License
 <p xmlns:cc="http://creativecommons.org/ns#" >This work is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p> 
