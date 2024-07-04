@@ -89,9 +89,23 @@ def max1_constraint_2(m, t):
 def maxSOC_constraint(m, t):
     return m.MaxSOC >= m.Battery.SOC[t]
 
+# def combined_max1_constraint(m, t):
+#     return m.Max1 >= max(
+#         m.Battery.PowerFCRDisCharge[t] + m.Battery.Pfeedin[t],
+#         m.Battery.PowerFCRCharge[t] + m.Battery.Pfeedout[t]
+#     )
+
+# def max1_constraint_combined(m, t):
+#     return m.Max1 >= (
+#         m.Battery.PowerFCRDisCharge[t] + m.Battery.Pfeedin[t] +
+#         m.Battery.PowerFCRCharge[t] + m.Battery.Pfeedout[t]
+#     )
+
 m.Max1Constraint1 = pyo.Constraint(m.t, rule=max1_constraint_1)
 m.Max1Constraint2 = pyo.Constraint(m.t, rule=max1_constraint_2)
 m.MaxSOCConstraint = pyo.Constraint(m.t, rule=maxSOC_constraint)
+# m.Max1CombinedConstraint = pyo.Constraint(m.t, rule=max1_constraint_combined)
+
 
 # Objective function
 def obj_fun(m):
