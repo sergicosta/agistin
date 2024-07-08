@@ -176,7 +176,7 @@ def NewBattery(b, t, data, init_data):
         - Ports: 
             - port_P @ P (Extensive)
         - Constraints:
-            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)\, \eta_{dc}`
+            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)/ \eta_{dc}`
             - c_P0: :math:`0 = P_{ch}(t) \, P_{dc}(t)`
             - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst})`
             - c_ch: :math:`P_{ch}(t) \leq (P_{inst} + P_{dim})`
@@ -204,14 +204,14 @@ def NewBattery(b, t, data, init_data):
     b.Pch = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds = (0,data['Pmax']), within=pyo.NonNegativeReals)
     b.Pdc = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds = (0,data['Pmax']), within=pyo.NonNegativeReals)
     b.Pdim = pyo.Var(initialize = 0, bounds = (0,data['Pmax']),within = pyo.NonNegativeReals)
-    b.Edim = pyo.Var(initialize = 1, bounds = (0,data['Emax']),within = pyo.NonNegativeReals)
+    b.Edim = pyo.Var(initialize = 0, bounds = (0,data['Emax']),within = pyo.NonNegativeReals)
 
     # Ports
     b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
 
     # Constraints
     def Constraint_P(_b, _t):
-        return _b.P[_t] == _b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]*_b.eff_dc
+        return _b.P[_t] == _b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc
     b.c_P = pyo.Constraint(t, rule = Constraint_P)
     
     def Constraint_P0(_b, _t):
@@ -220,9 +220,9 @@ def NewBattery(b, t, data, init_data):
     
     def Constraint_E(_b, _t):
         if _t>0:
-            return _b.E[_t] == _b.E[_t-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]*_b.eff_dc)
+            return _b.E[_t] == _b.E[_t-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc)
         else:
-            return b.E[_t] == _b.E[_b.T-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]*_b.eff_dc)
+            return b.E[_t] == _b.E[_b.T-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc)
     b.c_E = pyo.Constraint(t, rule = Constraint_E)
     
     def Constraint_ch(_b,_t):

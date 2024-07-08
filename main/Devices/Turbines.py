@@ -59,6 +59,7 @@ def Turbine(b, t, data, init_data):
     
     # Parameters
     b.eff = pyo.Param(initialize=data['eff'])
+    b.Pmax = pyo.Param(initialize=data['Pmax'])
     
     # Variables
     b.Pdim = pyo.Var(initialize=0, bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
