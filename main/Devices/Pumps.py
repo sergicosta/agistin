@@ -702,14 +702,19 @@ def ReversibleRealPump(b, t, data, init_data):
 
 def DiscretePump(b, t, data, init_data):
     """
-    DiscretePump it's the association of "N" pumps in parallel working in a discrete manner.
+    DiscretePump is the association of "N" pumps in parallel. 
+    Each individual pump have two state:
+        1. ON consuming the nominal power. 
+        2. OFF.
+    The model allows for the activation of an integer number of pumps ranging from 0 to "N".
+    The total power consumed by the system is directly proportional to the number of pumps that are ON.
     
     It's introduced :math:`P_{n}` wich is the individual nominal power of the pump and :math:`N_{pumps}` the maximum number of pumps that can be associated.
 
     :param b: pyomo ``Block()`` to be set
     :param t: pyomo ``Set()`` referring to time
     :param data: data ``dict``
-    :param init_data: init_data ``dict`-
+    :param init_data: init_data ``dict``
 
     data
          - 'Npumps': Maximum number of pumps to consider :math:`Npumps`
@@ -727,12 +732,12 @@ def DiscretePump(b, t, data, init_data):
             - Pn
             - Npumps
         - Variables:
-            - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{n}, 0]`
-            - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{n}]`
+            - Qin (t) bounded :math:`Q_{in} \leq 0`
+            - Qout (t) bounded :math:`Q_{out} \ge 0`
             - H (t) bounded :math:`H \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
-            - N_on (t) :math:`b_{ON}(t) \in \{0,N_{pumps}\}`
+            - N_on (t) :math:`b_{ON}(t) \in [0,N_{pumps}]`
 
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
@@ -743,7 +748,7 @@ def DiscretePump(b, t, data, init_data):
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
             - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{out}(t)`
             - c_Pe: :math:`P_e(t) = P_n \, N_{on}(t)`
-            - c_eff: :math:`P_e(t) = P_h/\eta
+            - c_eff: :math:`P_e(t) = P_h / \eta`
     """
 
     # Parameters
