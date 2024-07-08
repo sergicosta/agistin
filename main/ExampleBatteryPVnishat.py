@@ -59,61 +59,19 @@ builder(m, data_filename)
 # """
 
 #%% RUN THE OPTIMIZATION
-#""
-#Objective function
-#def obj_fun(m):
-	#return sum((m.Battery.EENS[t]*10000) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]
-    #return sum((m.Grid.Pbuy[t]*m.cost_MainGrid[t] - m.Grid.Psell[t]*m.cost_MainGrid[t]/2  + m.Battery.EENS[t]*10000) for t in l_t ) + m.PV.Pdim*m.cost_PV1[0]
-    #return sum((m.Grid.Pbuy) for t in l_t )
-#m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
-#"""
-#instance = m.create_instance()
-#solver = pyo.SolverFactory('ipopt')
-#solver.solve(instance, tee=False)
 
-# Define cost parameters
-# PowerCapacity_cost = 50  # Example cost per unit of power capacity
-# EnergyCapacity_cost = 100  # Example cost per unit of energy capacity
-
-# Define maximum power capacity and maximum SOC as variables
-m.Max1 = pyo.Var(within=pyo.NonNegativeReals)
-m.MaxSOC = pyo.Var(within=pyo.NonNegativeReals)
-
-# Constraints to define Max1 and MaxSOC
-def max1_constraint_1(m, t):
-    return m.Max1 >= m.Battery.PowerFCRDisCharge[t] + m.Battery.Pfeedin[t]
-
-def max1_constraint_2(m, t):
-    return m.Max1 >= m.Battery.PowerFCRCharge[t] + m.Battery.Pfeedout[t]
-
-def maxSOC_constraint(m, t):
-    return m.MaxSOC >= m.Battery.SOC[t]
-
-# def combined_max1_constraint(m, t):
-#     return m.Max1 >= max(
-#         m.Battery.PowerFCRDisCharge[t] + m.Battery.Pfeedin[t],
-#         m.Battery.PowerFCRCharge[t] + m.Battery.Pfeedout[t]
-#     )
-
-# def max1_constraint_combined(m, t):
-#     return m.Max1 >= (
-#         m.Battery.PowerFCRDisCharge[t] + m.Battery.Pfeedin[t] +
-#         m.Battery.PowerFCRCharge[t] + m.Battery.Pfeedout[t]
-#     )
-
-m.Max1Constraint1 = pyo.Constraint(m.t, rule=max1_constraint_1)
-m.Max1Constraint2 = pyo.Constraint(m.t, rule=max1_constraint_2)
-m.MaxSOCConstraint = pyo.Constraint(m.t, rule=maxSOC_constraint)
-# m.Max1CombinedConstraint = pyo.Constraint(m.t, rule=max1_constraint_combined)
+m.max_SOC = pyo.Var(within=pyo.NonNegativeReals)
+m.W = pyo.Var(within=pyo.NonNegativeReals)
 
 
 # Objective function
 def obj_fun(m):
     return (
         sum(((m.Battery.PowerFCRCharge[t] * 5) + (m.Battery.PowerFCRDisCharge[t]) * -10 + m.Battery.Pfeedin[t] * -6 + m.Battery.Pfeedout[t] * -8) for t in l_t)
-        - (m.Battery.Pmax * m.Max1)
-        - (m.Battery.Emax * m.MaxSOC)
+         - (m.Battery.Pmax * m.W)
+         - (m.Battery.Emax * m.max_SOC)
     )
+
     # return sum(((m.Battery.PowerFCRCharge[t]*5) + (m.Battery.PowerFCRDisCharge[t])*-10 + m.Battery.Pfeedin[t]*-6 + m.Battery.Pfeedout[t]*-8)  for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.maximize)
     #"""
@@ -130,28 +88,36 @@ solver.solve(instance, tee=False)
 #instance.Battery.Pdischarged.pprint()
 #instance.Battery.EstrgOut.pprint()
 #instance.Battery.EstrgIni.pprint()
+#instance.Battery.FeedinMax.pprint()
 
 instance.Battery.SOC.pprint()
 instance.Battery.PowerFCRDisCharge.pprint()
 instance.Battery.PowerFCRCharge.pprint()
 instance.Battery.Pfeedin.pprint()
 instance.Battery.Pfeedout.pprint()
-#instance.Battery.FeedinMax.pprint()
+#Y(t)=(Pfeedin(t)+ PowerFCRDisCharge(+)) 
+#X(t)=(PowerFCRCharge(t) + Pfeedout(t))
+instance.Battery.Y.pprint()
+instance.Battery.X.pprint()
 
-#print(instance.Battery.Max)
-
-# Extract the results and find the maximum values
-Pfeedin_values = [pyo.value(instance.Battery.Pfeedin[t]) for t in instance.t]
-Pfeedout_values = [pyo.value(instance.Battery.Pfeedout[t]) for t in instance.t]
+Y_values = [pyo.value(instance.Battery.Y[t]) for t in instance.t]
+X_values = [pyo.value(instance.Battery.X[t]) for t in instance.t]
 SOC_values = [pyo.value(instance.Battery.SOC[t]) for t in instance.t]
 
-max_Pfeedin = max(Pfeedin_values)
-max_Pfeedout = max(Pfeedout_values)
+max_Y = max(Y_values)
+max_X = max(X_values)
 max_SOC = max(SOC_values)
 
-print("Maximum Pfeedin:", max_Pfeedin)
-print("Maximum Pfeedout:", max_Pfeedout)
+# Compare max(X) and max(Y) and 
+# find out one max value and store in W.
+
+W = max(max_Y, max_X)
+
+print("Maximum Y_Pfeedin:", max_Y)
+print("Maximum X_Pfeedout:", max_X)
 print("Maximum SOC:", max_SOC)
+print("Maximum W:", W)
+
 
 #print(instance.Battery.MaxPfeedout) # Working
 
@@ -161,7 +127,4 @@ print("Maximum SOC:", max_SOC)
 #instance.PV.P.pprint()
 #instance.PV.Pdim.pprint()
 #instance.PV.Pinst.pprint()
-
-
-
 
