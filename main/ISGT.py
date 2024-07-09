@@ -108,17 +108,17 @@ data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9
 init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
 Reservoir(m.Reservoir1, m.t, data_R1, init_R1)
 
-data_c1 = {'K':0.02, 'Qmax':10} # canal
+data_c1 = {'K':297.38, 'Qmax':1.2} # canal
 init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
 Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
-# data_p = {'A':121.54, 'B':0.0003, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.5, 'Qmax':2, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
+# data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.0347, 'Qmax':0.10, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
 # init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[2900]*T, 'Pe':[110e3*0.9]*T}
 # # ReversibleRealPump(m.Pump1, m.t, data_p, init_p)
 # RealPump(m.Pump1, m.t, data_p, init_p)
 # RealPump(m.Pump2, m.t, data_p, init_p)
 
-data_pdouble = {'A':121.54, 'B':0.00007, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.5, 'Qmax':2*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
+data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.0347, 'Qmax':0.10*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
 init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[2900]*T, 'Pe':[110e3*0.9]*T}
 # ReversibleRealPump(m.Pump1, m.t, data_p, init_p)
 RealPump(m.Pump1, m.t, data_pdouble, init_pdouble)
