@@ -44,7 +44,7 @@ def Source(b, t, data, init_data=None):
     b.Q = pyo.Param(t, initialize=data['Q'])
     
     # Variables
-    b.Qin = pyo.Var(t, initialize=data['Q'], within=pyo.Reals)
+    b.Qin = pyo.Var(t, initialize=-data['Q'], within=pyo.Reals)
     b.Qout = pyo.Var(t, initialize=data['Q'], within=pyo.Reals)
     
     # Ports
