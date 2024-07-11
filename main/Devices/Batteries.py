@@ -220,18 +220,18 @@ def NewBattery(b, t, data, init_data):
     
     def Constraint_E(_b, _t):
         if _t>0:
-            return _b.E[_t] == _b.E[_t-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc)
+            return _b.E[_t] == _b.E[_t-1] + _b.dt*_b.P[_t]
         else:
-            return b.E[_t] == _b.E[_b.T-1] + _b.dt*(_b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc)
+            return b.E[_t] == _b.E[_b.T-1] + _b.dt*_b.P[_t]
     b.c_E = pyo.Constraint(t, rule = Constraint_E)
     
     def Constraint_ch(_b,_t):
         return _b.Pch[_t] <= _b.Pdim
     b.c_ch = pyo.Constraint(t, rule = Constraint_ch)
     
-    def Constraint_disc(_b,_t):
+    def Constraint_dc(_b,_t):
         return  _b.Pdc[_t] <= _b.Pdim
-    b.c_dc = pyo.Constraint(t, rule = Constraint_disc)
+    b.c_dc = pyo.Constraint(t, rule = Constraint_dc)
     
     def ConstraintE_max(_b,_t):
         return _b.E[_t] <= _b.Edim*_b.SOCmax
