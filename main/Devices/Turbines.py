@@ -89,5 +89,5 @@ def Turbine(b, t, data, init_data):
     b.c_Pe = pyo.Constraint(t, rule = Constraint_Pe)
 
     def Constraint_Pdim(_b, _t):
-        return _b.Pdim >= -_b.Pe[_t]
+        return _b.Pdim >= -_b.Ph[_t]
     b.c_Pdim = pyo.Constraint(t, rule = Constraint_Pdim)
