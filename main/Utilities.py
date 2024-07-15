@@ -28,6 +28,9 @@ def model_to_file(model, filename):
     with open(filename,'w') as f:
         model.pprint(f)
         
+def suma(x,y):
+    return x+y
+        
 
 def get_results(file, instance, results, l_t, exec_time):
     df_out = pd.DataFrame(l_t, columns=['t'])
