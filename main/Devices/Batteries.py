@@ -336,8 +336,8 @@ def Battery_MV(b, t, data, init_data):
     b.SOCmax = pyo.Param(initialize=((data['Einst']) - 0.25*(data['Pinst']))/(data['Einst'])) # bounds = (0.0,data['SOCmax']),
 
     # Variables
-    b.Pfeedin = pyo.Var(t, bounds=(-1000, 0))
-    b.Pfeedout = pyo.Var(t, bounds=(0, 1000))
+    b.Pfeedin = pyo.Var(t, bounds=(-100000, 0))
+    b.Pfeedout = pyo.Var(t, bounds=(0, 100000))
     b.P_SCcharged = pyo.Var(t, bounds = (0.0, 1000),  within=pyo.NonNegativeReals)
     #b.P_SCdischarged = pyo.Var(t, bounds = (0.0, -1000),  within=pyo.NonPositiveReals)
     #b.BCharge=pyo.Var(t, within = pyo.Binary)
@@ -408,7 +408,7 @@ def Battery_MV(b, t, data, init_data):
     
     # Constraint to set the values of Y(t)
     def Y_constraint(b, t):
-        return b.Y[t] == b.Pfeedin[t] + b.PowerFCRDisCharge[t]
+        return b.Y[t] == abs(b.Pfeedin[t]) + abs(b.PowerFCRDisCharge[t])
     b.YConstraint = pyo.Constraint(t, rule=Y_constraint)
 
     # Constraint to set the values of X(t)
