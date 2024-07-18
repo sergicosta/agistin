@@ -16,6 +16,7 @@ Created on Thu Mar  7 10:07:16 2024
 # Import pyomo
 import pyomo.environ as pyo
 from pyomo.network import Arc, Port
+import pandas as pd
 
 # Import builder
 from BuilderBatteryPV import data_parser, builder
@@ -43,7 +44,7 @@ data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(55)) #999 #TODO this should be inferred from the number of rows in the excel time series,
+l_t = list(range(1000)) #999 #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 builder(m, data_filename)
@@ -68,8 +69,10 @@ m.W = pyo.Var(within=pyo.NonNegativeReals)
 def obj_fun(m):
     return (
         sum(((m.Battery.PowerFCRCharge[t] * 5) + (m.Battery.PowerFCRDisCharge[t]) * -10 + m.Battery.Pfeedin[t] * -6 + m.Battery.Pfeedout[t] * -8) for t in l_t)
-         - (155 * m.W)
-         - (0.0616 * m.max_SOC) 
+         - (2818 * m.W)
+         - (1.12 * m.max_SOC) # with 999 time steps.
+         # - (155 * m.W) ( these use for 55 time steps.)
+         # - (0.0616 * m.max_SOC) 
     )
 
     # return sum(((m.Battery.PowerFCRCharge[t]*5) + (m.Battery.PowerFCRDisCharge[t])*-10 + m.Battery.Pfeedin[t]*-6 + m.Battery.Pfeedout[t]*-8)  for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
@@ -104,6 +107,14 @@ Y_values = [pyo.value(instance.Battery.Y[t]) for t in instance.t]
 X_values = [pyo.value(instance.Battery.X[t]) for t in instance.t]
 SOC_values = [pyo.value(instance.Battery.SOC[t]) for t in instance.t]
 
+
+PowerFCRDisCharge_values = [pyo.value(instance.Battery.PowerFCRDisCharge[t]) for t in instance.t]
+PowerFCRCharge_values = [pyo.value(instance.Battery.PowerFCRCharge[t]) for t in instance.t]
+Pfeedin_values = [pyo.value(instance.Battery.Pfeedin[t]) for t in instance.t]
+Pfeedout_values = [pyo.value(instance.Battery.Pfeedout[t]) for t in instance.t]
+
+
+
 max_Y = max(Y_values)
 max_X = max(X_values)
 max_SOC = max(SOC_values)
@@ -119,6 +130,43 @@ print("Maximum SOC:", max_SOC)
 print("Maximum W:", W)
 
 
+# Store the values in a dictionary for summary results
+results_summary = {
+    'Maximum Y_Pfeedin': [max_Y],
+    'Maximum X_Pfeedout': [max_X],
+    'Maximum SOC': [max_SOC],
+    'Maximum W': [W]
+}
+
+# Convert the dictionary to a pandas DataFrame
+summary_df = pd.DataFrame(results_summary)
+
+# Store the detailed time-series results in a dictionary
+results_detailed = {
+    'Time': l_t,
+    'SOC': SOC_values,
+    'PowerFCRDisCharge': PowerFCRDisCharge_values,
+    'PowerFCRCharge': PowerFCRCharge_values,
+    'Pfeedin': Pfeedin_values,
+    'Pfeedout': Pfeedout_values,
+    'Y': Y_values,
+    'X': X_values
+}
+
+# Convert the dictionary to a pandas DataFrame
+detailed_df = pd.DataFrame(results_detailed)
+
+# Create a Pandas Excel writer using openpyxl as the engine
+with pd.ExcelWriter('optimization_results.xlsx', engine='openpyxl') as writer:
+    # Write the summary DataFrame to the Excel file
+    summary_df.to_excel(writer, sheet_name='Summary', index=False)
+    
+    # Write the detailed DataFrame to the Excel file
+    detailed_df.to_excel(writer, sheet_name='Detailed', index=False)
+
+print("Results have been written to 'optimization_results.xlsx'")
+
+
 #print(instance.Battery.MaxPfeedout) # Working
 
 #instance.Battery.Pout.pprint()
@@ -127,4 +175,3 @@ print("Maximum W:", W)
 #instance.PV.P.pprint()
 #instance.PV.Pdim.pprint()
 #instance.PV.Pinst.pprint()
-
