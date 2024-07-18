@@ -43,12 +43,12 @@ data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(55)) #TODO this should be inferred from the number of rows in the excel time series,
+l_t = list(range(55)) #999 #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 builder(m, data_filename)
 
-# """
+# """n
 # # Connections
 
 # m.grideb = Arc(ports=(m.Grid.port_P, m.EB.port_P), directed=True)
@@ -68,8 +68,8 @@ m.W = pyo.Var(within=pyo.NonNegativeReals)
 def obj_fun(m):
     return (
         sum(((m.Battery.PowerFCRCharge[t] * 5) + (m.Battery.PowerFCRDisCharge[t]) * -10 + m.Battery.Pfeedin[t] * -6 + m.Battery.Pfeedout[t] * -8) for t in l_t)
-         - (m.Battery.Pmax * m.W)
-         - (m.Battery.Emax * m.max_SOC)
+         - (155 * m.W)
+         - (0.0616 * m.max_SOC) 
     )
 
     # return sum(((m.Battery.PowerFCRCharge[t]*5) + (m.Battery.PowerFCRDisCharge[t])*-10 + m.Battery.Pfeedin[t]*-6 + m.Battery.Pfeedout[t]*-8)  for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
