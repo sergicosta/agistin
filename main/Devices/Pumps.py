@@ -182,8 +182,7 @@ def RealPump(b, t, data, init_data):
     b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.PumpOn = pyo.Param(t, initialize=0, within=pyo.Binary)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1))
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -197,7 +196,7 @@ def RealPump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] == (_b.npu2[_t])*_b.A - _b.B*_b.Qout[_t]**2
+        return _b.H[_t] == _b.npu2[_t]*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
     def Constraint_Ph(_b, _t):
