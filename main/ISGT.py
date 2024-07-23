@@ -135,7 +135,7 @@ Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
 data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[2900]*T, 'Pe':[110e3*0.9]*T}
+init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
 RealPump(m.Pump2w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
