@@ -93,7 +93,7 @@ m.Reservoir1w = pyo.Block()
 m.Irrigation1w = pyo.Block()
 m.Pump1w = pyo.Block()
 m.Pump2w = pyo.Block()
-# m.Turb1w = pyo.Block()
+m.Turb1w = pyo.Block()
 m.Pipe1w = pyo.Block()
 m.PVw = pyo.Block()
 m.Gridw = pyo.Block()
@@ -106,7 +106,7 @@ m.Reservoir1s = pyo.Block()
 m.Irrigation1s = pyo.Block()
 m.Pump1s = pyo.Block()
 m.Pump2s = pyo.Block()
-# m.Turb1s = pyo.Block()
+m.Turb1s = pyo.Block()
 m.Pipe1s = pyo.Block()
 m.PVs = pyo.Block()
 m.Grids = pyo.Block()
@@ -135,7 +135,7 @@ Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
 data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[2900]*T, 'Pe':[110e3*0.9]*T}
+init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
 RealPump(m.Pump2w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
@@ -146,10 +146,10 @@ RealPump(m.Pump2s, m.ts, data_p, init_p)
 # RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
 # RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
 
-# data_t = {'eff':0.5, 'Pmax':110e3}
-# init_t = {'Q':[0]*T, 'H':[108]*T, 'Pe':[-110e3*0.5]*T}
-# Turbine(m.Turb1w, m.tw, data_t, init_t)
-# Turbine(m.Turb1s, m.ts, data_t, init_t)
+data_t = {'eff':0.5, 'Pmax':110e3}
+init_t = {'Q':[0]*T, 'H':[108]*T, 'Pe':[-110e3*0.5]*T}
+Turbine(m.Turb1w, m.tw, data_t, init_t)
+Turbine(m.Turb1s, m.ts, data_t, init_t)
 
 data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
 SolarPV(m.PVw, m.tw, data_pv)
@@ -200,7 +200,7 @@ def ConstraintBatPws(m):
 m.Reservoir1_c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
 
 
-# m.Turb1s.Qin.fix(0)
+# m.Turb1w.Qin.fix(0)
 
 
 # Connections
@@ -214,10 +214,10 @@ m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
 m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
 m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBpvw.port_P), directed=True) # pv node
 
-# m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
-# m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
-# m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
-# m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
+m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
+m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
+m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
+m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
 
 m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
 m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
@@ -240,10 +240,10 @@ m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
 m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
 m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBpvs.port_P), directed=True) # pv node
 
-# m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
-# m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
-# m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
-# m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
+m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
+m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
+m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
+m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
 
 m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
 m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
@@ -267,7 +267,8 @@ import time
 def obj_fun(m):
 # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
 	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 +
+            1e-4*(m.Pipe1w.Qp[t] + m.Pipe1w.Qn[t] + m.Pipe1s.Qp[t] + m.Pipe1s.Qn[t]) for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
