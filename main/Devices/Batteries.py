@@ -214,9 +214,9 @@ def NewBattery(b, t, data, init_data):
         return _b.P[_t] == _b.Pch[_t]*_b.eff_ch - _b.Pdc[_t]/_b.eff_dc
     b.c_P = pyo.Constraint(t, rule = Constraint_P)
     
-    def Constraint_P0(_b, _t):
-        return 0 == _b.Pch[_t] * _b.Pdc[_t]
-    b.c_P0 = pyo.Constraint(t, rule = Constraint_P0)
+    # def Constraint_P0(_b, _t):
+    #     return 0 == _b.Pch[_t] * _b.Pdc[_t]
+    # b.c_P0 = pyo.Constraint(t, rule = Constraint_P0)
     
     def Constraint_E(_b, _t):
         if _t>0:

@@ -34,7 +34,6 @@ def Pump(b, t, data, init_data):
     data
          - 'A': Constant characteristic coefficient of the pump :math:`A`
          - 'B': Quadratic characteristic coefficient of the pump :math:`B`
-         - 'n_n': Nominal rotational speed :math:`n_n`
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
          - 'Qmax': Maximum allowed flow (in p.u. of Qnom) :math:`Q_{max}`
@@ -43,7 +42,7 @@ def Pump(b, t, data, init_data):
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
          - 'H': Head :math:`H(t)` as a ``list``
-         - 'n': Rotational speed :math:`n(t)` as a ``list``
+         - 'n': Rotational speed (in p.u.) :math:`n(t)` as a ``list``
          - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
 
     Pyomo declarations    
@@ -51,13 +50,12 @@ def Pump(b, t, data, init_data):
             - A
             - B
             - Qnom
-            - n_n
             - eff
         - Variables:
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{nom}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{nom}]`
             - H (t) bounded :math:`H \ge 0`
-            - n (t) bounded :math:`n \ge 0`
+            - npu2 (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
         - Ports:
@@ -76,17 +74,16 @@ def Pump(b, t, data, init_data):
     b.A = pyo.Param(initialize=data['A'])
     b.B = pyo.Param(initialize=data['B'])
     b.Qnom = pyo.Param(initialize=data['Qnom'])
-    b.n_n = pyo.Param(initialize=data['n_n'])
     b.eff = pyo.Param(initialize=data['eff'])
 
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1))
+    
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
@@ -97,9 +94,9 @@ def Pump(b, t, data, init_data):
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
-
+    
     def Constraint_H(_b, _t):
-        return _b.H[_t] == (_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qout[_t]**2
+        return _b.H[_t] == (_b.npu2[_t])*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
     def Constraint_Ph(_b, _t):
@@ -127,7 +124,6 @@ def RealPump(b, t, data, init_data):
     data
          - 'A': Constant characteristic coefficient of the pump :math:`A`
          - 'B': Quadratic characteristic coefficient of the pump :math:`B`
-         - 'n_n': Nominal rotational speed :math:`n_n`
          - 'Qnom': Nominal flow :math:`Q_n`
          - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
          - 'Qmax': Maximum allowed flow (in p.u. of Qnom) :math:`Q_{max}`
@@ -137,7 +133,7 @@ def RealPump(b, t, data, init_data):
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
          - 'H': Head :math:`H(t)` as a ``list``
-         - 'n': Rotational speed :math:`n(t)` as a ``list``
+         - 'n': Rotational speed (in p.u.) :math:`n(t)` as a ``list``
          - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
 
     Pyomo declarations    
@@ -145,7 +141,6 @@ def RealPump(b, t, data, init_data):
             - A
             - B
             - Qnom
-            - n_n
             - eff
             - Qmin
             - Qmax
@@ -153,7 +148,7 @@ def RealPump(b, t, data, init_data):
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{n}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{n}]`
             - H (t) bounded :math:`H \ge 0`
-            - n (t) bounded :math:`n \ge 0`
+            - npu2 (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
             - PumpOn (t) :math:`b_{ON}(t) \in \{0,1\}`
@@ -176,7 +171,6 @@ def RealPump(b, t, data, init_data):
     b.A = pyo.Param(initialize=data['A'])
     b.B = pyo.Param(initialize=data['B'])
     b.Qnom = pyo.Param(initialize=data['Qnom'])
-    b.n_n = pyo.Param(initialize=data['n_n'])
     b.eff = pyo.Param(initialize=data['eff'])
     b.Qmin = pyo.Param(initialize=data['Qmin']*data['Qnom'])
     b.Qmax = pyo.Param(initialize=data['Qmax']*data['Qnom'])
@@ -185,11 +179,11 @@ def RealPump(b, t, data, init_data):
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.n = pyo.Var(t, initialize=init_data['n'], bounds=(0, data['n_n']), within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
     # b.PumpOn = pyo.Param(t, initialize=0, within=pyo.Binary)
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1))
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -203,7 +197,7 @@ def RealPump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
     def Constraint_H(_b, _t):
-        return _b.H[_t] == (_b.n[_t]/_b.n_n)**2*_b.A - _b.B*_b.Qout[_t]**2
+        return _b.H[_t] == (_b.npu2[_t])*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
     def Constraint_Ph(_b, _t):
