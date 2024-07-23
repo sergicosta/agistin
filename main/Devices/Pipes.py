@@ -88,9 +88,9 @@ def PipeValve(b, t, data, init_data):
     #     return _b.H[_t] == _b.H0[_t] + _b.K*_b.Q[_t]**2*(2*_b.signQ[_t]-1)
     # b.c_H = pyo.Constraint(t, rule = Constraint_H)
     
-    def Constraint_H0(_b, _t):
-        return _b.H0[_t] == _b.zhigh[_t] - _b.zlow[_t]
-    b.c_H0 = pyo.Constraint(t, rule = Constraint_H0)
+    # def Constraint_H0(_b, _t):
+    #     return _b.H0[_t] == _b.zhigh[_t] - _b.zlow[_t]
+    # b.c_H0 = pyo.Constraint(t, rule = Constraint_H0)
 
     def Constraint_sign(_b,_t):
         # return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
@@ -99,11 +99,10 @@ def PipeValve(b, t, data, init_data):
     b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
 
     def Constraint_valve(_b,_t):
-        return _b.H[_t] == _b.H0[_t]+(_b.K + _b.Cv/(_b.alpha[_t]))*_b.Q[_t]**2*(2*_b.signQ[_t]-1)
+        return _b.H[_t] == _b.zhigh[_t] - _b.zlow[_t] +(_b.K + _b.Cv/(_b.alpha[_t]))*_b.Q[_t]**2*(2*_b.signQ[_t]-1)
     b.c_valve = pyo.Constraint(t, rule = Constraint_valve)
     
-
-
+    
 def Pipe(b, t, data, init_data):
 
     """
