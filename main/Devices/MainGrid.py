@@ -60,10 +60,6 @@ def Grid(b, t, data, init_data=None):
         return _b.P[_t] == _b.Psell[_t] - _b.Pbuy[_t]
     b.c_P = pyo.Constraint(t, rule=Constraint_P)
     
-    # def Constraint_P0(_b, _t):
-    #     return 0 == _b.Psell[_t]*_b.Pbuy[_t]
-    # b.c_P0 = pyo.Constraint(t, rule=Constraint_P0)
-    
 
 def FlexibleGrid(b, t, data, init_data=None):
     # TODO doc flexible grid

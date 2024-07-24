@@ -56,12 +56,6 @@ def Source(b, t, data, init_data=None):
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
     
     # Constraints
-    # def Constraint_Qin(_b, _t):
-    #     return _b.Qin[_t] == -_b.Q[_t]
-    # b.c_Qin = pyo.Constraint(t, rule=Constraint_Qin)
-    # def Constraint_Qout(_b, _t):
-    #     return _b.Qout[_t] == _b.Q[_t]
-    # b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
 
 
 def VarSource(b, t, data, init_data):
