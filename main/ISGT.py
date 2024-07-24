@@ -57,10 +57,8 @@ df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv')
 df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
 df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
-# df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-1*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
 df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
-# df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-1*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
 
 
@@ -124,7 +122,7 @@ data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
 init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
 Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
 Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
-data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141}
+data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.90*10e3, 'WT_max':1.10*10e3}
 init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
 Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
 Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
@@ -170,20 +168,6 @@ EB(m.EBpvw, m.tw)
 EB(m.EBpvs, m.ts)
 
 
-def ConstraintW1minw(m):
-    return m.Reservoir1w.W[23] >= m.Reservoir1w.W0*0.95
-m.Reservoir1_c_W1minw = pyo.Constraint(rule=ConstraintW1minw)
-def ConstraintW1maxw(m):
-    return m.Reservoir1w.W[23] <= m.Reservoir1w.W0*1.05
-m.Reservoir1_c_W1maxw = pyo.Constraint(rule=ConstraintW1maxw)
-
-def ConstraintW1mins(m):
-    return m.Reservoir1s.W[23] >= m.Reservoir1s.W0*0.95
-m.Reservoir1_c_W1mins = pyo.Constraint(rule=ConstraintW1mins)
-def ConstraintW1maxs(m):
-    return m.Reservoir1s.W[23] <= m.Reservoir1s.W0*1.05
-m.Reservoir1_c_W1maxs = pyo.Constraint(rule=ConstraintW1maxs)
-
 # def ConstraintPumpTurbw(m, t):
 #     return m.Turb1w.Qin[t] * m.Pump1w.PumpOn[t] == 0
 # m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
@@ -198,9 +182,6 @@ m.Reservoir1_c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
 def ConstraintBatPws(m):
     return m.Batw.Pdim == m.Bats.Pdim
 m.Reservoir1_c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
-
-
-# m.Turb1w.Qin.fix(0)
 
 
 # Connections
@@ -267,8 +248,7 @@ import time
 def obj_fun(m):
 # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
 	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 +
-            1e-4*(m.Pipe1w.Qp[t] + m.Pipe1w.Qn[t] + m.Pipe1s.Qp[t] + m.Pipe1s.Qn[t]) for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()

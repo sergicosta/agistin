@@ -62,7 +62,7 @@ data_irr = {'Q':[0.1,0.8,0.8,0.8,0.1]} # irrigation
 Source(m.Irrigation1, m.t, data_irr, {})
 
 data_res0 = {'dt':1, 'W0':5, 'Wmin':0, 'Wmax':10, 'zmin':0, 'zmax':0.05}
-data_res1 = {'dt':1, 'W0':1, 'Wmin':0, 'Wmax':10, 'zmin':0.75, 'zmax':0.80}
+data_res1 = {'dt':1, 'W0':1, 'Wmin':0, 'Wmax':10, 'zmin':0.75, 'zmax':0.80, 'WT_min':0.9, 'WT_max':1.10}
 init_res = {'Q':[0]*T, 'W':[0.5]*T}
 
 Reservoir(m.Reservoir1, m.t, data_res1, init_res)
@@ -100,14 +100,14 @@ NewBattery(m.Battery, m.t, data, init_data)
 
 
 
-def ConstraintW1min(m):
-    return m.Reservoir1.W[T-1] >= m.Reservoir1.W0*0.90
-    # return m.Reservoir1.W[T-1] >= m.Reservoir1.W[0]*0.95
-m.Reservoir1_c_W1min = pyo.Constraint(rule=ConstraintW1min)
-def ConstraintW1max(m):
-    return m.Reservoir1.W[T-1] <= m.Reservoir1.W0*1.10
-    # return m.Reservoir1.W[T-1] <= m.Reservoir1.W[0]*1.05
-m.Reservoir1_c_W1max = pyo.Constraint(rule=ConstraintW1max)
+# def ConstraintW1min(m):
+#     return m.Reservoir1.W[T-1] >= m.Reservoir1.W0*0.90
+#     # return m.Reservoir1.W[T-1] >= m.Reservoir1.W[0]*0.95
+# m.Reservoir1_c_W1min = pyo.Constraint(rule=ConstraintW1min)
+# def ConstraintW1max(m):
+#     return m.Reservoir1.W[T-1] <= m.Reservoir1.W0*1.10
+#     # return m.Reservoir1.W[T-1] <= m.Reservoir1.W[0]*1.05
+# m.Reservoir1_c_W1max = pyo.Constraint(rule=ConstraintW1max)
 
 # def ConstraintBatE0min(m):
 #     return m.Battery.E[T-1] >= m.Battery.E[0]*0.90
@@ -176,16 +176,16 @@ with open("couenne.opt", "w") as file:
                 convexification_points 2
                 delete_redundant yes
                 use_quadratic no
-                feas_tolerance 1e-5
+                feas_tolerance 1e-4
                 ''')
 solver = pyo.SolverFactory('asl:couenne')
 results = solver.solve(instance, tee=True)
 results.write()
 os.remove('couenne.opt') #Delete options
 
-# instance = m.create_instance()
-# solver = pyo.SolverFactory('ipopt')
-# results = solver.solve(instance, tee=True)
+instance = m.create_instance()
+solver = pyo.SolverFactory('ipopt')
+results = solver.solve(instance, tee=True)
 
 exec_time = time.time() - start_time
 
