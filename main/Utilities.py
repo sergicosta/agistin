@@ -12,11 +12,59 @@ Generic functions and utilities used recurively.
 import pandas as pd
 from pyomo.environ import value
 
+def MeteoAPI2df(var,long,lat,days):
+    '''
+    Prediction of any wether variable to 16 days.
+    3 inputs required:
+        var = global_tilted_irradiance
+        lat = 41.67
+        long = 0.47
+        days = 2
+    Web info : https://open-meteo.com/en/docs#hourly=global_tilted_irradiance 
+    '''
+    import json
+    import requests
+
+    uri = "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+long+"&hourly="+var+"&forecast_days="+days+""
+
+    def download_and_read_json(uri):
+        try:
+            response = requests.get(uri)
+            response.raise_for_status()  
+    
+            data = response.json()
+            
+            return data
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Download error: {e}")
+        except ValueError as e:
+            print(f"Error reading JSON file: {e}")
+    
+    
+        
+    json_data = download_and_read_json(uri)
+    
+    df = pd.DataFrame({'time': json_data['hourly']['time'],
+                       'global_tilted_irradiance': json_data['hourly']['global_tilted_irradiance']})
+    
+    df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%dT%H:%M')
+    
+    df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M')
+    
+    return df
+
+
+
 def REEAPI2df(start_date, end_date):
     ''' 
-    Example function input
-    start_date = 2024-07-23T00:00
-    end_date = 2024-07-23T10:00
+    PVPC prices €/MWh in advanced and historical, source:REE. 
+    2 inputs:
+        
+        start_date = 2024-07-23T00:00
+        end_date = 2024-07-23T10:00
+    
+    Web info: https://www.ree.es/es/apidatos 
 
     '''
     import json
