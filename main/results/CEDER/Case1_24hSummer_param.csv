@@ -1,0 +1,2 @@
+,Reservoir0.W0,Reservoir0.Wmin,Reservoir0.Wmax,Reservoir0.zmin,Reservoir0.zmax,Reservoir1.W0,Reservoir1.Wmin,Reservoir1.Wmax,Reservoir1.zmin,Reservoir1.zmax,Reservoir2.W0,Reservoir2.Wmin,Reservoir2.Wmax,Reservoir2.zmin,Reservoir2.zmax,Pump1.eff,Pump1.Pn,Pump1.Npumps,Pump2.eff,Pump2.Pn,Pump2.Npumps,Turb1.eff,Turb1.Pmax,Pipe01.K,Pipe02.K,VarSource.Qmax,Pipe01T.K,PV.Pmax,PV.Pinst,PV.eff,Grid.Pmax
+,2500.0,0,2500.0,1,4,0.0,0.0,1500.0,67,69,0.0,0.0,500.0,77,79,0.8,7500.0,4,0.8,7500.0,4,0.8,40000.0,300,300,1,300,16000.0,16000.0,0.98,100000.0
