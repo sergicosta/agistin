@@ -12,6 +12,51 @@ Generic functions and utilities used recurively.
 import pandas as pd
 from pyomo.environ import value
 
+def REEAPI2df(start_date, end_date):
+    ''' 
+    Example function input
+    start_date = 2024-07-23T00:00
+    end_date = 2024-07-23T10:00
+
+    '''
+    import json
+    import requests
+
+    uri = "https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date="+start_date+"&end_date="+end_date+"&time_trunc=hour"
+    
+    def download_and_read_json(uri):
+        try:
+            response = requests.get(uri)
+            response.raise_for_status()  
+    
+            data = response.json()
+    
+            return data
+        except requests.exceptions.RequestException as e:
+            print(f"Download error: {e}")
+        except ValueError as e:
+            print(f"Error reading JSON file: {e}")
+        
+    
+    json_data = download_and_read_json(uri)
+    
+    values_list = []
+    for item in json_data["included"]:
+        if item["type"] == "PVPC (€/MWh)" and "attributes" in item and "values" in item["attributes"]:
+            values_list.extend(item["attributes"]["values"])
+    
+    # Convertir la lista en un DataFrame
+    df = pd.DataFrame(values_list)
+    
+    # Convertir la columna 'datetime' a formato de fecha y hora
+    df['datetime'] = pd.to_datetime(df['datetime'], format='%Y-%m-%dT%H:%M:%S.%f%z')
+    
+    # Formatear la columna 'datetime' a 'yyyy-mm-dd hh:mm'
+    df['datetime'] = df['datetime'].dt.strftime('%Y-%m-%d %H:%M')
+    
+    return df
+
+
 def clear_clc(): 
     """
     Applies clear and clc similar to Matlab in Spyder
