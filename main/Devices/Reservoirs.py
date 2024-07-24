@@ -73,7 +73,9 @@ def Reservoir(b, t, data, init_data):
     b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
     b.W = pyo.Var(t, initialize=init_data['W'], bounds=(data['Wmin'], data['Wmax']), within=pyo.NonNegativeReals)
     b.z = pyo.Var(t, initialize={k: z(b,init_data['W'][k]) for k in range(len(t))}, bounds=(data['zmin'], data['zmax']), within=pyo.NonNegativeReals) 
-
+    
+    if ('WT_min' in data) and ('WT_max' in data):
+        b.W[len(t)-1].bounds=(data['WT_min'], data['WT_max'])
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
