@@ -63,43 +63,29 @@ def Source(b, t, data, init_data=None):
 def VarSource(b, t, data, init_data):
     
     #Parameters
-    b.S = pyo.Param(initialize=data['S'])
-    
+    b.Qmax = pyo.Param(initialize=data['Qmax'])
+
     #Variables
     b.Qin = pyo.Var(t, initialize=init_data['Qin'], within=pyo.NonPositiveReals)
-    b.Qmax = pyo.Var(t, initialize=init_data['Qmax'],within=pyo.Reals)
-    b.Qout = pyo.Var(t, initialize=init_data['Qout'], within=pyo.Reals)
-    b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
-    b.H = pyo.Var(t, initialize=init_data['H'],within=pyo.Reals)
-    b.zhigh = pyo.Var(t, initialize=init_data['zhigh'],within=pyo.Reals)
-    b.zlow = pyo.Var(t, initialize=init_data['zlow'],within=pyo.Reals)
-    
+    b.Qout = pyo.Var(t, initialize=init_data['Qout'], within=pyo.Reals, bounds = [0,b.Qmax])
+    # b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
+
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
-    b.port_zhigh = Port(initialize={'z': (b.zhigh, Port.Equality)})
-    b.port_zlow = Port(initialize={'z': (b.zlow, Port.Equality)})
 
     
     # Constraint
     def Constraint_Qin(_b, _t):
-        return _b.Qin[_t] == -_b.Q[_t]
+        return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Qin = pyo.Constraint(t, rule=Constraint_Qin)
     
-    def Constraint_Qout(_b, _t):
-        return _b.Qout[_t] == _b.Q[_t]
-    b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
+    # def Constraint_Qout(_b, _t):
+    #     return _b.Qout[_t] == _b.Q[_t]
+    # b.c_Qout = pyo.Constraint(t, rule=Constraint_Qout)
     
-    def Constraint_H (_b,_t):
-        return _b.H[_t] == _b.zhigh[_t] - _b.zlow[_t]
-    b.c_H = pyo.Constraint(t, rule = Constraint_H)
-    
-    def Constraint_Qmax (_b,_t):
-        return _b.Qmax[_t] == (2*9.81*_b.H[_t])**(1/2)*_b.S
-    b.c_Qmax = pyo.Constraint(t, rule = Constraint_Qmax)
-    
-    def Constraint_Q (_b,_t):
-        return _b.Q[_t] <= _b.Qmax[_t]
-    b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
+    # def Constraint_Q (_b,_t):
+    #     return _b.Q[_t] <= _b.Qmax
+    # b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
 
     
