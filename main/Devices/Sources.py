@@ -48,8 +48,8 @@ def Source(b, t, data, init_data=None):
     b.Qout = pyo.Var(t, initialize=data['Q'], within=pyo.Reals)
     
     for k in range(len(t)):
-        b.Qin[k].bounds = (-Q[k],-Q[k])
-        b.Qout[k].bounds = (Q[k],Q[k])
+        b.Qin[k].bounds = (-data['Q'][k],-data['Q'][k])
+        b.Qout[k].bounds = (data['Q'][k],data['Q'][k])
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
