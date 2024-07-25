@@ -54,7 +54,7 @@ def SolarPV(b, t, data, init_data=None):
     b.eff = pyo.Param(initialize=data['eff'])
     
     # Variables
-    b.P = pyo.Var(t, initialize={k: -data['Pinst']*data['forecast'][k] for k in range(len(t))} , bounds=(-data['Pmax'],0), domain=pyo.Reals)
+    b.P = pyo.Var(t, initialize={k: -data['Pinst']*data['forecast'][k] for k in range(len(t))} , bounds=(-data['Pmax'],0), domain=pyo.NonPositiveReals)
     b.Pdim = pyo.Var(initialize=0 , bounds=(0, data['Pmax']-data['Pinst']), domain=pyo.NonNegativeReals)
     
     # Ports
