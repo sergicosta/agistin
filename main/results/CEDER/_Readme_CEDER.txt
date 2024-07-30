@@ -11,13 +11,13 @@ Case 1 (C1):
 
 Case 2 (C2):
 
-	-  Able to size a maxim of 56 kW of PV, while 16kW are already installed. 
+	- Able to size a maximum of 66 kW of PV in total, while 16kW are already installed (56 kW new).	
 	-  Able to size from 0 20kW and 20kWh of battery
 	-  2 Simulation for winter (2023/01/25) and summer (2023/07/02)
 
 
 Case 3 (C3):
-	- Able to size a maximum of 56 kW of PV, while 16kW are already installed. 
+	- Able to size a maximum of 66 kW of PV in total, while 16kW are already installed (56 kW new). 
 	- Considering the 90 kW and (??) kWh of battery already installed in the system.
 	- 2 simulations for winter (2023/01/25) and summer (2023/07/02)
 

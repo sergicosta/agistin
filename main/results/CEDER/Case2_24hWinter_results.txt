@@ -9,7 +9,7 @@ Problem:
   Upper bound: inf
   Number of objectives: 1
   Number of constraints: 0
-  Number of variables: 1660
+  Number of variables: 1636
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
@@ -27,7 +27,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-1112.607059955597 s
+358.55913496017456 s
 
 GOAL VALUE:
-11.166948531523511
+11.361943327617254
