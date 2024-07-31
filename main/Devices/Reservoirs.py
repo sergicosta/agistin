@@ -68,6 +68,8 @@ def Reservoir(b, t, data, init_data):
     b.Wmax = pyo.Param(initialize=data['Wmax'])
     b.zmin = pyo.Param(initialize=data['zmin'])
     b.zmax = pyo.Param(initialize=data['zmax'])
+    b.WTmin = pyo.Param(initialize=data['WT_min'])
+    b.WTmax = pyo.Param(initialize=data['WT_max'])
     
     # Variables
     b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
