@@ -60,7 +60,7 @@ def Reservoir(b, t, data, init_data):
     def z(_b, w):
         return (w-_b.Wmin)/(_b.Wmax-_b.Wmin)*(_b.zmax-_b.zmin) + _b.zmin
     
-    b.dt = data['dt']
+    b.dt = data['dt'] 
     
     # Parameters
     b.W0 = pyo.Param(initialize=data['W0'])
@@ -68,8 +68,6 @@ def Reservoir(b, t, data, init_data):
     b.Wmax = pyo.Param(initialize=data['Wmax'])
     b.zmin = pyo.Param(initialize=data['zmin'])
     b.zmax = pyo.Param(initialize=data['zmax'])
-    b.WTmin = pyo.Param(initialize=data['WT_min'])
-    b.WTmax = pyo.Param(initialize=data['WT_max'])
     
     # Variables
     b.Q = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals)
@@ -78,6 +76,8 @@ def Reservoir(b, t, data, init_data):
     
     if ('WT_min' in data) and ('WT_max' in data):
         b.W[len(t)-1].bounds=(data['WT_min'], data['WT_max'])
+        b.WTmin = pyo.Param(initialize=data['WT_min'])
+        b.WTmax = pyo.Param(initialize=data['WT_max'])
     
     # Ports
     b.port_Q = Port(initialize={'Q': (b.Q, Port.Extensive)})
