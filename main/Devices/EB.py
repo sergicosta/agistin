@@ -17,7 +17,7 @@ from pyomo.network import Arc, Port
 def EB(b, t, data=None, init_data=None):
 
     """
-    Basic EB.
+    Basic energy balance node.
     
     Captures the powers linked to it and sets their sum to 0:
     
@@ -34,25 +34,22 @@ def EB(b, t, data=None, init_data=None):
     ------------------
     
     - Parameters: 
-        - *None*
-    - Variables: 
         - P_bal (t) :math:`\in \mathbb{R}`
+    - Variables: 
+        - *None*
     - Ports: 
         - port_P @ P_bal (Extensive)
     - Constraints: 
-        - balance: :math:`P_{bal} = 0`
+        - *None*
     """
 
     
     # Parameters
+    b.P_bal = pyo.Param(t, initialize=0)
     
     # Variables
-    b.P_bal = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, domain=pyo.Reals)
     
     # Ports
     b.port_P = Port(initialize={'P': (b.P_bal, Port.Extensive)})
     
     # Constraints
-    def balance(_b, _t):
-        return _b.P_bal[_t] == 0
-    b.bal = pyo.Constraint(t, rule=balance)
