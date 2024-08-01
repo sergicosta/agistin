@@ -28,28 +28,20 @@ def Source(b, t, data, init_data=None):
     
     Pyomo declarations    
         - Parameters: 
-            - Q (t)
+            - Qin (t) 
+            - Qout (t)
         - Variables: 
-            - Qin (t) :math:`\in \mathbb{R}`
-            - Qout (t) :math:`\in \mathbb{R}`
         - Ports: 
             - port_Qin @ Qin as ``Extensive``
             - port_Qout @ Qout as ``Extensive``
-        - Constraints: 
-            - c_Qin: :math:`Q_{in}(t) = -Q(t)`
-            - c_Qout: :math:`Q_{out}(t) = Q(t)`
+        - Constraints:
     """
     
     # Parameters
-    b.Q = pyo.Param(t, initialize=data['Q'])
+    b.Qin = pyo.Param(t, initialize=[-k for k in data['Q']])
+    b.Qout = pyo.Param(t, initialize=data['Q'])
     
     # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in data['Q']], within=pyo.Reals)
-    b.Qout = pyo.Var(t, initialize=data['Q'], within=pyo.Reals)
-    
-    for k in range(len(t)):
-        b.Qin[k].bounds = (-data['Q'][k],-data['Q'][k])
-        b.Qout[k].bounds = (data['Q'][k],data['Q'][k])
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
