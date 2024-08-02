@@ -167,5 +167,6 @@ def get_results(file, instance, results, l_t, exec_time):
         f.write('\nExecution time:\n'+str(exec_time)+' s\n')
         f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
         f.close()
+    model_to_file(instance,file+'_model.txt')
         
     return df_out, df_param, df_size
