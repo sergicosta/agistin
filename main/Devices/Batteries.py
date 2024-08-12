@@ -328,30 +328,33 @@ def Battery_MV(b, t, data, init_data):
     b.Pinst = pyo.Param(initialize=data['Pinst']) # Battery installed rated power
     b.slope_fcr = pyo.Param(initialize=data['slope_fcr']) # statik for the FCR ( 100%  power by a 200mH deviation)
     b.F = pyo.Param(t, initialize=data['F'])      # Grid frequency (time serie)
-    b.PowerFCRCharge = pyo.Param(t, initialize=data['FCRCharge'])
-    b.PowerFCRDisCharge = pyo.Param(t, initialize=data['FCRDisCharge'])
+    b.Fup = pyo.Param(t, initialize=data['FCharge'])  # Grid frequency > 50 (time serie)
+    b.Fdown = pyo.Param(t, initialize=data['FDisCharge'])  # Grid frequency < 50 (time serie)
 
 
     b.SOCmin = pyo.Param(initialize=0.25*(data['Pinst'])/(data['Einst'])) 
     b.SOCmax = pyo.Param(initialize=((data['Einst']) - 0.25*(data['Pinst']))/(data['Einst'])) # bounds = (0.0,data['SOCmax']),
 
     # Variables
-    b.Pfeedin = pyo.Var(t, bounds=(-100000, 0))
-    b.Pfeedout = pyo.Var(t, bounds=(0, 100000))
-    b.P_SCcharged = pyo.Var(t, bounds = (0.0, 1000),  within=pyo.NonNegativeReals)
+    b.P_FCR = pyo.Var(initialize=0, bounds=(0, 10000000), within=pyo.NonNegativeReals) # Power capacity of the battery for FCR provision
+    b.P_FCRCharge = pyo.Var( t, initialize={k:0.0 for k in range(len(t))}, within=pyo.NonNegativeReals)  # Power demanded according the current frequency
+    b.P_FCRDisCharge = pyo.Var( t, initialize={k:0.0 for k in range(len(t))}, within=pyo.NonPositiveReals)  # Power demanded according the current frequency
+    #b.Pfeedin = pyo.Var(t, bounds=(-2000, 0))
+    #b.Pfeedout = pyo.Var(t, bounds=(0, 2000))
+    #b.P_SCcharged = pyo.Var(t, bounds = (0.0, 1000),  within=pyo.NonNegativeReals)
     #b.P_SCdischarged = pyo.Var(t, bounds = (0.0, -1000),  within=pyo.NonPositiveReals)
     #b.BCharge=pyo.Var(t, within = pyo.Binary)
     #b.BDischarge=pyo.Var(t, within = pyo.Binary)
     #b.BCharge=pyo.Var(t, initialize= 1.0, bounds = (0.0,data['Einst']), within=pyo.NonNegativeReals)
     #b.BDischarge=pyo.Var(t, initialize= 1.0, bounds = (0.0,data['Einst']), within=pyo.NonNegativeReals)
-    b.EstrgOut = pyo.Var(t, within=pyo.NonNegativeReals)
+    #b.EstrgOut = pyo.Var(t, within=pyo.NonNegativeReals)
     #b.EstrgOut = pyo.Var(t, initialize= 0.0, bounds = (0.0,data['Einst']),  within=pyo.NonNegativeReals)
     #b.SOC = pyo.Var(t, initialize= 0.0, bounds = (data['SOCmin'],data['SOCmax']),  within=pyo.NonNegativeReals)
     #b.SOC = pyo.Var(t, initialize= 0.0, bounds = (0.0104,0.9895833333333334),  within=pyo.NonNegativeReals)
-    b.SOC = pyo.Var(t, initialize= 0.0, bounds = (249,23750))
+    b.SOC = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}) #  bounds = (249,237500)
+    b.Pout = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, within=pyo.Reals)
     #b.SOC = pyo.Var(t,   within=pyo.NonNegativeReals) # bounds = (0.0,data['Einst']) , within=pyo.NonNegativeReals
-    b.Pout = pyo.Var(t, initialize= 0.0,  within=pyo.Reals)
-    b.EENS = pyo.Var(t, within=pyo.NonNegativeReals)
+        #b.EENS = pyo.Var(t, within=pyo.NonNegativeReals)
     
     
     
@@ -359,62 +362,81 @@ def Battery_MV(b, t, data, init_data):
     # New variables NISHAT
     
     # Define new variables Y(t) and X(t) with initialization
-    b.Y = pyo.Var(t, initialize=0.0, within=pyo.Reals)
-    b.X = pyo.Var(t, initialize=0.0, within=pyo.Reals)
+    #b.Y = pyo.Var(t, initialize=0.0, within=pyo.Reals)
+    #b.X = pyo.Var(t, initialize=0.0, within=pyo.Reals)
 
 
 
-    b.POutcharged = pyo.Var (t,  within=pyo.NonNegativeReals)
+    #b.POutcharged = pyo.Var (t,  within=pyo.NonNegativeReals)
     #b.POutdischarged = pyo.Var(t, initialize= b.Pout,  within=pyo.NonNegativeReals)
 
     # Free Variables
 
-    b.Edim = pyo.Var(initialize=0 , bounds=(0, data['Emax']), domain=pyo.NonNegativeReals)
-       
+    #b.Edim = pyo.Var(initialize=0 , bounds=(0, data['Emax']), domain=pyo.NonNegativeReals)
+    # OutputVariable Variables
+    #
+    #b.P = pyo.Var(t, initialize={k: -data['Pinst'] * data['forecast'][k] for k in range(len(t))},  bounds=(-data['Pmax'], 0), domain=pyo.Reals)
+    #b.Pout = pyo.Var(t, initialize={k: (b.P_FCRCharge[k] + b.P_FCRDisCharge[k]) for k in range(len(t))}, 0), domain=pyo.Reals))
+
 
     # Ports
-    b.port_P = Port(initialize={'P': (b.Pout, Port.Extensive)})                                     # Output signal of the model
+    b.port_P = Port(initialize={'P': (b.Pout, Port.Extensive)})
+
+    def Constraint_P_FCRCharge(b, t,):
+                return b.P_FCRCharge[t] == (50 - (b.Fup[t]))*(b.P_FCR)*b.slope_fcr
+    b.c_P_FCRCharge = pyo.Constraint(t, rule = Constraint_P_FCRCharge)
+
+    def Constraint_P_FCRDisCharge(b, t,):
+                return b.P_FCRDisCharge[t] == (50 - (b.Fdown[t]))*(b.P_FCR)*b.slope_fcr
+    b.c_P_FCRDisCharge = pyo.Constraint(t, rule = Constraint_P_FCRDisCharge)
+
+    # Define Pout as an expression
+    def Constraint_Pout(b, t,):
+            return b.Pout[t] == (b.P_FCRCharge[t] + b.P_FCRDisCharge[t])
+    b.c_Pout = pyo.Constraint(t, rule = Constraint_Pout)
   
     def Constraint_SOC(b, t):
         if t==0:                                               # This constraint calculated the power at the end of the time step
-           return b.SOC[t] == (b.E0) + (b.PowerFCRCharge[t]) + (b.PowerFCRDisCharge[t] +  b.Pfeedin[t] + b.Pfeedout[t]  ) 
+           return b.SOC[t] == (b.E0) + (b.P_FCRCharge[t]) + (b.P_FCRDisCharge[t]) # +  b.Pfeedin[t] + b.Pfeedout[t]
         else:
-           return b.SOC[t]  ==  b.SOC[t-1] + (b.PowerFCRCharge[t]) + (b.PowerFCRDisCharge[t] +  b.Pfeedin[t] + b.Pfeedout[t])                                           # This constraint calculated the current SOC of the battery
+           return b.SOC[t]  ==  b.SOC[t-1] + (b.P_FCRCharge[t]) + (b.P_FCRDisCharge[t] ) # +  b.Pfeedin[t] + b.Pfeedout[t]                                          # This constraint calculated the current SOC of the battery
     b.c_SOC = pyo.Constraint(t, rule = Constraint_SOC)
 
-    def Constraint_FeedIn(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.PowerFCRCharge[t]*b.Pfeedin[t] == 0.0)
-    b.Constraint_FeedIn = pyo.Constraint(t, rule=Constraint_FeedIn)
+
+
+    #def Constraint_FeedIn(b, t):                                                       #This constraint calculates the amount of power to be delivered
+    #        return (b.P_FCRCharge[t]*b.Pfeedin[t] == 0.0)
+    #b.Constraint_FeedIn = pyo.Constraint(t, rule=Constraint_FeedIn)
 
     #def Constraint_FeedIn1(b, t):                                                       #This constraint calculates the amount of power to be delivered
     #        return (b.Pfeedin[t] <= -b.Pmax*2)
     #b.Constraint_FeedIn1 = pyo.Constraint(t, rule=Constraint_FeedIn1)
 
-    def Constraint_FeedOut1(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.PowerFCRDisCharge[t]*b.Pfeedout[t] == 0.0)
-    b.Constraint_FeedOut1 = pyo.Constraint(t, rule=Constraint_FeedOut1)
+    #def Constraint_FeedOut1(b, t):                                                       #This constraint calculates the amount of power to be delivered
+    #        return (b.P_FCRDisCharge[t]*b.Pfeedout[t] == 0.0)
+    #b.Constraint_FeedOut1 = pyo.Constraint(t, rule=Constraint_FeedOut1)
 
    # def Constraint_FeedOut2(b, t):                                                       #This constraint calculates the amount of power to be delivered
    #         return (b.Pfeedout[t] <= b.Pmax)
    # b.Constraint_FeedOut2 = pyo.Constraint(t, rule=Constraint_FeedOut2)
 
-    def Constraint_FeedInOut(b, t):                                                       #This constraint calculates the amount of power to be delivered
-            return (b.Pfeedin[t]*b.Pfeedout[t] == 0.0)
-    b.Constraint_FeedInOut = pyo.Constraint(t, rule=Constraint_FeedInOut)
+    #def Constraint_FeedInOut(b, t):                                                       #This constraint calculates the amount of power to be delivered
+    #        return (b.Pfeedin[t]*b.Pfeedout[t] == 0.0)
+    #b.Constraint_FeedInOut = pyo.Constraint(t, rule=Constraint_FeedInOut)
     
     
     
     # new Constraint NISHAT
     
     # Constraint to set the values of Y(t)
-    def Y_constraint(b, t):
-        return b.Y[t] == abs(b.Pfeedin[t]) + abs(b.PowerFCRDisCharge[t])
-    b.YConstraint = pyo.Constraint(t, rule=Y_constraint)
+    #def Y_constraint(b, t):
+    #    return b.Y[t] == abs(b.Pfeedin[t])
+    #b.YConstraint = pyo.Constraint(t, rule=Y_constraint)
 
     # Constraint to set the values of X(t)
-    def X_constraint(b, t):
-        return b.X[t] == b.PowerFCRCharge[t] + b.Pfeedout[t]
-    b.XConstraint = pyo.Constraint(t, rule=X_constraint)
+    #def X_constraint(b, t):
+    #    return b.X[t] ==  b.Pfeedout[t] # b.P_FCRCharge[t] + b.Pfeedout[t], b.P_FCRCharge[t] is already considered as m.Battery.P_FCR
+    #b.XConstraint = pyo.Constraint(t, rule=X_constraint)
 
     
 
