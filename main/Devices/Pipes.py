@@ -159,20 +159,22 @@ def Pipe(b, t, data, init_data):
         - Constraints: 
             - c_H: :math:`H(t) = H_0(t) + K\, Q(t)^2 - K\, Q(t)^2`
             - c_Q: :math:'Q(t)= Qp(t)- Qn(t)'
+            - c_QpQn0: :math:'0 = Qp(t)\, Qn(t)'
             
     """
     
     # Parameters
     b.K = pyo.Param(initialize=data['K'])
+    b.Qmax = pyo.Param(initialize=data['Qmax'])
     
     # Variables
     b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
     b.zlow = pyo.Var(t, initialize=init_data['zlow'], within=pyo.NonNegativeReals) 
     b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], within=pyo.NonNegativeReals) 
-    b.signQ = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.Qp = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
-    # b.Qn = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
+    # b.signQ = pyo.Var(t, initialize=1, within=pyo.Binary)
+    b.Qp = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
+    b.Qn = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
     
     
     # Ports
@@ -183,19 +185,23 @@ def Pipe(b, t, data, init_data):
     
     # Constraints
     def Constraint_H(_b, _t):
-        # return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(_b.Qp[_t]**2 -_b.Qn[_t]**2)
-        return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(2*_b.signQ[_t]-1)*_b.Q[_t]**2
+        return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(_b.Qp[_t]**2 -_b.Qn[_t]**2)
+        # return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(2*_b.signQ[_t]-1)*_b.Q[_t]**2
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
     
-    # def Constraint_Q(_b,_t):
-    #     return _b.Q[_t] == b.Qp[_t] - b.Qn[_t]
-    # b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
+    def Constraint_Q(_b, _t):
+        return _b.Q[_t] == _b.Qp[_t] - _b.Qn[_t]
+    b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
+    
+    def Constraint_QpQn0(_b,_t):
+        return _b.Qp[_t] * _b.Qn[_t] == 0
+    b.c_QpQn0 = pyo.Constraint(t, rule = Constraint_QpQn0)
 
-    def Constraint_sign(_b,_t):
-        # return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
-        # return _b.signQ[_t] == 2 * ( 1/(1+2.718281828**(-5*_b.Q[_t])) - 0.5)
-        return _b.Q[_t]*(2*_b.signQ[_t]-1) >= 0
-    b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
+    # def Constraint_sign(_b,_t):
+    #     # return _b.signQ[_t] == _b.Q[_t]/((_b.Q[_t] )**2+1e-6)**0.5
+    #     # return _b.signQ[_t] == 2 * ( 1/(1+2.718281828**(-5*_b.Q[_t])) - 0.5)
+    #     return _b.Q[_t]*(2*_b.signQ[_t]-1) >= 0
+    # b.c_sign = pyo.Constraint(t, rule = Constraint_sign)
 
 
 # data: H0, K, Qmax
