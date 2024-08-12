@@ -44,7 +44,7 @@ data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(1000)) #999 #TODO this should be inferred from the number of rows in the excel time series,
+l_t = list(range(55)) #999 #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 builder(m, data_filename)
@@ -61,16 +61,58 @@ builder(m, data_filename)
 
 #%% RUN THE OPTIMIZATION
 
-m.max_SOC = pyo.Var(within=pyo.NonNegativeReals)
-m.W = pyo.Var(within=pyo.NonNegativeReals)
+ # Assuming PinstFCR must be non-negative
+
+# # Add variables for max_SOC, max_Y, and max_X
+# m.max_Y = pyo.Var(domain=pyo.NonNegativeReals)
+# m.max_X = pyo.Var(domain=pyo.NonNegativeReals)
+
+
+# # Add constraints to calculate max_SOC, max_Y, and max_X
+# def max_SOC_rule(m, t):
+#     return m.max_SOC >= m.Battery.SOC[t]
+# m.max_SOC_constraint = pyo.Constraint(m.t, rule=max_SOC_rule)
+
+# def max_Y_rule(m, t):
+#     return m.max_Y >= m.Battery.Y[t]
+# m.max_Y_constraint = pyo.Constraint(m.t, rule=max_Y_rule)
+
+# def max_X_rule(m, t):
+#     return m.max_X >= m.Battery.X[t]
+# m.max_X_constraint = pyo.Constraint(m.t, rule=max_X_rule)
+
+# # Ensure W is the maximum of max_Y and max_X
+# m.max_W_constraint = pyo.Constraint(expr=m.W >= m.max_Y)
+# m.max_W_constraint_2 = pyo.Constraint(expr=m.W >= m.max_X)
+
+ # Assuming PinstFCR must be non-negative
+m.PinstFCR = pyo.Var(domain=pyo.NonNegativeReals) 
+m.max_SOC = pyo.Var(domain=pyo.NonNegativeReals)
+m.W = pyo.Var(domain=pyo.NonNegativeReals)
+
+def calculate_max_values(m):
+    Y_values = [pyo.value(m.Battery.Y[t]) for t in m.t]
+    X_values = [pyo.value(m.Battery.X[t]) for t in m.t]
+    SOC_values = [pyo.value(m.Battery.SOC[t]) for t in m.t]
+
+    max_Y = max(Y_values)
+    max_X = max(X_values)
+    max_SOC = max(SOC_values)
+
+    W = max(max_Y, max_X)
+
+    m.max_SOC.value = max_SOC
+    m.W.value = W
 
 
 # Objective function
 def obj_fun(m):
+    calculate_max_values(m)
     return (
         sum(((m.Battery.PowerFCRCharge[t] * 5) + (m.Battery.PowerFCRDisCharge[t]) * -10 + m.Battery.Pfeedin[t] * -6 + m.Battery.Pfeedout[t] * -8) for t in l_t)
          - (2818 * m.W)
-         - (1.12 * m.max_SOC) # with 999 time steps.
+         - (1.12 * m.max_SOC) 
+         - (2818 * m.PinstFCR) # with 999 time steps.
          # - (155 * m.W) ( these use for 55 time steps.)
          # - (0.0616 * m.max_SOC) 
     )
@@ -80,39 +122,43 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.maximize)
     #"""
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
+# solver.options['max_iter'] = 10000  # Increase the maximum iterations
 solver.solve(instance, tee=False)
+
 
 #   return sum(((m.Battery.PowerFCRCharge[t]*10 + m.Battery.P_SCcharged[t]*5 ) + (m.Battery.PowerFCRDisCharge[t] + m.Battery.P_SCdischarged[t])) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]  
 #    return ((m.Batteries.BCharge[t] + m.Batteries.BDischarge[t]) for t in l_t ) #+ m.PV.Pdim*m.cost_PV1[0]   
 #instance.Grid.P.pprint()
 
 #instance.Battery.EENS.pprint()
-#instance.Battery.Pcharged.pprint()
-#instance.Battery.Pdischarged.pprint()
+# instance.Battery.Pcharged.pprint()
+# instance.Battery.Pdischarged.pprint()
 #instance.Battery.EstrgOut.pprint()
 #instance.Battery.EstrgIni.pprint()
 #instance.Battery.FeedinMax.pprint()
 
+calculate_max_values(instance)
+instance.W.pprint()
+instance.max_SOC.pprint()
 instance.Battery.SOC.pprint()
 instance.Battery.PowerFCRDisCharge.pprint()
 instance.Battery.PowerFCRCharge.pprint()
 instance.Battery.Pfeedin.pprint()
 instance.Battery.Pfeedout.pprint()
-#Y(t)=(Pfeedin(t)+ PowerFCRDisCharge(+)) 
-#X(t)=(PowerFCRCharge(t) + Pfeedout(t))
+
 instance.Battery.Y.pprint()
 instance.Battery.X.pprint()
+
 
 Y_values = [pyo.value(instance.Battery.Y[t]) for t in instance.t]
 X_values = [pyo.value(instance.Battery.X[t]) for t in instance.t]
 SOC_values = [pyo.value(instance.Battery.SOC[t]) for t in instance.t]
 
-
-PowerFCRDisCharge_values = [pyo.value(instance.Battery.PowerFCRDisCharge[t]) for t in instance.t]
-PowerFCRCharge_values = [pyo.value(instance.Battery.PowerFCRCharge[t]) for t in instance.t]
-Pfeedin_values = [pyo.value(instance.Battery.Pfeedin[t]) for t in instance.t]
-Pfeedout_values = [pyo.value(instance.Battery.Pfeedout[t]) for t in instance.t]
-
+## just for storing all values in excel.
+# PowerFCRDisCharge_values = [pyo.value(instance.Battery.PowerFCRDisCharge[t]) for t in instance.t]
+# PowerFCRCharge_values = [pyo.value(instance.Battery.PowerFCRCharge[t]) for t in instance.t]
+# Pfeedin_values = [pyo.value(instance.Battery.Pfeedin[t]) for t in instance.t]
+# Pfeedout_values = [pyo.value(instance.Battery.Pfeedout[t]) for t in instance.t]
 
 
 max_Y = max(Y_values)
@@ -129,45 +175,58 @@ print("Maximum X_Pfeedout:", max_X)
 print("Maximum SOC:", max_SOC)
 print("Maximum W:", W)
 
+instance.W.pprint()
+instance.max_SOC.pprint()
 
-# Store the values in a dictionary for summary results
-results_summary = {
-    'Maximum Y_Pfeedin': [max_Y],
-    'Maximum X_Pfeedout': [max_X],
-    'Maximum SOC': [max_SOC],
-    'Maximum W': [W]
-}
 
-# Convert the dictionary to a pandas DataFrame
-summary_df = pd.DataFrame(results_summary)
+# Ensure W and max_SOC are updated correctly
+# instance.W = W
+# instance.max_SOC = max_SOC
 
-# Store the detailed time-series results in a dictionary
-results_detailed = {
-    'Time': l_t,
-    'SOC': SOC_values,
-    'PowerFCRDisCharge': PowerFCRDisCharge_values,
-    'PowerFCRCharge': PowerFCRCharge_values,
-    'Pfeedin': Pfeedin_values,
-    'Pfeedout': Pfeedout_values,
-    'Y': Y_values,
-    'X': X_values
-}
 
-# Convert the dictionary to a pandas DataFrame
-detailed_df = pd.DataFrame(results_detailed)
+# # Store the values in a dictionary for summary results
+# results_summary = {
+#     'Maximum Y_Pfeedin': [max_Y],
+#     'Maximum X_Pfeedout': [max_X],
+#     'Maximum SOC': [max_SOC],
+#     'Maximum W': [W]
+# }
 
-# Create a Pandas Excel writer using openpyxl as the engine
-with pd.ExcelWriter('optimization_results.xlsx', engine='openpyxl') as writer:
-    # Write the summary DataFrame to the Excel file
-    summary_df.to_excel(writer, sheet_name='Summary', index=False)
+
+## Excel convert Nishat ##
+
+# # Convert the dictionary to a pandas DataFrame
+# summary_df = pd.DataFrame(results_summary)
+
+# # Store the detailed time-series results in a dictionary
+# results_detailed = {
+#     'Time': l_t,
+#     'SOC': SOC_values,
+#     'PowerFCRDisCharge': PowerFCRDisCharge_values,
+#     'PowerFCRCharge': PowerFCRCharge_values,
+#     'Pfeedin': Pfeedin_values,
+#     'Pfeedout': Pfeedout_values,
+#     'Y': Y_values,
+#     'X': X_values
+# }
+
+# # Convert the dictionary to a pandas DataFrame
+# detailed_df = pd.DataFrame(results_detailed)
+
+# # Create a Pandas Excel writer using openpyxl as the engine
+# with pd.ExcelWriter('optimization_results.xlsx', engine='openpyxl') as writer:
+#     # Write the summary DataFrame to the Excel file
+#     summary_df.to_excel(writer, sheet_name='Summary', index=False)
     
-    # Write the detailed DataFrame to the Excel file
-    detailed_df.to_excel(writer, sheet_name='Detailed', index=False)
+#     # Write the detailed DataFrame to the Excel file
+#     detailed_df.to_excel(writer, sheet_name='Detailed', index=False)
 
-print("Results have been written to 'optimization_results.xlsx'")
+# print("Results have been written to 'optimization_results.xlsx'")
 
 
 #print(instance.Battery.MaxPfeedout) # Working
+
+## Till here ##
 
 #instance.Battery.Pout.pprint()
 #instance.Battery.Edim.pprint()
