@@ -41,25 +41,37 @@ builder(m, data_filename)
 
 m.max_SOC = pyo.Var(domain=pyo.NonNegativeReals)
 m.W = pyo.Var(domain=pyo.NonNegativeReals)
+m.max_SOC = pyo.Var(domain=pyo.NonNegativeReals)
+# Add the max_SOC constraint to the model
 
 
-def calculate_max_values(m):
-    #_values = [pyo.value(m.Battery.Y[t]) for t in m.t]
-    #X_values = [pyo.value(m.Battery.X[t]) for t in m.t]
-    SOC_values = [pyo.value(m.Battery.SOC[t]) for t in m.t]
 
-    #max_Y = max(Y_values)
-    #ax_X = max(X_values)
-    max_SOC = max(SOC_values)
+# Constraint to ensure max_SOC is greater than or equal to all SOC values
+def max_soc_constraint(m, t):
+    return m.max_SOC >= m.Battery.SOC[t]
 
-    #W = max(max_Y, max_X)
-    m.max_SOC.values = max_SOC
-    #m.W.value = W
+m.max_SOC_constraint = pyo.Constraint(m.t, rule=max_soc_constraint)
+
+# def calculate_max_values(m):
+#     #_values = [pyo.value(m.Battery.Y[t]) for t in m.t]
+#     #X_values = [pyo.value(m.Battery.X[t]) for t in m.t]
+#     SOC_values = [pyo.value(m.Battery.SOC[t]) for t in m.t]
+
+#     #max_Y = max(Y_values)
+#     #ax_X = max(X_values)
+#     max_SOC = max(SOC_values)
+
+#     #W = max(max_Y, max_X)
+#     m.max_SOC.values = max_SOC
+#     #m.W.value = W
 
 l_cost = [0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3]
 #l_cost =[0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6]
 m.cost = pyo.Param(m.t, initialize=l_cost) #-m.cost[t]
-cost_new_battery_MW = 2.853881279 #7.5 P_FCR=8827, 6.5 P_FCR=9975, 8.5 P_FCR=0 con Battery.P_FCRCharge[t]*0
+#cost_new_battery_MW = 1.853881279 #7.5 P_FCR=8827, 6.5 P_FCR=9975, 8.5 P_FCR=0 con Battery.P_FCRCharge[t]*0
+#cost_new_battery_MW = 1.853881279
+#cost_new_battery_MW = 28.53881279  # Significantly increased value
+cost_new_battery_MW = 40.53881279  # Significantly increased value
 cost_new_battery_MWh = 2.2831050023 # either 405.7 or 505.7, results are the same
 cost_new_pv = 0.05
 
@@ -70,19 +82,37 @@ cost_new_pv = 0.05
 #cost_new_pv = 0.05
 
 def obj_fun(m):
-    calculate_max_values(m)
-    return  (sum(((m.Battery.P_FCRCharge[t]*0.2) + (m.Battery.P_FCRDisCharge[t])*-0.3 for t in l_t)) - (cost_new_battery_MW*m.Battery.P_FCR)) #- (cost_new_battery_MWh*m.max_SOC.values)) #- m.PV.Pdim*cost_new_pv  m.max_SOC
+    # calculate_max_values(m)
+    # max_SOC = max(m.Battery.SOC[t] for t in m.t)
+    return  (sum(((m.Battery.P_FCRCharge[t]*0.2) + (m.Battery.P_FCRDisCharge[t])*-0.3 for t in l_t))
+             - (cost_new_battery_MW*m.Battery.P_FCR)) #- (cost_new_battery_MWh*m.max_SOC)) #- m.PV.Pdim*cost_new_pv  m.max_SOC
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.maximize)
 
-#objective_value = (m.goal)
-#print(f"Objective function value: {objective_value}")
+# objective_value = (m.goal)
+# print(f"Objective function value: {objective_value}")
+
+# find :
+
+# obj of the sum .
+# comment line 86
+# change cost value honi chahya objective ki.
+
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
+# solver.options['tol'] = 1e-6
+# solver.options['max_iter'] = 10000
+solver.options['tol'] = 1e-6
+solver.options['acceptable_tol'] = 1e-5
+solver.options['max_iter'] = 10000  # Increase maximum iterations
+solver.options['mu_init'] = 1e-2  # Initial barrier parameter
+solver.options['bound_push'] = 1e-2  # Push bounds to avoid numerical issues
+solver.options['hessian_approximation'] = 'limited-memory'  # Use Hessian approximation
+
 #solver.options['tol'] = 1e-1  # Convergence tolerance
 #solver.options['max_iter']= 1000000
 
-result = solver.solve(instance, tee=False)
+result = solver.solve(instance, tee=True)
 
 # Check if the model is solved successfully
 #if result.solver.status == solver.status.ok and result.solver.termination_condition == TerminationCondition.optimal:
@@ -101,9 +131,11 @@ result = solver.solve(instance, tee=False)
 # - Price per MW: €500,000 - €800,000
 # - Price per MWh: €200 - €400
 
+
+
 instance.Battery.P_FCR.pprint()
 #instance.PV.Pdim.pprint()
-#instance.Battery.SOC.pprint()
+# instance.Battery.SOC.pprint()
 #instance.Battery.Pout.pprint()
 #instance.Battery.P.pprint()
 #instance.Grid.P.pprint()
