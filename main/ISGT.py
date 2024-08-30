@@ -31,7 +31,7 @@ from pyomo.network import Arc, Port
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
+from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump, RealPumpS
 from Devices.Turbines import Turbine, DiscreteTurbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
@@ -61,6 +61,7 @@ df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
 df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
 
+df_init = pd.read_csv('results/ISGT/Base/ISGT.csv')
 
 # time
 T = 24
@@ -91,12 +92,12 @@ m.Reservoir1w = pyo.Block()
 m.Irrigation1w = pyo.Block()
 m.Pump1w = pyo.Block()
 m.Pump2w = pyo.Block()
-m.Turb1w = pyo.Block()
+# m.Turb1w = pyo.Block()
 m.Pipe1w = pyo.Block()
 m.PVw = pyo.Block()
 m.Gridw = pyo.Block()
 m.EBgw = pyo.Block()
-m.EBpvw = pyo.Block()
+# m.EBpvw = pyo.Block()
 m.Batw = pyo.Block()
 
 m.ReservoirEbres = pyo.Block()
@@ -104,12 +105,12 @@ m.Reservoir1s = pyo.Block()
 m.Irrigation1s = pyo.Block()
 m.Pump1s = pyo.Block()
 m.Pump2s = pyo.Block()
-m.Turb1s = pyo.Block()
+# m.Turb1s = pyo.Block()
 m.Pipe1s = pyo.Block()
 m.PVs = pyo.Block()
 m.Grids = pyo.Block()
 m.EBgs = pyo.Block()
-m.EBpvs = pyo.Block()
+# m.EBpvs = pyo.Block()
 m.Bats = pyo.Block()
 
 
@@ -122,32 +123,38 @@ data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
 init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
 Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
 Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
-data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.90*10e3, 'WT_max':1.10*10e3}
+data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.95*10e3, 'WT_max':1.05*10e3}
+# data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':0e3, 'Wmax':13e3, 'zmin':135+(141-135)*0/13, 'zmax':141, 'WT_min':0*10e3, 'WT_max':13e3}
 init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
 Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
 Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
 
-data_c1 = {'K':297.38, 'Qmax':1.2} # canal
+data_c1 = {'K':297.38*0.20, 'Qmax':1.2} # canal
 init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
 Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
-
-data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
+#'Qmin':0.6250
+data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
+init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+# init_p1s = {'Q':df_init['Pump1s.Qout'], 'H':df_init['Pump1s.H'], 'n':df_init['Pump1s.npu2'], 'Pe':df_init['Pump1s.Pe']}
+# init_p1w = {'Q':df_init['Pump1w.Qout'], 'H':df_init['Pump1w.H'], 'n':df_init['Pump1w.npu2'], 'Pe':df_init['Pump1w.Pe']}
+# init_p2s = {'Q':df_init['Pump2s.Qout'], 'H':df_init['Pump2s.H'], 'n':df_init['Pump2s.npu2'], 'Pe':df_init['Pump2s.Pe']}
+# init_p2w = {'Q':df_init['Pump2w.Qout'], 'H':df_init['Pump2w.H'], 'n':df_init['Pump2w.npu2'], 'Pe':df_init['Pump2w.Pe']}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
-RealPump(m.Pump2w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
+data_p['eff']=0.8
+RealPump(m.Pump2w, m.tw, data_p, init_p)
 RealPump(m.Pump2s, m.ts, data_p, init_p)
 
 # data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
-# init_pdouble = {'Q':[0.04]*T, 'H':[108]*T, 'n':[2900]*T, 'Pe':[110e3*0.9]*T}
+# init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
 # RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
 # RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
 
-data_t = {'eff':0.5, 'Pmax':110e3}
-init_t = {'Q':[0]*T, 'H':[108]*T, 'Pe':[-110e3*0.5]*T}
-Turbine(m.Turb1w, m.tw, data_t, init_t)
-Turbine(m.Turb1s, m.ts, data_t, init_t)
+# data_t = {'eff':0.5, 'Pmax':110e3}
+# init_t = {'Q':[0]*T, 'H':[109]*T, 'Pe':[0]*T}
+# Turbine(m.Turb1w, m.tw, data_t, init_t)
+# Turbine(m.Turb1s, m.ts, data_t, init_t)
 
 data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
 SolarPV(m.PVw, m.tw, data_pv)
@@ -164,24 +171,40 @@ Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
 
 EB(m.EBgw, m.tw)
 EB(m.EBgs, m.ts)
-EB(m.EBpvw, m.tw)
-EB(m.EBpvs, m.ts)
+# EB(m.EBpvw, m.tw)
+# EB(m.EBpvs, m.ts)
 
 
 # def ConstraintPumpTurbw(m, t):
-#     return m.Turb1w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
 # m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
 # def ConstraintPumpTurbs(m, t):
-#     return m.Turb1s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
 # m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 
 
 def ConstraintBatEws(m):
     return m.Batw.Edim == m.Bats.Edim
-m.Reservoir1_c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
+m.c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
 def ConstraintBatPws(m):
     return m.Batw.Pdim == m.Bats.Pdim
-m.Reservoir1_c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+
+
+# m.Batw.Edim.fix(0)
+# m.Bats.Edim.fix(0)
+# m.Batw.Pdim.fix(0)
+# m.Bats.Pdim.fix(0)
+
+# m.Turb1s.Pdim.fix(110e3)
+# m.Turb1w.Pdim.fix(110e3)
 
 
 # Connections
@@ -193,12 +216,12 @@ m.p1ebw = Arc(ports=(m.Pump1w.port_P, m.EBgw.port_P), directed=True)
 m.p2r0w = Arc(ports=(m.Pump2w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
 m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
 m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
-m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBpvw.port_P), directed=True) # pv node
+m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBgw.port_P), directed=True) # pv node
 
-m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
-m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
-m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
-m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
+# m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
+# m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
+# m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
+# m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
 
 m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
 m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
@@ -207,8 +230,8 @@ m.c1r0_zw = Arc(ports=(m.ReservoirEbrew.port_z, m.Pipe1w.port_zlow), directed=Tr
 m.r1i1w = Arc(ports=(m.Irrigation1w.port_Qin, m.Reservoir1w.port_Q), directed=True)
 
 m.gridebw = Arc(ports=(m.Gridw.port_P, m.EBgw.port_P), directed=True)
-m.pvebw = Arc(ports=(m.PVw.port_P, m.EBpvw.port_P), directed=True) # pv node
-m.batebw = Arc(ports=(m.Batw.port_P, m.EBpvw.port_P), directed=True) # pv node
+m.pvebw = Arc(ports=(m.PVw.port_P, m.EBgw.port_P), directed=True) # pv node
+m.batebw = Arc(ports=(m.Batw.port_P, m.EBgw.port_P), directed=True) # pv node
 
 # Connections
 m.p1r0s = Arc(ports=(m.Pump1s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
@@ -219,12 +242,12 @@ m.p1ebs = Arc(ports=(m.Pump1s.port_P, m.EBgs.port_P), directed=True)
 m.p2r0s = Arc(ports=(m.Pump2s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
 m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
 m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
-m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBpvs.port_P), directed=True) # pv node
+m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBgs.port_P), directed=True) # pv node
 
-m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
-m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
-m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
-m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
+# m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
+# m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
+# m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
+# m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
 
 m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
 m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
@@ -233,8 +256,8 @@ m.c1r0_zs = Arc(ports=(m.ReservoirEbres.port_z, m.Pipe1s.port_zlow), directed=Tr
 m.r1i1s = Arc(ports=(m.Irrigation1s.port_Qin, m.Reservoir1s.port_Q), directed=True)
 
 m.gridebs = Arc(ports=(m.Grids.port_P, m.EBgs.port_P), directed=True)
-m.pvebs = Arc(ports=(m.PVs.port_P, m.EBpvs.port_P), directed=True) # pv node
-m.batebs = Arc(ports=(m.Bats.port_P, m.EBpvs.port_P), directed=True) # pv node
+m.pvebs = Arc(ports=(m.PVs.port_P, m.EBgs.port_P), directed=True) # pv node
+m.batebs = Arc(ports=(m.Bats.port_P, m.EBgs.port_P), directed=True) # pv node
 
 pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
@@ -248,44 +271,54 @@ import time
 def obj_fun(m):
 # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
 	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 
 start_time = time.time()
 
-# solver = pyo.SolverFactory('asl:couenne') #ipopt asl:couenne gdpopt.enumerate
-# solver.options['branch_fbbt'] = 'no'
-# solver.solve(instance, tee=True)
 
-os.environ['NEOS_EMAIL'] = 'sergi.costa.dilme@upc.edu'
-solver_manager = pyo.SolverManagerFactory('neos')
-# results = solver_manager.solve(instance, solver="knitro")
-results = solver_manager.solve(instance, solver="couenne")
-# results = solver_manager.solve(instance, solver="bonmin")
-# results = solver_manager.solve(instance, solver="minlp")
+# os.environ['NEOS_EMAIL'] = 'sergi.costa.dilme@upc.edu'
+# solver_manager = pyo.SolverManagerFactory('neos')
+# # results = solver_manager.solve(instance, solver="knitro")
+# results = solver_manager.solve(instance, solver="couenne")
+# # results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
+# # results = solver_manager.solve(instance, solver="bonmin")
+# # results = solver_manager.solve(instance, solver="minlp")
+# results.write()
+
+with open("couenne.opt", "w") as file:
+    file.write('''time_limit 100000
+                convexification_cuts 1
+                convexification_points 2
+                delete_redundant yes
+                use_quadratic no
+                feas_tolerance 1e-1
+                ''')
+solver = pyo.SolverFactory('asl:couenne')
+results = solver.solve(instance, tee=True)
 results.write()
+os.remove('couenne.opt') #Delete options
 
-# with open("couenne.opt", "w") as file:
-#     file.write('''time_limit 100000
-#                 convexification_cuts 2
-#                 convexification_points 2
-#                 delete_redundant yes
-#                 use_quadratic no
-#                 feas_tolerance 1e-4
-#                 ''')
-# solver = pyo.SolverFactory('asl:couenne')
+
+
+# solver = pyo.SolverFactory('asl:SCIP')
 # results = solver.solve(instance, tee=True)
 # results.write()
-# os.remove('couenne.opt') #Delete options
+
+
+# instance = m.create_instance()
+# solver = pyo.SolverFactory('ipopt')
+# solver.options['max_iter'] = 1000000
+# results = solver.solve(instance, tee=True)
 
 exec_time = time.time() - start_time
 
 #%% GET RESULTS
 from Utilities import get_results
 
-file = './results/ISGT/Base_tstw'
+file = './results/ISGT/Base'
 df_out, df_param, df_size = get_results(file=file+'/ISGT', instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%% PLOTS
@@ -305,7 +338,7 @@ labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','
 
 cbcolors = sns.color_palette('colorblind')
 
-file = 'Case2_tstw/ISGT'
+file = 'Base/ISGT'
 
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
 df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv').head(24)
@@ -442,51 +475,51 @@ for df in [df_S, df_W]:
 
 
 
-df = pd.read_csv('data/Analogiques.csv')
-df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
-df['month'] = df['date'].dt.month
-df['weekday'] = df['date'].dt.dayofweek
-df['Volum bassa'] = df['Nivell bassa']*13000/4.5
-df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
-df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
-df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
-df['Qreg_lag'] = df['Qreg'].shift(1)
-df.loc[df['Qreg']>300,'Qreg'] = df['Qreg_lag']
+# df = pd.read_csv('data/Analogiques.csv')
+# df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
+# df['month'] = df['date'].dt.month
+# df['weekday'] = df['date'].dt.dayofweek
+# df['Volum bassa'] = df['Nivell bassa']*13000/4.5
+# df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
+# df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
+# df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
+# df['Qreg_lag'] = df['Qreg'].shift(1)
+# df.loc[df['Qreg']>300,'Qreg'] = df['Qreg_lag']
 
-df['Season'] = df['month']/4
-df['Season'] = df['Season'].astype(int)
-fig = plt.figure(figsize=(3.4, 2.3))
-sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
-plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
-plt.xlabel('Hour')
-plt.ylabel('Irrigation demand (m$^3$/h)')
-plt.xticks(range(24),labels=labels_hours, rotation=90)
-plt.xlim([0,24])
-plt.ylim([0,250])
-plt.tight_layout()
-plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
-plt.show()
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('results/ISGT/Irrigation_season', dpi=300)
+# df['Season'] = df['month']/4
+# df['Season'] = df['Season'].astype(int)
+# fig = plt.figure(figsize=(3.4, 2.3))
+# sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
+# plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
+# plt.xlabel('Hour')
+# plt.ylabel('Irrigation demand (m$^3$/h)')
+# plt.xticks(range(24),labels=labels_hours, rotation=90)
+# plt.xlim([0,24])
+# plt.ylim([0,250])
+# plt.tight_layout()
+# plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
+# plt.show()
+# plt.rcParams['savefig.format']='pdf'
+# plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
-df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
-fig = plt.figure(figsize=(3.4, 1.1))
-sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
-plt.legend(labels=['S','_','W','_'], ncol=1)
-plt.text(24.5,-50,'Time (h)')
-plt.xlabel(None)
-plt.ylabel('Demand (m$^3$/h)')
-plt.xticks(range(24),labels=labels_hours, rotation=90)
-plt.yticks([0,100,200])
-# plt.ylim([0,200])
-plt.xlim([0,24])
-plt.tight_layout()
-plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
-plt.show()
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
-plt.rcParams['savefig.format']='svg'
-plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+# df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
+# fig = plt.figure(figsize=(3.4, 1.1))
+# sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
+# plt.legend(labels=['S','_','W','_'], ncol=1)
+# plt.text(24.5,-50,'Time (h)')
+# plt.xlabel(None)
+# plt.ylabel('Demand (m$^3$/h)')
+# plt.xticks(range(24),labels=labels_hours, rotation=90)
+# plt.yticks([0,100,200])
+# # plt.ylim([0,200])
+# plt.xlim([0,24])
+# plt.tight_layout()
+# plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
+# plt.show()
+# plt.rcParams['savefig.format']='pdf'
+# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+# plt.rcParams['savefig.format']='svg'
+# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
 
 #%% (PARALLEL PUMP)
 
