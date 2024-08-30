@@ -80,9 +80,9 @@ def Pump(b, t, data, init_data):
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
+    b.Ph = pyo.Var(t, initialize=init_data['Pe']/data['eff'], bounds=(0, data['Pmax']/data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1))
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -182,7 +182,8 @@ def RealPump(b, t, data, init_data):
     b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1), within=pyo.NonNegativeReals)
+    # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -214,6 +215,10 @@ def RealPump(b, t, data, init_data):
     def Constraint_Qmin(_b, _t):
         return _b.Qout[_t] >= _b.Qmin * _b.PumpOn[_t]
     b.c_Qmin = pyo.Constraint(t, rule=Constraint_Qmin)
+    
+    # def Constraint_onoff(_b, _t):
+    #     return _b.PumpOn[_t]*(1-_b.PumpOn[_t]) == 0
+    # b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
 
 
 def RealPumpControlled(b, t, data, init_data):
@@ -856,6 +861,7 @@ def RealPumpS(b, t, data, init_data):
     b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     # b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
+    b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
     b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,1), within=pyo.NonNegativeReals)
     b.e = pyo.Var(t, initialize=0, within=pyo.NonNegativeReals)    
 
@@ -882,13 +888,25 @@ def RealPumpS(b, t, data, init_data):
         return _b.Pe[_t] == _b.Ph[_t]/_b.eff
     b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
 
-    def sigmoid(x,k,x0):
-        
-        return 1/(1+2.7182818284**(-k*(x-x0)))
+    def Constraint_onoff(_b, _t):
+        return _b.PumpOn[_t]*(1-_b.PumpOn[_t]) <= 1e-3
+    b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
     
-    def Constraint_e(_b,_t):
-        return _b.e[_t] == sigmoid(_b.Qout[_t],k=500,x0=0) - sigmoid(_b.Qout[_t],k=500,x0=_b.Qmin)
-    b.c_e = pyo.Constraint(t, rule=Constraint_e)
+    # def Constraint_onoff(_b, _t):
+    #     return _b.PumpOn[_t]+(1-_b.PumpOn[_t]) == 1
+    # b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
+
+
+
+    # def sigmoid(x,k,x0):
+    #     return 1/(1+2.7182818284**(-k*(x-x0)))
+    
+    # def normal(x,mu,sig):
+    #     return 2.7182818284**(-(x-mu)**2/(2*sig**2))
+    
+    # def Constraint_e(_b,_t):
+    #     return _b.e[_t] == sigmoid(_b.Qout[_t],k=8000,x0=0.001) - sigmoid(_b.Qout[_t],k=8000,x0=_b.Qmin-0.001) + normal(_b.Qout[_t], mu=_b.Qmin/2, sig=_b.Qmin/2/4)
+    # b.c_e = pyo.Constraint(t, rule=Constraint_e)
 
         
     
