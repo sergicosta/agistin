@@ -9,7 +9,7 @@ Problem:
   Upper bound: inf
   Number of objectives: 1
   Number of constraints: 0
-  Number of variables: 2358
+  Number of variables: 2550
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
@@ -19,6 +19,8 @@ Solver:
   Message: couenne\x3a Optimal
   Termination condition: optimal
   Id: 3
+  Error rc: 0
+  Time: 678.928564786911
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -27,7 +29,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-2299.006195306778 s
+679.1329023838043 s
 
 GOAL VALUE:
-14.126438726532747
+12.904817912002612
