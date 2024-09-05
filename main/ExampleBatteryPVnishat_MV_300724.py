@@ -29,7 +29,7 @@ data_parser(data_filename, dt=1) # dt = value of each timestep (if using SI this
 m = pyo.ConcreteModel()
 
 # time
-l_t = list(range(55)) #999 #TODO this should be inferred from the number of rows in the excel time series,
+l_t = list(range(8760)) #999 #TODO this should be inferred from the number of rows in the excel time series,
 #TODO it would be nice to have a consistency check ensuring that data has been correctly filled in all sheets.
 m.t = pyo.Set(initialize=l_t)
 builder(m, data_filename)
@@ -70,8 +70,9 @@ l_cost = [0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.
 m.cost = pyo.Param(m.t, initialize=l_cost) #-m.cost[t]
 #cost_new_battery_MW = 1.853881279 #7.5 P_FCR=8827, 6.5 P_FCR=9975, 8.5 P_FCR=0 con Battery.P_FCRCharge[t]*0
 #cost_new_battery_MW = 1.853881279
+cost_new_battery_MW  = 25000
 #cost_new_battery_MW = 28.53881279  # Significantly increased value
-cost_new_battery_MW = 40.53881279  # Significantly increased value
+#cost_new_battery_MW = 40.53881279  # Significantly increased value
 cost_new_battery_MWh = 2.2831050023 # either 405.7 or 505.7, results are the same
 cost_new_pv = 0.05
 
@@ -84,8 +85,8 @@ cost_new_pv = 0.05
 def obj_fun(m):
     # calculate_max_values(m)
     # max_SOC = max(m.Battery.SOC[t] for t in m.t)
-    return  (sum(((m.Battery.P_FCRCharge[t]*0.2) + (m.Battery.P_FCRDisCharge[t])*-0.3 for t in l_t))
-             - (cost_new_battery_MW*m.Battery.P_FCR)) #- (cost_new_battery_MWh*m.max_SOC)) #- m.PV.Pdim*cost_new_pv  m.max_SOC
+    return  (sum(((m.Battery.P_FCRCharge[t]*70) + (m.Battery.P_FCRDisCharge[t])*-60 for t in l_t))
+            - (cost_new_battery_MW*m.Battery.P_FCR))  #- (cost_new_battery_MWh*m.max_SOC)) #- m.PV.Pdim*cost_new_pv  m.max_SOC
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.maximize)
 
 # objective_value = (m.goal)
@@ -102,17 +103,17 @@ instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
 # solver.options['tol'] = 1e-6
 # solver.options['max_iter'] = 10000
-solver.options['tol'] = 1e-6
-solver.options['acceptable_tol'] = 1e-5
-solver.options['max_iter'] = 10000  # Increase maximum iterations
-solver.options['mu_init'] = 1e-2  # Initial barrier parameter
-solver.options['bound_push'] = 1e-2  # Push bounds to avoid numerical issues
-solver.options['hessian_approximation'] = 'limited-memory'  # Use Hessian approximation
+# solver.options['tol'] = 1e-6
+# solver.options['acceptable_tol'] = 1e-5
+# solver.options['max_iter'] = 10000  # Increase maximum iterations
+# solver.options['mu_init'] = 1e-2  # Initial barrier parameter
+# solver.options['bound_push'] = 1e-2  # Push bounds to avoid numerical issues
+# solver.options['hessian_approximation'] = 'limited-memory'  # Use Hessian approximation
 
 #solver.options['tol'] = 1e-1  # Convergence tolerance
 #solver.options['max_iter']= 1000000
 
-result = solver.solve(instance, tee=True)
+result = solver.solve(instance, tee=False)
 
 # Check if the model is solved successfully
 #if result.solver.status == solver.status.ok and result.solver.termination_condition == TerminationCondition.optimal:
