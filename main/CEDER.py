@@ -144,10 +144,11 @@ summer_var = df_summer.groupby('Hour').var()
 #------Optimization problem------------
 
 # Take in account the season of the optimization (winter or summer)
-
+ho=0
+hf=24
 
 df_meteo = pd.DataFrame()
-df_grid =  pd.read_csv('data/costs/PVPC_aug.csv').iloc[24].reset_index(drop=True)
+df_grid =  pd.read_csv('data/costs/PVPC_jan.csv').iloc[ho:hf].reset_index(drop=True)
 df_meteo['Irr']  = summer_day_mean['Irr']
 df_load = - summer_day_mean['CT_Edificio1']
 
@@ -170,7 +171,7 @@ l_excs = df_grid['Excedentes']
 
 m.costs = pyo.Param(m.ts, initialize=l_costs)
 m.excs = pyo.Param(m.ts, initialize=l_excs)
-
+        
 cost_new_pv = 0.00126*T/1000
 cp_bat = 0.00171*T/1000
 ce_bat = 0.00856*T/1000
@@ -425,77 +426,96 @@ df_melted = pd.melt(df_out, id_vars=['t'], value_vars=['Pump1s.Pe', 'PVs.P', 'Lo
                     var_name='Variable', value_name='Value')
 df_melted['Value'] = df_melted['Value'] / 1000
 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Nimbus Roman No9 L"],
+    "font.size": 9,
+    'axes.spines.top': False,
+    'axes.spines.right': False
+})
+
+
 variable_names = {
     'Pump1s.Pe': 'Pumps',
-    'PVs.P': 'Photovoltaical',
-    'Loads.Pin': 'Electrical Load',
+    'PVs.P': 'PV',
+    'Loads.Pin': 'Load',
     'Turb1s.Pe': 'Turbine',
     'Grids.P': 'Grid',
     'Bats.P': 'Battery'
 }
 
+# Reemplazar los nombres de las variables en el DataFrame
 df_melted['Variable'] = df_melted['Variable'].replace(variable_names)
 
+# Definir los colores específicos para cada variable utilizando la paleta 'colorblind' de seaborn
+colors_dict = {
+    'PV': sns.color_palette("colorblind")[2],  # Verde
+    'Pumps': sns.color_palette("colorblind")[0],  # Azul
+    'Grid': sns.color_palette("colorblind")[7],  # Gris
+    'Battery': sns.color_palette("colorblind")[4],  # Purple
+    'Load': sns.color_palette("colorblind")[5],  # Marrón
+    'Turbine': sns.color_palette("colorblind")[3]  # Azul claro
+}
 
+# Power balance plot
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(7, 6), gridspec_kw={'height_ratios': [3, 1]})  # Ajuste del tamaño a 7x4 pulgadas
 
-#Power balance plot
-
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(7, 4), gridspec_kw={'height_ratios': [3, 1]})  # Ajuste del tamaño a 7x4 pulgadas
+# Pivotear el DataFrame y llenar valores faltantes con 0
 df_pivot = df_melted.pivot(index='t', columns='Variable', values='Value').fillna(0)
-colors = sns.color_palette("colorblind", len(df_pivot.columns))
 
+# Reordenar columnas para que PV y Electrical Load estén primero
+column_order = ['PV', 'Load'] + [col for col in df_pivot.columns if col not in ['PV', 'Load']]
+df_pivot = df_pivot[column_order]
+
+# Separar valores positivos y negativos
 df_positive = df_pivot.clip(lower=0)
 df_negative = df_pivot.clip(upper=0)
 
+# Graficar las barras apiladas
 bottom_pos = np.zeros(len(df_positive))
-
-for i, col in enumerate(df_positive.columns):
-    ax1.bar(df_positive.index, df_positive[col], bottom=bottom_pos, label=col, color=colors[i])
+for col in df_positive.columns:
+    ax1.bar(df_positive.index, df_positive[col], bottom=bottom_pos, label=col, color=colors_dict[col])
     bottom_pos += df_positive[col]
 
 bottom_neg = np.zeros(len(df_negative))
-
-for i, col in enumerate(df_negative.columns):
-    ax1.bar(df_negative.index, df_negative[col], bottom=bottom_neg, color=colors[i])
+for col in df_negative.columns:
+    ax1.bar(df_negative.index, df_negative[col], bottom=bottom_neg, color=colors_dict[col])
     bottom_neg += df_negative[col]
 
+# Línea horizontal en y=0
 ax1.axhline(0, color='black', linewidth=1)
+ax1.set_ylim(-55, 55)
 
+# Etiquetas y título
 ax1.set_title('Generated and Consumed Power', fontsize=14)
 ax1.set_xlabel('Time [Hours]', fontsize=12)
 ax1.set_ylabel('Power [kW]', fontsize=12)
 
-ax2.plot(df_out['t'], l_costs, color='black', marker='o', linestyle='dashed', linewidth=2, label='PVPC')
+# Segunda gráfica con costos
+ax2.plot(df_out['t'], df_grid['PVPC'], color='black', marker='o', linestyle='dashed', linewidth=2, label='PVPC')
 ax2.plot(df_out['t'], df_grid['Excedentes'], color='red', marker='o', linestyle='dashed', linewidth=2, label='Selling price')
-
 ax2.set_ylabel('Price [€]', color='black', fontsize=12)
 ax2.set_xlabel('Time [Hours]', fontsize=12)
 ax2.tick_params(axis='y', labelcolor='black')
 
+
+# Leyenda para el gráfico de energía generada/consumida (ax1)
 handles1, labels1 = ax1.get_legend_handles_labels()
+ax1.legend(handles1, labels1, loc='upper center', bbox_to_anchor=(0.23, 1.01), ncol=3, fontsize=9)
 
-# legend1 = ax1.legend(handles1[0:2], labels1[0:2], loc='lower right', fontsize=9, bbox_to_anchor=(1.01, 0.0))
-# legend2 = ax1.legend(handles1[2:4], labels1[2:4], loc='lower right', fontsize=9, bbox_to_anchor=(1.01, 0.65))
-# legend3 = ax1.legend(handles1[4:6], labels1[4:6], loc='lower right', fontsize=9, bbox_to_anchor=(0.16, -0.05))
-legend1 = ax1.legend(handles1[0:2], labels1[0:2], loc='lower right', fontsize=9, bbox_to_anchor=(0.24, -0.05))
-legend2 = ax1.legend(handles1[2:4], labels1[2:4], loc='lower right', fontsize=9, bbox_to_anchor=(0.24, 0.65))
-legend3 = ax1.legend(handles1[4:6], labels1[4:6], loc='lower right', fontsize=9, bbox_to_anchor=(1.01, 0.65))
-
-
-ax1.add_artist(legend1)
-ax1.add_artist(legend2)
-ax1.add_artist(legend3)
-ax1.set_ylim(-65, 65)
-
+# Leyenda separada para los precios (ax2)
 handles2, labels2 = ax2.get_legend_handles_labels()
-legend4 = ax2.legend(handles2, labels2, loc='lower right', fontsize=9, bbox_to_anchor=(1, 1))
+ax2.legend(handles2, labels2, loc='upper center', bbox_to_anchor=(0.2, 1), ncol=2, fontsize=9)
 
+# Ajustes finales
 plt.tight_layout()
 
+# Guardar la figura
 plt.rcParams['savefig.format']='pdf'
-
 plt.savefig(file + 'Electrical', dpi=300)
 plt.show()
+
 
 
 df = df_out
