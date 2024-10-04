@@ -67,19 +67,20 @@ In alphabetical order:
 
 If used in a scientific publication, we appreciate a citation on the following paper:
 
-S. Costa, C. Olives, P. Muñoz, P. García, O. Gomis, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems,” in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), 2024
+S. Costa-Dilmé, J. C. Olives-Camps, P. Mu˜noz-Pe˜na, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
+in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024
 
 ```
 @INPROCEEDINGS{AGISTIN_opt_tool,
-  author={Costa, Sergi and Olives, Carlos and Muñoz, Paula and García, Pau and Gomis, Oriol and Prieto-Araujo, Eduardo},
+  author={Costa-Dilmé, Sergi and Olives-Camps, J. Carlos and Muñoz-Peña, Paula and García-Motilla, Pau and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
   booktitle={2024 Open Source Modelling and Simulation of Energy Systems (OSMSES)}, 
-  title={{Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}},
+  title={Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}, 
   year={2024},
   volume={},
   number={},
-  pages={},
-  keywords={Open source, Multi-physics simulation, Power system analysis, Optimisation tool, Python, Object-oriented, Irrigation systems},
-  doi={}
+  pages={1-6},
+  keywords={Irrigation;Uncertainty;Object oriented modeling;Libraries;Demand response;Power systems;Optimization;Open source;Multi-physics simulation;Power system analysis;Optimisation tool;Python;Object-oriented;Irrigation systems},
+  doi={10.1109/OSMSES62085.2024.10668997}
 }
 ```
 
