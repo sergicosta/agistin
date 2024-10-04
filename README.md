@@ -67,7 +67,7 @@ In alphabetical order:
 
 If used in a scientific publication, we appreciate a citation on the following paper:
 
-S. Costa-Dilmé, J. C. Olives-Camps, P. Mu˜noz-Pe˜na, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
+S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
 in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024
 
 ```
