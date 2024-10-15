@@ -80,7 +80,7 @@ def Pump(b, t, data, init_data):
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=init_data['Pe']/data['eff'], bounds=(0, data['Pmax']/data['eff']), within=pyo.NonNegativeReals)
+    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
     
@@ -174,6 +174,7 @@ def RealPump(b, t, data, init_data):
     b.eff = pyo.Param(initialize=data['eff'])
     b.Qmin = pyo.Param(initialize=data['Qmin']*data['Qnom'])
     b.Qmax = pyo.Param(initialize=data['Qmax']*data['Qnom'])
+    # b.npmax = pyo.Param(initialize=data['nmax'])
 
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
@@ -184,6 +185,7 @@ def RealPump(b, t, data, init_data):
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
     # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
     b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
+
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -199,6 +201,11 @@ def RealPump(b, t, data, init_data):
     def Constraint_H(_b, _t):
         return _b.H[_t] == _b.npu2[_t]*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
+    
+    # def Constraint_H(_b, _t):
+    #     return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
+    # b.c_H = pyo.Constraint(t, rule=Constraint_H)
+
 
     def Constraint_Ph(_b, _t):
         return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qout[_t]
