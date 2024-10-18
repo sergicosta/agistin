@@ -1,0 +1,35 @@
+# ==========================================================
+# = Solver Results                                         =
+# ==========================================================
+# ----------------------------------------------------------
+#   Problem Information
+# ----------------------------------------------------------
+Problem: 
+- Lower bound: -inf
+  Upper bound: inf
+  Number of objectives: 1
+  Number of constraints: 0
+  Number of variables: 1225
+  Sense: unknown
+# ----------------------------------------------------------
+#   Solver Information
+# ----------------------------------------------------------
+Solver: 
+- Status: ok
+  Message: couenne\x3a Optimal
+  Termination condition: optimal
+  Id: 3
+  Error rc: 0
+  Time: 3205.88808965683
+# ----------------------------------------------------------
+#   Solution Information
+# ----------------------------------------------------------
+Solution: 
+- number of solutions: 0
+  number of solutions displayed: 0
+
+Execution time:
+3206.237589597702 s
+
+GOAL VALUE:
+-73.66922870856749
