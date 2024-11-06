@@ -475,51 +475,56 @@ for df in [df_S, df_W]:
 
 
 
-# df = pd.read_csv('data/Analogiques.csv')
-# df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
-# df['month'] = df['date'].dt.month
-# df['weekday'] = df['date'].dt.dayofweek
-# df['Volum bassa'] = df['Nivell bassa']*13000/4.5
-# df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
-# df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
-# df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
-# df['Qreg_lag'] = df['Qreg'].shift(1)
-# df.loc[df['Qreg']>300,'Qreg'] = df['Qreg_lag']
+df = pd.read_csv('data/Analogiques.csv')
+df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
+df['month'] = df['date'].dt.month
+df['weekday'] = df['date'].dt.dayofweek
+df['Volum bassa'] = df['Nivell bassa']*13000/4.5
+df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
+df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
+df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
+df['Qreg_lag'] = df['Qreg'].shift(-1)
+df['diff'] = df['Qreg_lag'] - df['Qreg']
 
-# df['Season'] = df['month']/4
-# df['Season'] = df['Season'].astype(int)
-# fig = plt.figure(figsize=(3.4, 2.3))
-# sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
-# plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
-# plt.xlabel('Hour')
-# plt.ylabel('Irrigation demand (m$^3$/h)')
-# plt.xticks(range(24),labels=labels_hours, rotation=90)
-# plt.xlim([0,24])
-# plt.ylim([0,250])
-# plt.tight_layout()
-# plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
-# plt.show()
-# plt.rcParams['savefig.format']='pdf'
-# plt.savefig('results/ISGT/Irrigation_season', dpi=300)
+df['Season'] = df['month']/4
+df['Season'] = df['Season'].astype(int)
+fig = plt.figure(figsize=(3.4, 2.3))
+sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
+plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
+plt.xlabel('Hour')
+plt.ylabel('Irrigation demand (m$^3$/h)')
+plt.xticks(range(24),labels=labels_hours, rotation=90)
+plt.xlim([0,24])
+plt.ylim([0,250])
+plt.tight_layout()
+plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
+plt.show()
+plt.rcParams['savefig.format']='pdf'
+plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
-# df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
-# fig = plt.figure(figsize=(3.4, 1.1))
-# sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
-# plt.legend(labels=['S','_','W','_'], ncol=1)
-# plt.text(24.5,-50,'Time (h)')
-# plt.xlabel(None)
-# plt.ylabel('Demand (m$^3$/h)')
-# plt.xticks(range(24),labels=labels_hours, rotation=90)
-# plt.yticks([0,100,200])
-# # plt.ylim([0,200])
-# plt.xlim([0,24])
-# plt.tight_layout()
-# plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
-# plt.show()
-# plt.rcParams['savefig.format']='pdf'
-# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
-# plt.rcParams['savefig.format']='svg'
-# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+
+for i in df.index:
+    if (df.iloc[i]['diff']<-50) and df.iloc[i]['hour']==0:
+        df.loc[i,'Qreg'] = df.iloc[i]['Qreg_lag']
+    
+df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
+fig = plt.figure(figsize=(3.4, 1.1))
+sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
+plt.legend(labels=['S','_','W','_'], ncol=1)
+plt.text(24.5,-50,'Time (h)')
+plt.xlabel(None)
+plt.ylabel('Demand (m$^3$/h)')
+plt.xticks(range(24),labels=labels_hours, rotation=90)
+plt.yticks([0,100,200])
+# plt.ylim([0,200])
+plt.xlim([0,24])
+plt.tight_layout()
+plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
+plt.show()
+plt.rcParams['savefig.format']='pdf'
+plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+plt.rcParams['savefig.format']='svg'
+plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
 
 #%% (PARALLEL PUMP)
 
