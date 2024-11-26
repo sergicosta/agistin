@@ -121,9 +121,6 @@ def model_to_file(model, filename):
     with open(filename,'w') as f:
         model.pprint(f)
         
-def suma(x,y):
-    return x+y
-        
 
 def get_results(file, instance, results, l_t, exec_time):
     df_out = pd.DataFrame(l_t, columns=['t'])
@@ -170,3 +167,40 @@ def get_results(file, instance, results, l_t, exec_time):
     model_to_file(instance,file+'_model.txt')
         
     return df_out, df_param, df_size
+
+def get_n_variables(model):
+    
+    n_vars = 0
+    # n_pars = 0
+    
+    for i in range(len(model._decl_order)):
+        e = model._decl_order[i][0]
+        if e is None:
+            continue
+        name = e.name
+        
+        if "pyomo.core.base.block.ScalarBlock" not in str(e.type):
+            continue
+        
+        for ii in range(len(e._decl_order)):
+            v = e._decl_order[ii][0]
+            vals = 0
+            
+            if "pyomo.core.base.var.IndexedVar" in str(v.type): #Var(t)
+                vals = v.get_values()
+                n_vars = n_vars + len(vals)
+                
+            # elif "pyomo.core.base.param.IndexedParam" in str(v.type): #Param(t)
+            #     vals = v.extract_values()
+            #     n_pars = n_pars + len(vals)
+                
+            elif "pyomo.core.base.var.ScalarVar" in str(v.type): #Var
+                vals = v.get_values()
+                n_vars = n_vars + 1
+                
+            # elif "pyomo.core.base.param.ScalarParam" in str(v.type): #Param
+            #     vals = v.extract_values()
+            #     n_pars = n_pars + 1
+                
+                
+    return n_vars#, n_pars
