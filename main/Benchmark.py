@@ -443,7 +443,7 @@ del init_bat, init_c1, init_Ebre, init_p, init_R1
 del l_costs, l_costw, l_excs, l_excw
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
-# #%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
+#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
 
 # from Devices.Reservoirs import Reservoir
 # from Devices.Sources import Source
