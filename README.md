@@ -54,6 +54,7 @@ You may find the full documentation at ``./main/docs/_build/html/index.html`` [h
 In alphabetical order:
 
 [<img src="https://citcea.upc.edu/ca/shared/logos/logocitceaupc.png" height="48px" align="center" alt="CITCEA-UPC logo">](https://citcea.upc.edu/ca)
+* Carla Cinto Campmany (carla.cinto@upc.edu)
 * Sergi Costa Dilmé (sergi.costa.dilme@upc.edu)
 * Pau García Motilla (pau.garcia.motilla@upc.edu)
 * Paula Muñoz Peña (paula.munoz.pena@upc.edu)
