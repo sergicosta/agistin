@@ -1,6 +1,3 @@
-# AGISTIN project 
-# .\Devices\SolarPV.py
-
 """
 SolarPV pyomo block contains characteristics of a solar PV plant.
 """
