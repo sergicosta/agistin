@@ -123,6 +123,7 @@ def model_to_file(model, filename):
         
 
 def get_results(file, instance, results, l_t, exec_time):
+    
     df_out = pd.DataFrame(l_t, columns=['t'])
     df_param = pd.DataFrame()
     df_size = pd.DataFrame()
@@ -156,15 +157,16 @@ def get_results(file, instance, results, l_t, exec_time):
             
             df_out = pd.concat([df_out, pd.DataFrame.from_dict(vals, orient='index', columns=[v.name])], axis=1)
     
-    df_out.to_csv(file+'.csv')
-    df_param.to_csv(file+'_param.csv')
-    df_size.to_csv(file+'_size.csv')
-    results.write(filename=file+'_results.txt')
-    with open(file+'_results.txt','a') as f:
-        f.write('\nExecution time:\n'+str(exec_time)+' s\n')
-        f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
-        f.close()
-    model_to_file(instance,file+'_model.txt')
+    if not file==None:
+        df_out.to_csv(file+'.csv')
+        df_param.to_csv(file+'_param.csv')
+        df_size.to_csv(file+'_size.csv')
+        results.write(filename=file+'_results.txt')
+        with open(file+'_results.txt','a') as f:
+            f.write('\nExecution time:\n'+str(exec_time)+' s\n')
+            f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
+            f.close()
+        model_to_file(instance,file+'_model.txt')
         
     return df_out, df_param, df_size
 
