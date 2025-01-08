@@ -42,7 +42,6 @@ def solve(m, solver='couenne'):
             file.write('''time_limit 100000
                         convexification_cuts 1
                         convexification_points 2
-                        delete_redundant yes
                         use_quadratic no
                         feas_tolerance 1e-1
                         ''')
@@ -50,6 +49,21 @@ def solve(m, solver='couenne'):
         results = solver.solve(instance, tee=True)
         results.write()
         os.remove('couenne.opt') #Delete options
+
+    # elif solver=='bonmin':
+    #     solver = pyo.SolverFactory('bonmin')
+    #     results = solver.solve(instance, tee=True)
+
+    # B-BB, B-OA, B-QG, B-Hyb, B-Ecp, B-iFP
+    elif solver=='bonmin':
+        with open("bonmin.opt", "w") as file:
+            file.write('''bonmin.algorithm B-Ecp
+                       bonmin.ecp_abs_tol 0.0001
+                       bonmin.warm_start optimum
+                       tol 0.0001
+                        ''')
+        solver = pyo.SolverFactory('bonmin')
+        results = solver.solve(instance, tee=True)
 
     elif solver=='ipopt':
         solver = pyo.SolverFactory('ipopt')
@@ -71,7 +85,7 @@ def solve(m, solver='couenne'):
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
+from Devices.Pumps import Pump, RealPump, LinealizedPump
 from Devices.Turbines import Turbine, DiscreteTurbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
@@ -182,7 +196,7 @@ def obj_fun(m):
 	return sum((m.Grid.Pbuy[t]*m.cost[t] - m.Grid.Psell[t]*m.cost[t]/2) for t in l_t ) + m.PV.Pdim*m.cost_pv_P + m.Turb1.Pdim*m.cost_turb_P + m.Battery.Pdim*m.cost_bat_P + m.Battery.Edim*m.cost_bat_E
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
-instance, results, exec_time = solve(m,'couenne')
+instance, results, exec_time = solve(m,'bonmin')
 
 df_benchmark.loc[-1] = ['OSMSES',value(instance.goal),exec_time,-1918.0601869271836,16.785921096801758,get_n_variables(m),289]
 df_benchmark.reset_index(inplace=True,drop=True)
@@ -200,7 +214,7 @@ del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
+from Devices.Pumps import Pump, RealPump, LinealizedPump
 from Devices.Turbines import Turbine, DiscreteTurbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
@@ -224,8 +238,6 @@ df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Ho
 df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
 df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
-
-df_init = pd.read_csv('results/ISGT/Base/ISGT.csv')
 
 # time
 T = 24
@@ -297,7 +309,7 @@ init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
 Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
-data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
+data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3, 'intervals':3} # pumps (both equal)
 init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
@@ -429,7 +441,7 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 
-instance, results, exec_time = solve(m,'couenne')
+instance, results, exec_time = solve(m,'bonmin')
 
 df_benchmark.loc[-1] = ['ISGTbase',value(instance.goal),exec_time,24.963233294640837,508.1471881866455,get_n_variables(m),2166]
 df_benchmark.reset_index(inplace=True,drop=True)
@@ -437,256 +449,751 @@ df_benchmark.reset_index(inplace=True,drop=True)
 file = './test/Benchmark/ISGTbase'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
-del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan, df_init
+del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan
 del ce_bat, cost_new_pv, cp_bat, data_bat, data_c1, data_Ebre, data_irr, data_p, data_pv, data_R1
 del init_bat, init_c1, init_Ebre, init_p, init_R1
 del l_costs, l_costw, l_excs, l_excw
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
-#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
 
-# from Devices.Reservoirs import Reservoir
-# from Devices.Sources import Source
-# from Devices.Pipes import Pipe
-# from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
-# from Devices.Turbines import Turbine, DiscreteTurbine
-# from Devices.EB import EB
-# from Devices.SolarPV import SolarPV
-# from Devices.MainGrid import Grid
-# from Devices.Batteries import Battery, NewBattery
-# from pyomo.contrib.gdpopt.enumerate import GDP_Enumeration_Solver
-# from pyomo.environ import value
+#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 1) 
 
-# # model
-# m = pyo.ConcreteModel()
+from Devices.Reservoirs import Reservoir
+from Devices.Sources import Source
+from Devices.Pipes import Pipe
+from Devices.Pumps import Pump, RealPump, LinealizedPump
+from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.EB import EB
+from Devices.SolarPV import SolarPV
+from Devices.MainGrid import Grid
+from Devices.Batteries import Battery, NewBattery
+from pyomo.contrib.gdpopt.enumerate import GDP_Enumeration_Solver
+from pyomo.environ import value
 
-# df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv')
-# df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv')
-# df_grid_aug = pd.read_csv('data/costs/PVPC_aug.csv')
+# model
+m = pyo.ConcreteModel()
 
-# df_meteo_jan = pd.read_csv('data/meteo/LesPlanes_meteo_hour_jan.csv')
-# df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv')
-# df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
+df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv')
+df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv')
+df_grid_aug = pd.read_csv('data/costs/PVPC_aug.csv')
 
-# df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
-# df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
-# df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
-# df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
+df_meteo_jan = pd.read_csv('data/meteo/LesPlanes_meteo_hour_jan.csv')
+df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv')
+df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
-# df_init = pd.read_csv('results/ISGT/Base/ISGT.csv')
+df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
+df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
 
-# # time
-# T = 24
-# l_t = list(range(T))
-# m.tw = pyo.Set(initialize=l_t)
-# m.ts = pyo.Set(initialize=l_t)
+# time
+T = 24
+l_t = list(range(T))
+m.tw = pyo.Set(initialize=l_t)
+m.ts = pyo.Set(initialize=l_t)
 
-# # electricity cost
-# l_costw = df_grid_jan['PVPC']
-# l_excw = df_grid_jan['Excedentes']
-# m.costw = pyo.Param(m.tw, initialize=l_costw)
-# m.excw = pyo.Param(m.tw, initialize=l_excw)
+# electricity cost
+l_costw = df_grid_jan['PVPC']
+l_excw = df_grid_jan['Excedentes']
+m.costw = pyo.Param(m.tw, initialize=l_costw)
+m.excw = pyo.Param(m.tw, initialize=l_excw)
 
-# l_costs = df_grid_aug['PVPC']
-# l_excs = df_grid_aug['Excedentes']
-# m.costs = pyo.Param(m.ts, initialize=l_costs)
-# m.excs = pyo.Param(m.ts, initialize=l_excs)
+l_costs = df_grid_aug['PVPC']
+l_excs = df_grid_aug['Excedentes']
+m.costs = pyo.Param(m.ts, initialize=l_costs)
+m.excs = pyo.Param(m.ts, initialize=l_excs)
 
-# cost_new_pv = 0.00126*T/1000
-# cp_bat = 0.00171*T/1000
-# ce_bat = 0.00856*T/1000
-# # Costos en €/(kwh·h). Considerant vida de 20 anys, del llibre de Oriol Gomis i Paco Diaz trobem:
-# #   - Ce = 750 €/kWh (10 anys de vida) -> x2 = 1500 €/kWh -> /20/365/24 = 0.00856 €/(kWh·h)
+cost_new_pv = 0.00126*T/1000
+cp_bat = 0.00171*T/1000
+ce_bat = 0.00856*T/1000
+# Costos en €/(kwh·h). Considerant vida de 20 anys, del llibre de Oriol Gomis i Paco Diaz trobem:
+#   - Ce = 750 €/kWh (10 anys de vida) -> x2 = 1500 €/kWh -> /20/365/24 = 0.00856 €/(kWh·h)
 
-# # ===== Create the system =====
-# m.ReservoirEbrew = pyo.Block()
-# m.Reservoir1w = pyo.Block()
-# m.Irrigation1w = pyo.Block()
-# m.Pump1w = pyo.Block()
-# m.Pump2w = pyo.Block()
+# ===== Create the system =====
+m.ReservoirEbrew = pyo.Block()
+m.Reservoir1w = pyo.Block()
+m.Irrigation1w = pyo.Block()
+m.Pump1w = pyo.Block()
+m.Pump2w = pyo.Block()
+m.Turb1w = pyo.Block()
+m.Pipe1w = pyo.Block()
+m.PVw = pyo.Block()
+m.Gridw = pyo.Block()
+m.EBgw = pyo.Block()
+m.EBpvw = pyo.Block()
+m.Batw = pyo.Block()
+
+m.ReservoirEbres = pyo.Block()
+m.Reservoir1s = pyo.Block()
+m.Irrigation1s = pyo.Block()
+m.Pump1s = pyo.Block()
+m.Pump2s = pyo.Block()
+m.Turb1s = pyo.Block()
+m.Pipe1s = pyo.Block()
+m.PVs = pyo.Block()
+m.Grids = pyo.Block()
+m.EBgs = pyo.Block()
+m.EBpvs = pyo.Block()
+m.Bats = pyo.Block()
+
+
+data_irr = {'Q':df_cons_jan['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1w, m.tw, data_irr, {})
+data_irr = {'Q':df_cons_aug['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1s, m.ts, data_irr, {})
+
+data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
+init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
+Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
+Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
+data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.95*10e3, 'WT_max':1.05*10e3}
+init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
+Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
+Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
+
+data_c1 = {'K':297.38*0.20, 'Qmax':1.2} # canal
+init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
+Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
+Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
+
+data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3, 'intervals':3} # pumps (both equal)
+init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+RealPump(m.Pump1w, m.tw, data_p, init_p)
+RealPump(m.Pump1s, m.ts, data_p, init_p)
+data_p['eff']=0.8
+RealPump(m.Pump2w, m.tw, data_p, init_p)
+RealPump(m.Pump2s, m.ts, data_p, init_p)
+
+# data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
+# init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
+# RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
+# RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
+
+data_t = {'eff':0.5, 'Pmax':110e3}
+init_t = {'Q':[0]*T, 'H':[109]*T, 'Pe':[0]*T}
+Turbine(m.Turb1w, m.tw, data_t, init_t)
+Turbine(m.Turb1s, m.ts, data_t, init_t)
+
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVw, m.tw, data_pv)
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_aug['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVs, m.ts, data_pv)
+
+data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+init_bat = {'E':[0]*T, 'P':[0]*T}
+NewBattery(m.Batw, m.tw, data_bat, init_bat)
+NewBattery(m.Bats, m.ts, data_bat, init_bat)
+
+Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
+Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
+
+EB(m.EBgw, m.tw)
+EB(m.EBgs, m.ts)
+EB(m.EBpvw, m.tw)
+EB(m.EBpvs, m.ts)
+
+
+# def ConstraintPumpTurbw(m, t):
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
+# def ConstraintPumpTurbs(m, t):
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
+
+
+def ConstraintBatEws(m):
+    return m.Batw.Edim == m.Bats.Edim
+m.c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
+def ConstraintBatPws(m):
+    return m.Batw.Pdim == m.Bats.Pdim
+m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+
+
+# m.Batw.Edim.fix(0)
+# m.Bats.Edim.fix(0)
+# m.Batw.Pdim.fix(0)
+# m.Bats.Pdim.fix(0)
+
+m.Turb1s.Pdim.fix(110e3)
+m.Turb1w.Pdim.fix(110e3)
+
+
+# Connections
+m.p1r0w = Arc(ports=(m.Pump1w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p1c1_Qw = Arc(ports=(m.Pump1w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p1c1_Hw = Arc(ports=(m.Pump1w.port_H, m.Pipe1w.port_H), directed=True)
+m.p1ebw = Arc(ports=(m.Pump1w.port_P, m.EBgw.port_P), directed=True)
+
+m.p2r0w = Arc(ports=(m.Pump2w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
+m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBpvw.port_P), directed=True) # pv node
+
+m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
+m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
+m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
+m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
+
+m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
+m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
+m.c1r0_zw = Arc(ports=(m.ReservoirEbrew.port_z, m.Pipe1w.port_zlow), directed=True)
+
+m.r1i1w = Arc(ports=(m.Irrigation1w.port_Qin, m.Reservoir1w.port_Q), directed=True)
+
+m.gridebw = Arc(ports=(m.Gridw.port_P, m.EBgw.port_P), directed=True)
+m.pvebw = Arc(ports=(m.PVw.port_P, m.EBpvw.port_P), directed=True) # pv node
+m.batebw = Arc(ports=(m.Batw.port_P, m.EBpvw.port_P), directed=True) # pv node
+
+# Connections
+m.p1r0s = Arc(ports=(m.Pump1s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p1c1_Qs = Arc(ports=(m.Pump1s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p1c1_Hs = Arc(ports=(m.Pump1s.port_H, m.Pipe1s.port_H), directed=True)
+m.p1ebs = Arc(ports=(m.Pump1s.port_P, m.EBgs.port_P), directed=True)
+
+m.p2r0s = Arc(ports=(m.Pump2s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
+m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBpvs.port_P), directed=True) # pv node
+
+m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
+m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
+m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
+m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
+
+m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
+m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
+m.c1r0_zs = Arc(ports=(m.ReservoirEbres.port_z, m.Pipe1s.port_zlow), directed=True)
+
+m.r1i1s = Arc(ports=(m.Irrigation1s.port_Qin, m.Reservoir1s.port_Q), directed=True)
+
+m.gridebs = Arc(ports=(m.Grids.port_P, m.EBgs.port_P), directed=True)
+m.pvebs = Arc(ports=(m.PVs.port_P, m.EBpvs.port_P), directed=True) # pv node
+m.batebs = Arc(ports=(m.Bats.port_P, m.EBpvs.port_P), directed=True) # pv node
+
+pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
+
+
+# Objective function
+def obj_fun(m):
+# 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
+	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+
+
+instance, results, exec_time = solve(m,'bonmin')
+
+df_benchmark.loc[-1] = ['ISGTcase1',value(instance.goal),exec_time,12.904817912002599,679.13290238380398,get_n_variables(m),2456]
+df_benchmark.reset_index(inplace=True,drop=True)
+
+file = './test/Benchmark/ISGTcase1'
+df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
+
+del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan
+del ce_bat, cost_new_pv, cp_bat, data_bat, data_c1, data_Ebre, data_irr, data_p, data_pv, data_R1, data_t
+del init_bat, init_c1, init_Ebre, init_p, init_R1, init_t
+del l_costs, l_costw, l_excs, l_excw
+del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
+
+
+#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 2) 
+
+from Devices.Reservoirs import Reservoir
+from Devices.Sources import Source
+from Devices.Pipes import Pipe
+from Devices.Pumps import Pump, RealPump, LinealizedPump
+from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.EB import EB
+from Devices.SolarPV import SolarPV
+from Devices.MainGrid import Grid
+from Devices.Batteries import Battery, NewBattery
+from pyomo.contrib.gdpopt.enumerate import GDP_Enumeration_Solver
+from pyomo.environ import value
+
+# model
+m = pyo.ConcreteModel()
+
+df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv')
+df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv')
+df_grid_aug = pd.read_csv('data/costs/PVPC_aug.csv')
+
+df_meteo_jan = pd.read_csv('data/meteo/LesPlanes_meteo_hour_jan.csv')
+df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv')
+df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
+
+df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
+df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
+
+# time
+T = 24
+l_t = list(range(T))
+m.tw = pyo.Set(initialize=l_t)
+m.ts = pyo.Set(initialize=l_t)
+
+# electricity cost
+l_costw = df_grid_jan['PVPC']
+l_excw = df_grid_jan['Excedentes']
+m.costw = pyo.Param(m.tw, initialize=l_costw)
+m.excw = pyo.Param(m.tw, initialize=l_excw)
+
+l_costs = df_grid_aug['PVPC']
+l_excs = df_grid_aug['Excedentes']
+m.costs = pyo.Param(m.ts, initialize=l_costs)
+m.excs = pyo.Param(m.ts, initialize=l_excs)
+
+cost_new_pv = 0.00126*T/1000
+cp_bat = 0.00171*T/1000
+ce_bat = 0.00856*T/1000
+# Costos en €/(kwh·h). Considerant vida de 20 anys, del llibre de Oriol Gomis i Paco Diaz trobem:
+#   - Ce = 750 €/kWh (10 anys de vida) -> x2 = 1500 €/kWh -> /20/365/24 = 0.00856 €/(kWh·h)
+
+# ===== Create the system =====
+m.ReservoirEbrew = pyo.Block()
+m.Reservoir1w = pyo.Block()
+m.Irrigation1w = pyo.Block()
+m.Pump1w = pyo.Block()
+m.Pump2w = pyo.Block()
 # m.Turb1w = pyo.Block()
-# m.Pipe1w = pyo.Block()
-# m.PVw = pyo.Block()
-# m.Gridw = pyo.Block()
-# m.EBgw = pyo.Block()
-# # m.EBpvw = pyo.Block()
-# m.Batw = pyo.Block()
+m.Pipe1w = pyo.Block()
+m.PVw = pyo.Block()
+m.Gridw = pyo.Block()
+m.EBgw = pyo.Block()
+# m.EBpvw = pyo.Block()
+m.Batw = pyo.Block()
 
-# m.ReservoirEbres = pyo.Block()
-# m.Reservoir1s = pyo.Block()
-# m.Irrigation1s = pyo.Block()
-# m.Pump1s = pyo.Block()
-# m.Pump2s = pyo.Block()
+m.ReservoirEbres = pyo.Block()
+m.Reservoir1s = pyo.Block()
+m.Irrigation1s = pyo.Block()
+m.Pump1s = pyo.Block()
+m.Pump2s = pyo.Block()
 # m.Turb1s = pyo.Block()
-# m.Pipe1s = pyo.Block()
-# m.PVs = pyo.Block()
-# m.Grids = pyo.Block()
-# m.EBgs = pyo.Block()
-# # m.EBpvs = pyo.Block()
-# m.Bats = pyo.Block()
+m.Pipe1s = pyo.Block()
+m.PVs = pyo.Block()
+m.Grids = pyo.Block()
+m.EBgs = pyo.Block()
+# m.EBpvs = pyo.Block()
+m.Bats = pyo.Block()
 
 
-# data_irr = {'Q':df_cons_jan['Qirr']/3600*1.4} # irrigation
-# Source(m.Irrigation1w, m.tw, data_irr, {})
-# data_irr = {'Q':df_cons_aug['Qirr']/3600*1.4} # irrigation
-# Source(m.Irrigation1s, m.ts, data_irr, {})
+data_irr = {'Q':df_cons_jan['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1w, m.tw, data_irr, {})
+data_irr = {'Q':df_cons_aug['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1s, m.ts, data_irr, {})
 
-# data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
-# init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
-# Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
-# Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
-# data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.95*10e3, 'WT_max':1.05*10e3}
-# init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
-# Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
-# Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
+data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
+init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
+Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
+Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
+data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.95*10e3, 'WT_max':1.05*10e3}
+init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
+Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
+Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
 
-# data_c1 = {'K':297.38*0.20, 'Qmax':1.2} # canal
-# init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
-# Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
-# Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
+data_c1 = {'K':297.38*0.20, 'Qmax':1.2} # canal
+init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
+Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
+Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
-# data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
-# init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
-# RealPump(m.Pump1w, m.tw, data_p, init_p)
-# RealPump(m.Pump1s, m.ts, data_p, init_p)
-# data_p['eff']=0.8
-# RealPump(m.Pump2w, m.tw, data_p, init_p)
-# RealPump(m.Pump2s, m.ts, data_p, init_p)
+data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3, 'intervals':3} # pumps (both equal)
+init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+RealPump(m.Pump1w, m.tw, data_p, init_p)
+RealPump(m.Pump1s, m.ts, data_p, init_p)
+data_p['eff']=0.8
+RealPump(m.Pump2w, m.tw, data_p, init_p)
+RealPump(m.Pump2s, m.ts, data_p, init_p)
 
-# # data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
-# # init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
-# # RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
-# # RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
+# data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
+# init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
+# RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
+# RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
 
 # data_t = {'eff':0.5, 'Pmax':110e3}
 # init_t = {'Q':[0]*T, 'H':[109]*T, 'Pe':[0]*T}
 # Turbine(m.Turb1w, m.tw, data_t, init_t)
 # Turbine(m.Turb1s, m.ts, data_t, init_t)
 
-# data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
-# SolarPV(m.PVw, m.tw, data_pv)
-# data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_aug['Irr']/1000, 'eff':0.98} # PV
-# SolarPV(m.PVs, m.ts, data_pv)
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVw, m.tw, data_pv)
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_aug['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVs, m.ts, data_pv)
 
-# data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
-# init_bat = {'E':[0]*T, 'P':[0]*T}
-# NewBattery(m.Batw, m.tw, data_bat, init_bat)
-# NewBattery(m.Bats, m.ts, data_bat, init_bat)
+data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+init_bat = {'E':[0]*T, 'P':[0]*T}
+NewBattery(m.Batw, m.tw, data_bat, init_bat)
+NewBattery(m.Bats, m.ts, data_bat, init_bat)
 
-# Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
-# Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
+Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
+Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
 
-# EB(m.EBgw, m.tw)
-# EB(m.EBgs, m.ts)
-# # EB(m.EBpvw, m.tw)
-# # EB(m.EBpvs, m.ts)
-
-
-# # def ConstraintPumpTurbw(m, t):
-# #     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
-# # m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
-# # def ConstraintPumpTurbs(m, t):
-# #     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
-# # m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
-
-# # def ConstraintPump2w(m, t):
-# #     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
-# # m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
-# # def ConstraintPump2s(m, t):
-# #     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
-# # m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
+EB(m.EBgw, m.tw)
+EB(m.EBgs, m.ts)
+# EB(m.EBpvw, m.tw)
+# EB(m.EBpvs, m.ts)
 
 
-# def ConstraintBatEws(m):
-#     return m.Batw.Edim == m.Bats.Edim
-# m.c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
-# def ConstraintBatPws(m):
-#     return m.Batw.Pdim == m.Bats.Pdim
-# m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+# def ConstraintPumpTurbw(m, t):
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
+# def ConstraintPumpTurbs(m, t):
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 
 
-# # m.Batw.Edim.fix(0)
-# # m.Bats.Edim.fix(0)
-# # m.Batw.Pdim.fix(0)
-# # m.Bats.Pdim.fix(0)
+def ConstraintBatEws(m):
+    return m.Batw.Edim == m.Bats.Edim
+m.c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
+def ConstraintBatPws(m):
+    return m.Batw.Pdim == m.Bats.Pdim
+m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+
+
+# m.Batw.Edim.fix(0)
+# m.Bats.Edim.fix(0)
+# m.Batw.Pdim.fix(0)
+# m.Bats.Pdim.fix(0)
 
 # m.Turb1s.Pdim.fix(110e3)
 # m.Turb1w.Pdim.fix(110e3)
 
 
-# # Connections
-# m.p1r0w = Arc(ports=(m.Pump1w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
-# m.p1c1_Qw = Arc(ports=(m.Pump1w.port_Qout, m.Pipe1w.port_Q), directed=True)
-# m.p1c1_Hw = Arc(ports=(m.Pump1w.port_H, m.Pipe1w.port_H), directed=True)
-# m.p1ebw = Arc(ports=(m.Pump1w.port_P, m.EBgw.port_P), directed=True)
+# Connections
+m.p1r0w = Arc(ports=(m.Pump1w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p1c1_Qw = Arc(ports=(m.Pump1w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p1c1_Hw = Arc(ports=(m.Pump1w.port_H, m.Pipe1w.port_H), directed=True)
+m.p1ebw = Arc(ports=(m.Pump1w.port_P, m.EBgw.port_P), directed=True)
 
-# m.p2r0w = Arc(ports=(m.Pump2w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
-# m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
-# m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
-# m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBgw.port_P), directed=True) # pv node
+m.p2r0w = Arc(ports=(m.Pump2w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
+m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBgw.port_P), directed=True) # pv node
 
 # m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
 # m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
 # m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
 # m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
 
-# m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
-# m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
-# m.c1r0_zw = Arc(ports=(m.ReservoirEbrew.port_z, m.Pipe1w.port_zlow), directed=True)
+m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
+m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
+m.c1r0_zw = Arc(ports=(m.ReservoirEbrew.port_z, m.Pipe1w.port_zlow), directed=True)
 
-# m.r1i1w = Arc(ports=(m.Irrigation1w.port_Qin, m.Reservoir1w.port_Q), directed=True)
+m.r1i1w = Arc(ports=(m.Irrigation1w.port_Qin, m.Reservoir1w.port_Q), directed=True)
 
-# m.gridebw = Arc(ports=(m.Gridw.port_P, m.EBgw.port_P), directed=True)
-# m.pvebw = Arc(ports=(m.PVw.port_P, m.EBgw.port_P), directed=True) # pv node
-# m.batebw = Arc(ports=(m.Batw.port_P, m.EBgw.port_P), directed=True) # pv node
+m.gridebw = Arc(ports=(m.Gridw.port_P, m.EBgw.port_P), directed=True)
+m.pvebw = Arc(ports=(m.PVw.port_P, m.EBgw.port_P), directed=True) # pv node
+m.batebw = Arc(ports=(m.Batw.port_P, m.EBgw.port_P), directed=True) # pv node
 
-# # Connections
-# m.p1r0s = Arc(ports=(m.Pump1s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
-# m.p1c1_Qs = Arc(ports=(m.Pump1s.port_Qout, m.Pipe1s.port_Q), directed=True)
-# m.p1c1_Hs = Arc(ports=(m.Pump1s.port_H, m.Pipe1s.port_H), directed=True)
-# m.p1ebs = Arc(ports=(m.Pump1s.port_P, m.EBgs.port_P), directed=True)
+# Connections
+m.p1r0s = Arc(ports=(m.Pump1s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p1c1_Qs = Arc(ports=(m.Pump1s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p1c1_Hs = Arc(ports=(m.Pump1s.port_H, m.Pipe1s.port_H), directed=True)
+m.p1ebs = Arc(ports=(m.Pump1s.port_P, m.EBgs.port_P), directed=True)
 
-# m.p2r0s = Arc(ports=(m.Pump2s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
-# m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
-# m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
-# m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBgs.port_P), directed=True) # pv node
+m.p2r0s = Arc(ports=(m.Pump2s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
+m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBgs.port_P), directed=True) # pv node
 
 # m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
 # m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
 # m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
 # m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
 
-# m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
-# m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
-# m.c1r0_zs = Arc(ports=(m.ReservoirEbres.port_z, m.Pipe1s.port_zlow), directed=True)
+m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
+m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
+m.c1r0_zs = Arc(ports=(m.ReservoirEbres.port_z, m.Pipe1s.port_zlow), directed=True)
 
-# m.r1i1s = Arc(ports=(m.Irrigation1s.port_Qin, m.Reservoir1s.port_Q), directed=True)
+m.r1i1s = Arc(ports=(m.Irrigation1s.port_Qin, m.Reservoir1s.port_Q), directed=True)
 
-# m.gridebs = Arc(ports=(m.Grids.port_P, m.EBgs.port_P), directed=True)
-# m.pvebs = Arc(ports=(m.PVs.port_P, m.EBgs.port_P), directed=True) # pv node
-# m.batebs = Arc(ports=(m.Bats.port_P, m.EBgs.port_P), directed=True) # pv node
+m.gridebs = Arc(ports=(m.Grids.port_P, m.EBgs.port_P), directed=True)
+m.pvebs = Arc(ports=(m.PVs.port_P, m.EBgs.port_P), directed=True) # pv node
+m.batebs = Arc(ports=(m.Bats.port_P, m.EBgs.port_P), directed=True) # pv node
 
-# pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
-
-
-# # Objective function
-# def obj_fun(m):
-# # 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
-# 	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-#              m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
-# m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
 
 
-# instance, results, exec_time = solve(m,'couenne')
+# Objective function
+def obj_fun(m):
+# 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
+	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
-# df_benchmark.loc[-1] = ['ISGTcase3',value(instance.goal),exec_time,-30.22893512732645,400.43591022491455,get_n_variables(m),2550]
-# df_benchmark.reset_index(inplace=True,drop=True)
 
-# file = './test/Benchmark/ISGTcase3'
-# df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
+instance, results, exec_time = solve(m,'bonmin')
 
-# del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan, df_init
-# del ce_bat, cost_new_pv, cp_bat, data_bat, data_c1, data_Ebre, data_irr, data_p, data_pv, data_R1
-# del init_bat, init_c1, init_Ebre, init_p, init_R1
-# del l_costs, l_costw, l_excs, l_excw
-# del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
+df_benchmark.loc[-1] = ['ISGTcase2',value(instance.goal),exec_time,-29.510384042216199,3950.4513001441901,get_n_variables(m),2070]
+df_benchmark.reset_index(inplace=True,drop=True)
+
+file = './test/Benchmark/ISGTcase2'
+df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
+
+del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan
+del ce_bat, cost_new_pv, cp_bat, data_bat, data_c1, data_Ebre, data_irr, data_p, data_pv, data_R1
+del init_bat, init_c1, init_Ebre, init_p, init_R1
+del l_costs, l_costw, l_excs, l_excw
+del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
+
+
+
+
+#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
+
+from Devices.Reservoirs import Reservoir
+from Devices.Sources import Source
+from Devices.Pipes import Pipe
+from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
+from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.EB import EB
+from Devices.SolarPV import SolarPV
+from Devices.MainGrid import Grid
+from Devices.Batteries import Battery, NewBattery
+from pyomo.contrib.gdpopt.enumerate import GDP_Enumeration_Solver
+from pyomo.environ import value
+
+# model
+m = pyo.ConcreteModel()
+
+df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv')
+df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv')
+df_grid_aug = pd.read_csv('data/costs/PVPC_aug.csv')
+
+df_meteo_jan = pd.read_csv('data/meteo/LesPlanes_meteo_hour_jan.csv')
+df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv')
+df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
+
+df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
+df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
+
+# time
+T = 24
+l_t = list(range(T))
+m.tw = pyo.Set(initialize=l_t)
+m.ts = pyo.Set(initialize=l_t)
+
+# electricity cost
+l_costw = df_grid_jan['PVPC']
+l_excw = df_grid_jan['Excedentes']
+m.costw = pyo.Param(m.tw, initialize=l_costw)
+m.excw = pyo.Param(m.tw, initialize=l_excw)
+
+l_costs = df_grid_aug['PVPC']
+l_excs = df_grid_aug['Excedentes']
+m.costs = pyo.Param(m.ts, initialize=l_costs)
+m.excs = pyo.Param(m.ts, initialize=l_excs)
+
+cost_new_pv = 0.00126*T/1000
+cp_bat = 0.00171*T/1000
+ce_bat = 0.00856*T/1000
+# Costos en €/(kwh·h). Considerant vida de 20 anys, del llibre de Oriol Gomis i Paco Diaz trobem:
+#   - Ce = 750 €/kWh (10 anys de vida) -> x2 = 1500 €/kWh -> /20/365/24 = 0.00856 €/(kWh·h)
+
+# ===== Create the system =====
+m.ReservoirEbrew = pyo.Block()
+m.Reservoir1w = pyo.Block()
+m.Irrigation1w = pyo.Block()
+m.Pump1w = pyo.Block()
+m.Pump2w = pyo.Block()
+m.Turb1w = pyo.Block()
+m.Pipe1w = pyo.Block()
+m.PVw = pyo.Block()
+m.Gridw = pyo.Block()
+m.EBgw = pyo.Block()
+# m.EBpvw = pyo.Block()
+m.Batw = pyo.Block()
+
+m.ReservoirEbres = pyo.Block()
+m.Reservoir1s = pyo.Block()
+m.Irrigation1s = pyo.Block()
+m.Pump1s = pyo.Block()
+m.Pump2s = pyo.Block()
+m.Turb1s = pyo.Block()
+m.Pipe1s = pyo.Block()
+m.PVs = pyo.Block()
+m.Grids = pyo.Block()
+m.EBgs = pyo.Block()
+# m.EBpvs = pyo.Block()
+m.Bats = pyo.Block()
+
+
+data_irr = {'Q':df_cons_jan['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1w, m.tw, data_irr, {})
+data_irr = {'Q':df_cons_aug['Qirr']/3600*1.4} # irrigation
+Source(m.Irrigation1s, m.ts, data_irr, {})
+
+data_Ebre = {'dt':3600, 'W0':2e5, 'Wmin':0, 'Wmax':3e5, 'zmin':29.5, 'zmax':30}
+init_Ebre = {'Q':[0]*T, 'W':[2e5]*T}
+Reservoir(m.ReservoirEbrew, m.tw, data_Ebre, init_Ebre)
+Reservoir(m.ReservoirEbres, m.ts, data_Ebre, init_Ebre)
+data_R1 = {'dt':3600, 'W0':10e3, 'Wmin':9e3, 'Wmax':13e3, 'zmin':135+(141-135)*9/13, 'zmax':141, 'WT_min':0.95*10e3, 'WT_max':1.05*10e3}
+init_R1 = {'Q':[0]*T, 'W':[10e3]*T}
+Reservoir(m.Reservoir1w, m.tw, data_R1, init_R1)
+Reservoir(m.Reservoir1s, m.ts, data_R1, init_R1)
+
+data_c1 = {'K':297.38*0.20, 'Qmax':1.2} # canal
+init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
+Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
+Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
+
+data_p = {'A':121.54, 'B':3864.8, 'n_n':2900, 'nmax':1, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688, 'Qnom':0.0556, 'Pmax':110e3} # pumps (both equal)
+init_p = {'Q':[0]*T, 'H':[109]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+RealPump(m.Pump1w, m.tw, data_p, init_p)
+RealPump(m.Pump1s, m.ts, data_p, init_p)
+data_p['eff']=0.8
+RealPump(m.Pump2w, m.tw, data_p, init_p)
+RealPump(m.Pump2s, m.ts, data_p, init_p)
+
+# data_pdouble = {'A':121.54, 'B':3864.8/(2**2), 'n_n':2900, 'eff':0.8, 'eff_t':0.5, 'S':0.1*0.1*3.14, 'Qmin':0.6250, 'Qmax':1.8688*2, 'Qnom':0.0556, 'Pmax':2*110e3} # pumps (both equal)
+# init_pdouble = {'Q':[0]*T, 'H':[108]*T, 'n':[1]*T, 'Pe':[110e3*0.9]*T}
+# RealPump(m.Pump1w, m.tw, data_pdouble, init_pdouble)
+# RealPump(m.Pump1s, m.ts, data_pdouble, init_pdouble)
+
+data_t = {'eff':0.5, 'Pmax':110e3}
+init_t = {'Q':[0]*T, 'H':[109]*T, 'Pe':[0]*T}
+Turbine(m.Turb1w, m.tw, data_t, init_t)
+Turbine(m.Turb1s, m.ts, data_t, init_t)
+
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_jan['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVw, m.tw, data_pv)
+data_pv = {'Pinst':215.28e3, 'Pmax':215.28e3, 'forecast':df_meteo_aug['Irr']/1000, 'eff':0.98} # PV
+SolarPV(m.PVs, m.ts, data_pv)
+
+data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+init_bat = {'E':[0]*T, 'P':[0]*T}
+NewBattery(m.Batw, m.tw, data_bat, init_bat)
+NewBattery(m.Bats, m.ts, data_bat, init_bat)
+
+Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
+Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
+
+EB(m.EBgw, m.tw)
+EB(m.EBgs, m.ts)
+# EB(m.EBpvw, m.tw)
+# EB(m.EBpvs, m.ts)
+
+
+# def ConstraintPumpTurbw(m, t):
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
+# def ConstraintPumpTurbs(m, t):
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
+
+
+def ConstraintBatEws(m):
+    return m.Batw.Edim == m.Bats.Edim
+m.c_BatEws = pyo.Constraint(rule=ConstraintBatEws)
+def ConstraintBatPws(m):
+    return m.Batw.Pdim == m.Bats.Pdim
+m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
+
+
+# m.Batw.Edim.fix(0)
+# m.Bats.Edim.fix(0)
+# m.Batw.Pdim.fix(0)
+# m.Bats.Pdim.fix(0)
+
+m.Turb1s.Pdim.fix(110e3)
+m.Turb1w.Pdim.fix(110e3)
+
+
+# Connections
+m.p1r0w = Arc(ports=(m.Pump1w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p1c1_Qw = Arc(ports=(m.Pump1w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p1c1_Hw = Arc(ports=(m.Pump1w.port_H, m.Pipe1w.port_H), directed=True)
+m.p1ebw = Arc(ports=(m.Pump1w.port_P, m.EBgw.port_P), directed=True)
+
+m.p2r0w = Arc(ports=(m.Pump2w.port_Qin, m.ReservoirEbrew.port_Q), directed=True)
+m.p2c1_Qw = Arc(ports=(m.Pump2w.port_Qout, m.Pipe1w.port_Q), directed=True)
+m.p2c1_Hw = Arc(ports=(m.Pump2w.port_H, m.Pipe1w.port_H), directed=True)
+m.p2ebw = Arc(ports=(m.Pump2w.port_P, m.EBgw.port_P), directed=True) # pv node
+
+m.t1r0w = Arc(ports=(m.Turb1w.port_Qout, m.ReservoirEbrew.port_Q), directed=True)
+m.t1c1_Qw = Arc(ports=(m.Turb1w.port_Qin, m.Pipe1w.port_Q), directed=True)
+m.t1c1_Hw = Arc(ports=(m.Turb1w.port_H, m.Pipe1w.port_H), directed=True)
+m.t1ebw = Arc(ports=(m.Turb1w.port_P, m.EBgw.port_P), directed=True)
+
+m.c1r1_Qw = Arc(ports=(m.Pipe1w.port_Q, m.Reservoir1w.port_Q), directed=True)
+m.c1r1_zw = Arc(ports=(m.Reservoir1w.port_z, m.Pipe1w.port_zhigh), directed=True)
+m.c1r0_zw = Arc(ports=(m.ReservoirEbrew.port_z, m.Pipe1w.port_zlow), directed=True)
+
+m.r1i1w = Arc(ports=(m.Irrigation1w.port_Qin, m.Reservoir1w.port_Q), directed=True)
+
+m.gridebw = Arc(ports=(m.Gridw.port_P, m.EBgw.port_P), directed=True)
+m.pvebw = Arc(ports=(m.PVw.port_P, m.EBgw.port_P), directed=True) # pv node
+m.batebw = Arc(ports=(m.Batw.port_P, m.EBgw.port_P), directed=True) # pv node
+
+# Connections
+m.p1r0s = Arc(ports=(m.Pump1s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p1c1_Qs = Arc(ports=(m.Pump1s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p1c1_Hs = Arc(ports=(m.Pump1s.port_H, m.Pipe1s.port_H), directed=True)
+m.p1ebs = Arc(ports=(m.Pump1s.port_P, m.EBgs.port_P), directed=True)
+
+m.p2r0s = Arc(ports=(m.Pump2s.port_Qin, m.ReservoirEbres.port_Q), directed=True)
+m.p2c1_Qs = Arc(ports=(m.Pump2s.port_Qout, m.Pipe1s.port_Q), directed=True)
+m.p2c1_Hs = Arc(ports=(m.Pump2s.port_H, m.Pipe1s.port_H), directed=True)
+m.p2ebs = Arc(ports=(m.Pump2s.port_P, m.EBgs.port_P), directed=True) # pv node
+
+m.t1r0s = Arc(ports=(m.Turb1s.port_Qout, m.ReservoirEbres.port_Q), directed=True)
+m.t1c1_Qs = Arc(ports=(m.Turb1s.port_Qin, m.Pipe1s.port_Q), directed=True)
+m.t1c1_Hs = Arc(ports=(m.Turb1s.port_H, m.Pipe1s.port_H), directed=True)
+m.t1ebs = Arc(ports=(m.Turb1s.port_P, m.EBgs.port_P), directed=True)
+
+m.c1r1_Qs = Arc(ports=(m.Pipe1s.port_Q, m.Reservoir1s.port_Q), directed=True)
+m.c1r1_zs = Arc(ports=(m.Reservoir1s.port_z, m.Pipe1s.port_zhigh), directed=True)
+m.c1r0_zs = Arc(ports=(m.ReservoirEbres.port_z, m.Pipe1s.port_zlow), directed=True)
+
+m.r1i1s = Arc(ports=(m.Irrigation1s.port_Qin, m.Reservoir1s.port_Q), directed=True)
+
+m.gridebs = Arc(ports=(m.Grids.port_P, m.EBgs.port_P), directed=True)
+m.pvebs = Arc(ports=(m.PVs.port_P, m.EBgs.port_P), directed=True) # pv node
+m.batebs = Arc(ports=(m.Bats.port_P, m.EBgs.port_P), directed=True) # pv node
+
+pyo.TransformationFactory("network.expand_arcs").apply_to(m) # apply arcs to model
+
+
+# Objective function
+def obj_fun(m):
+# 	return sum((m.Grid.Pbuy[t]*m.cost[t]/1e6 - m.Grid.Psell[t]*m.exc[t]/1e6) + 0*1/1e6*((m.PV.Pinst+m.PV.Pdim)*m.PV.forecast[t]*m.PV.eff + m.PV.P[t]) for t in l_t ) #+ (m.Bat.Pdim*cp_bat + m.Bat.Edim*ce_bat)/365/20#+ m.PV.Pdim*cost_new_pv
+	return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
+             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+
+
+instance, results, exec_time = solve(m,'bonmin')
+
+df_benchmark.loc[-1] = ['ISGTcase3',value(instance.goal),exec_time,-30.22893512732645,400.43591022491455,get_n_variables(m),2550]
+df_benchmark.reset_index(inplace=True,drop=True)
+
+file = './test/Benchmark/ISGTcase3'
+df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
+
+del df_cons_aug, df_cons_jan, df_grid_aug, df_grid_jan, df_meteo_aug, df_meteo_jan
+del ce_bat, cost_new_pv, cp_bat, data_bat, data_c1, data_Ebre, data_irr, data_p, data_pv, data_R1, data_t
+del init_bat, init_c1, init_Ebre, init_p, init_R1, init_t
+del l_costs, l_costw, l_excs, l_excw
+del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
