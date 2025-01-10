@@ -21,7 +21,7 @@ def Source(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Q': Injected flow :math:`Q(t)` as a ``list``
+         - 'Q': Injected flow :math:`Q(t)` as a ``list`` or pandas ``Series``
     
     Pyomo declarations    
         - Parameters: 
@@ -64,7 +64,7 @@ def VarSource(b, t, data, init_data):
          - 'Qmax': Maximum flow :math:`Q_{max}` as a ``float`` (can be negative)
     
     init_data
-         - 'Q': Injected flow :math:`Q_{out}(t)` as a ``list``
+         - 'Q': Injected flow :math:`Q_{out}(t)` as a ``list`` or pandas ``Series``
          
     Pyomo declarations    
         - Parameters: 
