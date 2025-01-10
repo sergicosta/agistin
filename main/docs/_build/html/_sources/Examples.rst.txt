@@ -19,8 +19,5 @@ Example 2
 Example 3
 ----------
 
-.. note::
-   🚧 WIP
-
-..
-	.. literalinclude:: ..\\Example3.py 
+.. literalinclude:: ..\\Example3.py
+	

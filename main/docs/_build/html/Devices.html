@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Devices &mdash; AGISTIN 0.0.20230919 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b6851926"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,21 +48,71 @@
 <li class="toctree-l1"><a class="reference internal" href="Vars.html">Variables and units</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Devices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hydro-devices">Hydro devices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#source">Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hydro-switch">Hydro Switch</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#new-pump">New Pump</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pipes">Pipes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pumps">Pumps</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#reservoirs">Reservoirs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#turbines">Turbines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source">Source</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Sources.Source"><code class="docutils literal notranslate"><span class="pre">Source()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Sources.VarSource"><code class="docutils literal notranslate"><span class="pre">VarSource()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hydro-switch">Hydro Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.HydroSwitch.HydroSwitch"><code class="docutils literal notranslate"><span class="pre">HydroSwitch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#new-pump">New Pump</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.NewPumps.NewPump"><code class="docutils literal notranslate"><span class="pre">NewPump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pipes">Pipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe"><code class="docutils literal notranslate"><span class="pre">Pipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.PipeValve"><code class="docutils literal notranslate"><span class="pre">PipeValve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pipes.Pipe_Ex0"><code class="docutils literal notranslate"><span class="pre">Pipe_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pumps">Pumps</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.DiscretePump"><code class="docutils literal notranslate"><span class="pre">DiscretePump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.LinealizedPump"><code class="docutils literal notranslate"><span class="pre">LinealizedPump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.Pump"><code class="docutils literal notranslate"><span class="pre">Pump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.RealPump"><code class="docutils literal notranslate"><span class="pre">RealPump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.RealPumpControlled"><code class="docutils literal notranslate"><span class="pre">RealPumpControlled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.RealPumpS"><code class="docutils literal notranslate"><span class="pre">RealPumpS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.ReversiblePump"><code class="docutils literal notranslate"><span class="pre">ReversiblePump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Pumps.ReversibleRealPump"><code class="docutils literal notranslate"><span class="pre">ReversibleRealPump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#reservoirs">Reservoirs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Reservoirs.Reservoir"><code class="docutils literal notranslate"><span class="pre">Reservoir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Reservoirs.Reservoir_Ex0"><code class="docutils literal notranslate"><span class="pre">Reservoir_Ex0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#turbines">Turbines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Turbines.DiscreteTurbine"><code class="docutils literal notranslate"><span class="pre">DiscreteTurbine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Turbines.Turbine"><code class="docutils literal notranslate"><span class="pre">Turbine()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#electrical-devices">Electrical devices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#eb-pumping-station">EB (Pumping Station)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#main-grid">Main Grid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#solar-pv">Solar PV</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#switch">Switch</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eb-pumping-station">EB (Pumping Station)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.EB.EB"><code class="docutils literal notranslate"><span class="pre">EB()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main-grid">Main Grid</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.MainGrid.FlexibleGrid"><code class="docutils literal notranslate"><span class="pre">FlexibleGrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.MainGrid.Grid"><code class="docutils literal notranslate"><span class="pre">Grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#solar-pv">Solar PV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.SolarPV.SolarPV"><code class="docutils literal notranslate"><span class="pre">SolarPV()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#switch">Switch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Switch.Switch"><code class="docutils literal notranslate"><span class="pre">Switch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#battery">Battery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.Battery"><code class="docutils literal notranslate"><span class="pre">Battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Devices.Batteries.NewBattery"><code class="docutils literal notranslate"><span class="pre">NewBattery()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -97,7 +147,7 @@
            <div itemprop="articleBody">
              
   <section id="devices">
-<h1>Devices<a class="headerlink" href="#devices" title="Permalink to this heading"></a></h1>
+<h1>Devices<a class="headerlink" href="#devices" title="Link to this heading"></a></h1>
 <div class="line-block">
 <div class="line">The following are the devices currently implemented in the tool.</div>
 </div>
@@ -105,7 +155,7 @@
 <div class="line">Devices are defined as python functions which apply Pyomo <code class="docutils literal notranslate"><span class="pre">Param</span></code>, <code class="docutils literal notranslate"><span class="pre">Var</span></code>, <code class="docutils literal notranslate"><span class="pre">Port</span></code> and <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> to a <code class="docutils literal notranslate"><span class="pre">Block</span></code>.</div>
 <div class="line">These functions are structured as follows:</div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 
         <span class="c1"># Parameters. Values set by `data`</span>
 
@@ -119,7 +169,7 @@
 <div class="line-block">
 <div class="line">Here is an example of the definition of a <em>PQ load</em> device:</div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 
         <span class="c1"># Parameters</span>
         <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
@@ -140,7 +190,7 @@
 </pre></div>
 </div>
 <p>They are meant to be called after defining a <code class="docutils literal notranslate"><span class="pre">Block</span></code> object as follows:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">some_load</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Block</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">some_load</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Block</span><span class="p">()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="mf">10e6</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">:</span><span class="mf">2e6</span><span class="p">}</span>
 <span class="n">init_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
 <span class="n">PQ_Load</span><span class="p">(</span><span class="n">some_load</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">)</span>
@@ -150,7 +200,7 @@
 <p class="admonition-title">Note</p>
 <p>It is required to import the pyomo libraries and the corresponding devices’ files:</p>
 <blockquote>
-<div><div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import pyomo</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import pyomo</span>
 <span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
 <span class="kn">from</span> <span class="nn">pyomo.network</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -161,12 +211,12 @@
 </div></blockquote>
 </div>
 <p>One may find the need to add <strong>time dependent</strong> variables and relations. In such case a <code class="docutils literal notranslate"><span class="pre">Set</span></code> is defined:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 5 time steps</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">time_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 5 time steps</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">time_list</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>and a <code class="docutils literal notranslate"><span class="pre">t</span></code> argument is added to the function as well as to its call</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">PQ_Load</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 
         <span class="c1"># Parameters</span>
         <span class="n">b</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
@@ -193,17 +243,18 @@
 </pre></div>
 </div>
 <section id="hydro-devices">
-<h2>Hydro devices<a class="headerlink" href="#hydro-devices" title="Permalink to this heading"></a></h2>
+<h2>Hydro devices<a class="headerlink" href="#hydro-devices" title="Link to this heading"></a></h2>
 <p>This lists the devices related to hydro</p>
 <section id="source">
-<h3>Source<a class="headerlink" href="#source" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Source.svg"><img alt="Source block" height="107" src="_images/Block_Source.svg" width="181" /></a>
-<span class="target" id="module-Devices.Sources"></span><p>Source pyomo block contains characteristics of a source.</p>
+<h3>Source<a class="headerlink" href="#source" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Source.svg"><img alt="Source block" src="_images/Block_Source.svg" style="width: 181.0px; height: 107.0px;" />
+</a>
+<p id="module-Devices.Sources">Source pyomo block contains characteristics of a source.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Sources.Source">
-<span class="sig-prename descclassname"><span class="pre">Devices.Sources.</span></span><span class="sig-name descname"><span class="pre">Source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Sources.html#Source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Sources.Source" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Sources.</span></span><span class="sig-name descname"><span class="pre">Source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Sources.html#Source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Sources.Source" title="Link to this definition"></a></dt>
 <dd><p>Basic Source.</p>
-<p>Injects a given flow <span class="math notranslate nohighlight">\(Q(t)\)</span>, behaving as the hydro analogous of a current source</p>
+<p>Injects a given flow <span class="math notranslate nohighlight">\(Q(t)\)</span>, behaving as the hydro analogous of a current source.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -222,15 +273,65 @@
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
-<li><p>Q (t)</p></li>
+<li><p>Qin (t)</p></li>
+<li><p>Qout (t)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Variables:</p></li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Qin &#64; Qin as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Constraints:</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Sources.VarSource">
+<span class="sig-prename descclassname"><span class="pre">Devices.Sources.</span></span><span class="sig-name descname"><span class="pre">VarSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Sources.html#VarSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Sources.VarSource" title="Link to this definition"></a></dt>
+<dd><p>Undetermined flow Source.</p>
+<p>Injects an undetermined flow <span class="math notranslate nohighlight">\(Q(t)\)</span>, limited by <span class="math notranslate nohighlight">\(Q_{max}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘Qmin’: Minimum flow <span class="math notranslate nohighlight">\(Q_{min}\)</span> as a <code class="docutils literal notranslate"><span class="pre">float</span></code> (can be negative)</p></li>
+<li><p>‘Qmax’: Maximum flow <span class="math notranslate nohighlight">\(Q_{max}\)</span> as a <code class="docutils literal notranslate"><span class="pre">float</span></code> (can be negative)</p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Injected flow <span class="math notranslate nohighlight">\(Q_{out}(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>Qmin</p></li>
+<li><p>Qmax</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>Qin (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
-<li><p>Qout (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max},-Q_{min}]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [Q_{min},Q_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -244,9 +345,8 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Constraints: </dt><dd><ul>
-<li><p>c_Qin: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q(t)\)</span></p></li>
-<li><p>c_Qout: <span class="math notranslate nohighlight">\(Q_{out}(t) = Q(t)\)</span></p></li>
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t)=-Q_{out}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -256,19 +356,15 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="Devices.Sources.VarSource">
-<span class="sig-prename descclassname"><span class="pre">Devices.Sources.</span></span><span class="sig-name descname"><span class="pre">VarSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Sources.html#VarSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Sources.VarSource" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 </section>
 <section id="hydro-switch">
-<span id="hydroswitch"></span><h3>Hydro Switch<a class="headerlink" href="#hydro-switch" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_HydroSwitch.svg"><img alt="Hydro switch block" height="123" src="_images/Block_HydroSwitch.svg" width="191" /></a>
-<span class="target" id="module-Devices.HydroSwitch"></span><p>HydroSwitch pyomo block contains characteristics of a switch for pipe commutation.</p>
+<span id="hydroswitch"></span><h3>Hydro Switch<a class="headerlink" href="#hydro-switch" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_HydroSwitch.svg"><img alt="Hydro switch block" src="_images/Block_HydroSwitch.svg" style="width: 191.0px; height: 123.0px;" />
+</a>
+<p id="module-Devices.HydroSwitch">HydroSwitch pyomo block contains characteristics of a switch for pipe commutation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.HydroSwitch.HydroSwitch">
-<span class="sig-prename descclassname"><span class="pre">Devices.HydroSwitch.</span></span><span class="sig-name descname"><span class="pre">HydroSwitch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/HydroSwitch.html#HydroSwitch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.HydroSwitch.HydroSwitch" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.HydroSwitch.</span></span><span class="sig-name descname"><span class="pre">HydroSwitch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/HydroSwitch.html#HydroSwitch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.HydroSwitch.HydroSwitch" title="Link to this definition"></a></dt>
 <dd><p>Hydraulic switch.</p>
 <p>Commutes the output <span class="math notranslate nohighlight">\(Q_{out}(t)\)</span> between 2 inputs of water flow <span class="math notranslate nohighlight">\(Q_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(Q_{in,1}(t)\)</span> , analogous of an electrical switch</p>
 <dl class="field-list simple">
@@ -337,12 +433,13 @@
 </div>
 </section>
 <section id="new-pump">
-<h3>New Pump<a class="headerlink" href="#new-pump" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_NewPump.svg"><img alt="New pump block" height="126" src="_images/Block_NewPump.svg" width="189" /></a>
-<span class="target" id="module-Devices.NewPumps"></span><p>NewPump pyomo block contains characteristics of a pump to size.</p>
+<h3>New Pump<a class="headerlink" href="#new-pump" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_NewPump.svg"><img alt="New pump block" src="_images/Block_NewPump.svg" style="width: 189.0px; height: 126.0px;" />
+</a>
+<p id="module-Devices.NewPumps">NewPump pyomo block contains characteristics of a pump to size.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.NewPumps.NewPump">
-<span class="sig-prename descclassname"><span class="pre">Devices.NewPumps.</span></span><span class="sig-name descname"><span class="pre">NewPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/NewPumps.html#NewPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.NewPumps.NewPump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.NewPumps.</span></span><span class="sig-name descname"><span class="pre">NewPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/NewPumps.html#NewPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.NewPumps.NewPump" title="Link to this definition"></a></dt>
 <dd><p>Power sizing <span class="math notranslate nohighlight">\(P_{dim}\)</span> of a new pump</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -412,13 +509,15 @@
 
 </section>
 <section id="pipes">
-<h3>Pipes<a class="headerlink" href="#pipes" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Pipe.svg"><img alt="Pipe_Ex0 block" height="113" src="_images/Block_Pipe.svg" width="137" /></a>
-<a class="reference internal image-reference" href="_images/Block_Pipe_full.svg"><img alt="Pipe block" height="113" src="_images/Block_Pipe_full.svg" width="183" /></a>
-<span class="target" id="module-Devices.Pipes"></span><p>Pipe pyomo block contains characteristics of a pipe.</p>
+<h3>Pipes<a class="headerlink" href="#pipes" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Pipe.svg"><img alt="Pipe_Ex0 block" src="_images/Block_Pipe.svg" style="width: 137.0px; height: 113.0px;" />
+</a>
+<a class="reference internal image-reference" href="_images/Block_Pipe_full.svg"><img alt="Pipe block" src="_images/Block_Pipe_full.svg" style="width: 183.0px; height: 113.0px;" />
+</a>
+<p id="module-Devices.Pipes">Pipe pyomo block contains characteristics of a pipe.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pipes.Pipe">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe" title="Link to this definition"></a></dt>
 <dd><p>Pipe that transports water and has implicit energy losses.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
 <div class="math notranslate nohighlight">
@@ -460,8 +559,8 @@
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>zlow (t) bounded <span class="math notranslate nohighlight">\(z_{low} \ge 0\)</span></p></li>
 <li><p>zhigh (t) bounded <span class="math notranslate nohighlight">\(z_{high} \ge 0\)</span></p></li>
-<li><p>H0 (t) bounded <span class="math notranslate nohighlight">\(H_{0} \ge 0\)</span></p></li>
-<li><p>signQ (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
+<li><p>Qp(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
+<li><p>Qn(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -478,9 +577,9 @@
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)\)</span></p></li>
-<li><p>c_H0: <span class="math notranslate nohighlight">\(H_0(t) = z_{high}(t) - z_{low}(t)\)</span></p></li>
-<li><p>c_sign: <span class="math notranslate nohighlight">\(Q(t)\, (2\, signQ(t) - 1) &gt;= 0\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K\, Q(t)^2 - K\, Q(t)^2\)</span></p></li>
+<li><p>c_Q: :math:’Q(t)= Qp(t)- Qn(t)’</p></li>
+<li><p>c_QpQn0: :math:’0 = Qp(t), Qn(t)’</p></li>
 </ul>
 </dd>
 </dl>
@@ -492,7 +591,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pipes.PipeValve">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">PipeValve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#PipeValve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.PipeValve" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">PipeValve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#PipeValve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.PipeValve" title="Link to this definition"></a></dt>
 <dd><p>Pipe that transports water and has implicit energy losses.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
 <div class="math notranslate nohighlight">
@@ -534,8 +633,8 @@
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>zlow (t) bounded <span class="math notranslate nohighlight">\(z_{low} \ge 0\)</span></p></li>
 <li><p>zhigh (t) bounded <span class="math notranslate nohighlight">\(z_{high} \ge 0\)</span></p></li>
-<li><p>H0 (t) bounded <span class="math notranslate nohighlight">\(H_{0} \ge 0\)</span></p></li>
-<li><p>signQ (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
+<li><p>Qp(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
+<li><p>Qn(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -552,9 +651,8 @@
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K\, Q(t)^2 \, (2\, signQ(t) - 1)\)</span></p></li>
-<li><p>c_H0: <span class="math notranslate nohighlight">\(H_0(t) = z_{high}(t) - z_{low}(t)\)</span></p></li>
-<li><p>c_sign: <span class="math notranslate nohighlight">\(Q(t)\, (2\, signQ(t) - 1) &gt;= 0\)</span></p></li>
+<li><p>c_H: :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>H(t) = H_0(t) + K, Qp(t)^2 - K, Qn(t)^2</p></li>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q(t) = Qp(t) - Qn(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -566,7 +664,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pipes.Pipe_Ex0">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe_Ex0" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">Pipe_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#Pipe_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.Pipe_Ex0" title="Link to this definition"></a></dt>
 <dd><p>Simple Pipe for testing and example purposes.
 It is utilised in Example0.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
@@ -608,7 +706,6 @@ It is utilised in Example0.</p>
 <dt>Variables: </dt><dd><ul>
 <li><p>Q (t) bounded <span class="math notranslate nohighlight">\(\in [-Q_{max}, Q_{max}]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
-<li><p>signQ (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -624,7 +721,6 @@ It is utilised in Example0.</p>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0 + K \, Q(t)^2 \, (2\, signQ(t) - 1)\)</span></p></li>
-<li><p>c_sign: <span class="math notranslate nohighlight">\(Q(t)\, (2\, signQ(t) - 1) &gt;= 0\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -636,12 +732,13 @@ It is utilised in Example0.</p>
 
 </section>
 <section id="pumps">
-<h3>Pumps<a class="headerlink" href="#pumps" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Pump.svg"><img alt="Pump block" height="126" src="_images/Block_Pump.svg" width="189" /></a>
-<span class="target" id="module-Devices.Pumps"></span><p>Pump pyomo block contains characteristics of a pump.</p>
+<h3>Pumps<a class="headerlink" href="#pumps" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Pump.svg"><img alt="Pump block" src="_images/Block_Pump.svg" style="width: 189.0px; height: 126.0px;" />
+</a>
+<p id="module-Devices.Pumps">Pump pyomo block contains characteristics of a pump.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.DiscretePump">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">DiscretePump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#DiscretePump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.DiscretePump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">DiscretePump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#DiscretePump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.DiscretePump" title="Link to this definition"></a></dt>
 <dd><p>DiscretePump is the association of “N” pumps in parallel. 
 Each individual pump have two state:</p>
 <blockquote>
@@ -724,8 +821,95 @@ The total power consumed by the system is directly proportional to the number of
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pumps.LinealizedPump">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">LinealizedPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#LinealizedPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.LinealizedPump" title="Link to this definition"></a></dt>
+<dd><p>In RealPump it’s added the working flow limits of the pump.  
+Be wary of binary variables when choosing a solver.</p>
+<p>It’s introduced <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the working limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘A’: Constant characteristic coefficient of the pump <span class="math notranslate nohighlight">\(A\)</span></p></li>
+<li><p>‘B’: Quadratic characteristic coefficient of the pump <span class="math notranslate nohighlight">\(B\)</span></p></li>
+<li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
+<li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+<li><p>‘Qmin’: Minimum working flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{min}\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘n’: Rotational speed (in p.u.) <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p>A</p></li>
+<li><p>B</p></li>
+<li><p>Qnom</p></li>
+<li><p>eff</p></li>
+<li><p>Qmin</p></li>
+<li><p>Qmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables:</dt><dd><ul>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{n}, 0]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{n}]\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>npu2 (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
+<li><p>PumpOn (t) <span class="math notranslate nohighlight">\(b_{ON}(t) \in \{0,1\}\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports:</dt><dd><ul>
+<li><p>port_Qin &#64; Qin with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; Pe with ‘P’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H with ‘H’ as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = - Q_{out}(t)\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = (n(t)/n_n)^2\, A - B \, Q_{out}(t)^2\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}(t)\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)/\eta\)</span></p></li>
+<li><p>c_Qmax: <span class="math notranslate nohighlight">\(Q_{out}(t) \leq Q_{n} \, Q_{max} \, b_{ON}(t)\)</span></p></li>
+<li><p>c_Qmin: <span class="math notranslate nohighlight">\(Q_{out}(t) \geq Q_{n} \, Q_{min} \, b_{ON}(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.Pump">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">Pump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#Pump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.Pump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">Pump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#Pump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.Pump" title="Link to this definition"></a></dt>
 <dd><p>Frequency controllable hydraulic pump.</p>
 <p>Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:</p>
 <div class="math notranslate nohighlight">
@@ -745,7 +929,6 @@ The total power consumed by the system is directly proportional to the number of
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘A’: Constant characteristic coefficient of the pump <span class="math notranslate nohighlight">\(A\)</span></p></li>
 <li><p>‘B’: Quadratic characteristic coefficient of the pump <span class="math notranslate nohighlight">\(B\)</span></p></li>
-<li><p>‘n_n’: Nominal rotational speed <span class="math notranslate nohighlight">\(n_n\)</span></p></li>
 <li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
 <li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p>‘Qmax’: Maximum allowed flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
@@ -755,7 +938,7 @@ The total power consumed by the system is directly proportional to the number of
 <dt>init_data</dt><dd><ul class="simple">
 <li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 <li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘n’: Rotational speed <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘n’: Rotational speed (in p.u.) <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 <li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 </ul>
 </dd>
@@ -765,7 +948,6 @@ The total power consumed by the system is directly proportional to the number of
 <li><p>A</p></li>
 <li><p>B</p></li>
 <li><p>Qnom</p></li>
-<li><p>n_n</p></li>
 <li><p>eff</p></li>
 </ul>
 </dd>
@@ -776,7 +958,7 @@ The total power consumed by the system is directly proportional to the number of
 <li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{nom}, 0]\)</span></p></li>
 <li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{nom}]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
-<li><p>n (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
+<li><p>npu2 (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
 <li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
 <li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
 </ul>
@@ -810,7 +992,7 @@ The total power consumed by the system is directly proportional to the number of
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.RealPump">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPump" title="Link to this definition"></a></dt>
 <dd><p>In RealPump it’s added the working flow limits of the pump.  
 Be wary of binary variables when choosing a solver.</p>
 <p>It’s introduced <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the working limits.</p>
@@ -828,7 +1010,6 @@ Be wary of binary variables when choosing a solver.</p>
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘A’: Constant characteristic coefficient of the pump <span class="math notranslate nohighlight">\(A\)</span></p></li>
 <li><p>‘B’: Quadratic characteristic coefficient of the pump <span class="math notranslate nohighlight">\(B\)</span></p></li>
-<li><p>‘n_n’: Nominal rotational speed <span class="math notranslate nohighlight">\(n_n\)</span></p></li>
 <li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
 <li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p>‘Qmax’: Maximum allowed flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
@@ -839,7 +1020,7 @@ Be wary of binary variables when choosing a solver.</p>
 <dt>init_data</dt><dd><ul class="simple">
 <li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 <li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘n’: Rotational speed <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘n’: Rotational speed (in p.u.) <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 <li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
 </ul>
 </dd>
@@ -849,7 +1030,6 @@ Be wary of binary variables when choosing a solver.</p>
 <li><p>A</p></li>
 <li><p>B</p></li>
 <li><p>Qnom</p></li>
-<li><p>n_n</p></li>
 <li><p>eff</p></li>
 <li><p>Qmin</p></li>
 <li><p>Qmax</p></li>
@@ -862,7 +1042,7 @@ Be wary of binary variables when choosing a solver.</p>
 <li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{n}, 0]\)</span></p></li>
 <li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{n}]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
-<li><p>n (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
+<li><p>npu2 (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
 <li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
 <li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
 <li><p>PumpOn (t) <span class="math notranslate nohighlight">\(b_{ON}(t) \in \{0,1\}\)</span></p></li>
@@ -899,7 +1079,7 @@ Be wary of binary variables when choosing a solver.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.RealPumpControlled">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPumpControlled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPumpControlled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPumpControlled" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPumpControlled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPumpControlled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPumpControlled" title="Link to this definition"></a></dt>
 <dd><p>In RealPumpControlled, three working regimes are added depending on the height (z) between the surfaces of the reservoirs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -994,8 +1174,95 @@ Be wary of binary variables when choosing a solver.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="Devices.Pumps.RealPumpS">
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">RealPumpS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#RealPumpS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.RealPumpS" title="Link to this definition"></a></dt>
+<dd><p>In RealPump it’s added the working flow limits of the pump.  
+Be wary of binary variables when choosing a solver.</p>
+<p>It’s introduced <span class="math notranslate nohighlight">\(Q_{max}\)</span> and <span class="math notranslate nohighlight">\(Q_{min}\)</span> which determines the working limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘A’: Constant characteristic coefficient of the pump <span class="math notranslate nohighlight">\(A\)</span></p></li>
+<li><p>‘B’: Quadratic characteristic coefficient of the pump <span class="math notranslate nohighlight">\(B\)</span></p></li>
+<li><p>‘Qnom’: Nominal flow <span class="math notranslate nohighlight">\(Q_n\)</span></p></li>
+<li><p>‘eff’: Efficiency at the nominal operating point in p.u. <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+<li><p>‘Qmin’: Minimum working flow (in p.u. of Qnom) <span class="math notranslate nohighlight">\(Q_{min}\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘n’: Rotational speed (in p.u.) <span class="math notranslate nohighlight">\(n(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters:</dt><dd><ul>
+<li><p>A</p></li>
+<li><p>B</p></li>
+<li><p>Qnom</p></li>
+<li><p>eff</p></li>
+<li><p>Qmin</p></li>
+<li><p>Qmax</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables:</dt><dd><ul>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \in [-Q_{max}\,Q_{n}, 0]\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \in [0, Q_{max}\,Q_{n}]\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>npu2 (t) bounded <span class="math notranslate nohighlight">\(n \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \in [0, P_{max}]\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_e \in [0, P_{max}]\)</span></p></li>
+<li><p>PumpOn (t) <span class="math notranslate nohighlight">\(b_{ON}(t) \in \{0,1\}\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports:</dt><dd><ul>
+<li><p>port_Qin &#64; Qin with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout with ‘Q’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; Pe with ‘P’ as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H with ‘H’ as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints:</dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = - Q_{out}(t)\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = (n(t)/n_n)^2\, A - B \, Q_{out}(t)^2\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{out}(t)\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)/\eta\)</span></p></li>
+<li><p>c_Qmax: <span class="math notranslate nohighlight">\(Q_{out}(t) \leq Q_{n} \, Q_{max} \, b_{ON}(t)\)</span></p></li>
+<li><p>c_Qmin: <span class="math notranslate nohighlight">\(Q_{out}(t) \geq Q_{n} \, Q_{min} \, b_{ON}(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.ReversiblePump">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">ReversiblePump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#ReversiblePump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.ReversiblePump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">ReversiblePump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#ReversiblePump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.ReversiblePump" title="Link to this definition"></a></dt>
 <dd><p>Frequency controllable reversible hydraulic pump.
 Introduces the reversibility of the pump’s flow.</p>
 <dl class="field-list simple">
@@ -1085,7 +1352,7 @@ Introduces the reversibility of the pump’s flow.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Pumps.ReversibleRealPump">
-<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">ReversibleRealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#ReversibleRealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.ReversibleRealPump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Pumps.</span></span><span class="sig-name descname"><span class="pre">ReversibleRealPump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pumps.html#ReversibleRealPump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pumps.ReversibleRealPump" title="Link to this definition"></a></dt>
 <dd><p>Frequency controllable reversible hydraulic pump with water flow limits.</p>
 <p>Applies the hydraulic head equation to a flow, with the ability to change its rotational speed, limited by a maximum power:</p>
 <div class="math notranslate nohighlight">
@@ -1210,13 +1477,15 @@ Introduces the reversibility of the pump’s flow.</p>
 
 </section>
 <section id="reservoirs">
-<h3>Reservoirs<a class="headerlink" href="#reservoirs" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Reservoir_Ex0 block" height="107" src="_images/Block_Reservoir.svg" width="130" /></a>
-<a class="reference internal image-reference" href="_images/Block_Reservoir_full.svg"><img alt="Reservoir block" height="107" src="_images/Block_Reservoir_full.svg" width="146" /></a>
-<span class="target" id="module-Devices.Reservoirs"></span><p>Reservoir pyomo block containing the characteristics of a reservoir.</p>
+<h3>Reservoirs<a class="headerlink" href="#reservoirs" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Reservoir.svg"><img alt="Reservoir_Ex0 block" src="_images/Block_Reservoir.svg" style="width: 130.0px; height: 107.0px;" />
+</a>
+<a class="reference internal image-reference" href="_images/Block_Reservoir_full.svg"><img alt="Reservoir block" src="_images/Block_Reservoir_full.svg" style="width: 146.0px; height: 107.0px;" />
+</a>
+<p id="module-Devices.Reservoirs">Reservoir pyomo block containing the characteristics of a reservoir.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir">
-<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir" title="Link to this definition"></a></dt>
 <dd><p>Simple Reservoir.</p>
 <p>Modifies its volume state <span class="math notranslate nohighlight">\(W(t)\)</span> and height <span class="math notranslate nohighlight">\(z(t)\)</span> from an initial state <span class="math notranslate nohighlight">\(W_0\)</span> according to 
 the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</span></p>
@@ -1296,7 +1565,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Reservoirs.Reservoir_Ex0">
-<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir_Ex0" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Reservoirs.</span></span><span class="sig-name descname"><span class="pre">Reservoir_Ex0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Reservoirs.html#Reservoir_Ex0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Reservoirs.Reservoir_Ex0" title="Link to this definition"></a></dt>
 <dd><p>Simple Reservoir for testing and example purposes.
 It is utilised in Example0.</p>
 <p>Modifies its volume state <span class="math notranslate nohighlight">\(W(t)\)</span> from an initial state <span class="math notranslate nohighlight">\(W_0\)</span> according to 
@@ -1367,12 +1636,86 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 
 </section>
 <section id="turbines">
-<h3>Turbines<a class="headerlink" href="#turbines" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Turbine block" height="126" src="_images/Block_Turbine.svg" width="189" /></a>
-<span class="target" id="module-Devices.Turbines"></span><p>Turbine pyomo block contains characteristics of a turbine.</p>
+<h3>Turbines<a class="headerlink" href="#turbines" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Turbine.svg"><img alt="Turbine block" src="_images/Block_Turbine.svg" style="width: 189.0px; height: 126.0px;" />
+</a>
+<p id="module-Devices.Turbines">Turbine pyomo block contains characteristics of a turbine.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Devices.Turbines.DiscreteTurbine">
+<span class="sig-prename descclassname"><span class="pre">Devices.Turbines.</span></span><span class="sig-name descname"><span class="pre">DiscreteTurbine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Turbines.html#DiscreteTurbine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Turbines.DiscreteTurbine" title="Link to this definition"></a></dt>
+<dd><p>Turbine.</p>
+<p>Sizes a new turbine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Block()</span></code> to be set</p></li>
+<li><p><strong>t</strong> – pyomo <code class="docutils literal notranslate"><span class="pre">Set()</span></code> referring to time</p></li>
+<li><p><strong>data</strong> – data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>init_data</strong> – init_data <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>data</dt><dd><ul class="simple">
+<li><p>‘eff’: Efficiency of the turbine <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p>‘Pmax’: Maximum allowed power <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
+<li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
+</ul>
+</dd>
+<dt>init_data</dt><dd><ul class="simple">
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Pe’: Electrical power <span class="math notranslate nohighlight">\(P_e(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+</ul>
+</dd>
+<dt>Pyomo declarations    </dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Parameters: </dt><dd><ul>
+<li><p>eff</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Variables: </dt><dd><ul>
+<li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \ge 0\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \le 0\)</span></p></li>
+<li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \ge 0\)</span></p></li>
+<li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_{h} \le 0\)</span></p></li>
+<li><p>Pe (t) bounded <span class="math notranslate nohighlight">\(P_{e} \le 0\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ports: </dt><dd><ul>
+<li><p>port_Qin &#64; Qin as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_P &#64; P as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
+<li><p>port_H &#64; H as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Constraints: </dt><dd><ul>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q_{in}(t) = -Q_{out}(t)\)</span></p></li>
+<li><p>c_Ph: <span class="math notranslate nohighlight">\(P_h(t) = 9810\, H(t)\, Q_{in}\)</span></p></li>
+<li><p>c_Pe: <span class="math notranslate nohighlight">\(P_e(t) = P_h(t)\, \eta\)</span></p></li>
+<li><p>c_Pdim: <span class="math notranslate nohighlight">\(P_{dim}(t) \ge -P_e(t)\)</span></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Turbines.Turbine">
-<span class="sig-prename descclassname"><span class="pre">Devices.Turbines.</span></span><span class="sig-name descname"><span class="pre">Turbine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Turbines.html#Turbine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Turbines.Turbine" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Turbines.</span></span><span class="sig-name descname"><span class="pre">Turbine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Turbines.html#Turbine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Turbines.Turbine" title="Link to this definition"></a></dt>
 <dd><p>Turbine.</p>
 <p>Sizes a new turbine.</p>
 <dl class="field-list simple">
@@ -1446,35 +1789,41 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </section>
 </section>
 <section id="electrical-devices">
-<h2>Electrical devices<a class="headerlink" href="#electrical-devices" title="Permalink to this heading"></a></h2>
+<h2>Electrical devices<a class="headerlink" href="#electrical-devices" title="Link to this heading"></a></h2>
 <section id="eb-pumping-station">
-<h3>EB (Pumping Station)<a class="headerlink" href="#eb-pumping-station" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="EB block" height="74" src="_images/Block_EB.svg" width="97" /></a>
-<span class="target" id="module-Devices.EB"></span><p>EB pyomo block containing the characteristics of a pumping station.</p>
+<h3>EB (Pumping Station)<a class="headerlink" href="#eb-pumping-station" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="EB block" src="_images/Block_EB.svg" style="width: 97.0px; height: 74.0px;" />
+</a>
+<p id="module-Devices.EB">EB pyomo block containing the characteristics of a pumping station.</p>
 <p>It is meant to act as a node for power balance.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.EB.EB">
-<span class="sig-prename descclassname"><span class="pre">Devices.EB.</span></span><span class="sig-name descname"><span class="pre">EB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/EB.html#EB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.EB.EB" title="Permalink to this definition"></a></dt>
-<dd><p>Basic EB.</p>
+<span class="sig-prename descclassname"><span class="pre">Devices.EB.</span></span><span class="sig-name descname"><span class="pre">EB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/EB.html#EB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.EB.EB" title="Link to this definition"></a></dt>
+<dd><p>Basic energy balance node.</p>
 <p>Captures the powers linked to it and sets their sum to 0:</p>
 <div class="math notranslate nohighlight">
 \[\sum_{i} P_i = 0 \]</div>
+<section id="block-parameters">
+<h4>Block parameters<a class="headerlink" href="#block-parameters" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>t: pyomo Set() referring to time</p></li>
 <li><p>data: <em>None</em></p></li>
 <li><p>init_data: <em>None</em></p></li>
 </ul>
+</section>
+<section id="pyomo-declarations">
+<h4>Pyomo declarations<a class="headerlink" href="#pyomo-declarations" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
-<li><p><em>None</em></p></li>
+<li><p>P_bal (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
-<li><p>P_bal (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p><em>None</em></p></li>
 </ul>
 </dd>
 </dl>
@@ -1488,22 +1837,24 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>balance: <span class="math notranslate nohighlight">\(P_{bal} = 0\)</span></p></li>
+<li><p><em>None</em></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
+</section>
 </dd></dl>
 
 </section>
 <section id="main-grid">
-<h3>Main Grid<a class="headerlink" href="#main-grid" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Grid block" height="107" src="_images/Block_Grid.svg" width="132" /></a>
-<span class="target" id="module-Devices.MainGrid"></span><p>MainGrid pyomo block contains characteristics of the point of connection.</p>
+<h3>Main Grid<a class="headerlink" href="#main-grid" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Grid.svg"><img alt="Grid block" src="_images/Block_Grid.svg" style="width: 132.0px; height: 107.0px;" />
+</a>
+<p id="module-Devices.MainGrid">MainGrid pyomo block contains characteristics of the point of connection.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.MainGrid.FlexibleGrid">
-<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">FlexibleGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#FlexibleGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.FlexibleGrid" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">FlexibleGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#FlexibleGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.FlexibleGrid" title="Link to this definition"></a></dt>
 <dd><p>Point of connection to the grid.</p>
 <p>Delivers or consumes the required power up to a set maximum.
 It also defines whether the power is consumed from the grid <span class="math notranslate nohighlight">\(P_{buy}\)</span> or delivered to <span class="math notranslate nohighlight">\(P_{sell}\)</span>.
@@ -1562,7 +1913,7 @@ This version</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.MainGrid.Grid">
-<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#Grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.Grid" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.MainGrid.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/MainGrid.html#Grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.MainGrid.Grid" title="Link to this definition"></a></dt>
 <dd><p>Point of connection to the grid.</p>
 <p>Delivers or consumes the required power up to a set maximum.
 It also defines whether the power is consumed from the grid <span class="math notranslate nohighlight">\(P_{buy}\)</span> or delivered to <span class="math notranslate nohighlight">\(P_{sell}\)</span>.</p>
@@ -1620,12 +1971,13 @@ It also defines whether the power is consumed from the grid <span class="math no
 
 </section>
 <section id="solar-pv">
-<h3>Solar PV<a class="headerlink" href="#solar-pv" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Solar.svg"><img alt="Solar PV block" height="107" src="_images/Block_Solar.svg" width="129" /></a>
-<span class="target" id="module-Devices.SolarPV"></span><p>SolarPV pyomo block contains characteristics of a solar PV plant.</p>
+<h3>Solar PV<a class="headerlink" href="#solar-pv" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Solar.svg"><img alt="Solar PV block" src="_images/Block_Solar.svg" style="width: 129.0px; height: 107.0px;" />
+</a>
+<p id="module-Devices.SolarPV">SolarPV pyomo block contains characteristics of a solar PV plant.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.SolarPV.SolarPV">
-<span class="sig-prename descclassname"><span class="pre">Devices.SolarPV.</span></span><span class="sig-name descname"><span class="pre">SolarPV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/SolarPV.html#SolarPV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.SolarPV.SolarPV" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.SolarPV.</span></span><span class="sig-name descname"><span class="pre">SolarPV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/SolarPV.html#SolarPV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.SolarPV.SolarPV" title="Link to this definition"></a></dt>
 <dd><p>Expandable solar PV plant.</p>
 <p>Delivers power subject to a forecast <span class="math notranslate nohighlight">\(f(t)\)</span> and its installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span>.
 The plant will be able to expand up to a <span class="math notranslate nohighlight">\(P_{max}\)</span>.</p>
@@ -1687,12 +2039,13 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 
 </section>
 <section id="switch">
-<span id="id1"></span><h3>Switch<a class="headerlink" href="#switch" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Switch.svg"><img alt="Switch block" height="123" src="_images/Block_Switch.svg" width="190" /></a>
-<span class="target" id="module-Devices.Switch"></span><p>Switch pyomo block contains characteristics of a switch for line commutation.</p>
+<span id="id3"></span><h3>Switch<a class="headerlink" href="#switch" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Switch.svg"><img alt="Switch block" src="_images/Block_Switch.svg" style="width: 190.0px; height: 123.0px;" />
+</a>
+<p id="module-Devices.Switch">Switch pyomo block contains characteristics of a switch for line commutation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Switch.Switch">
-<span class="sig-prename descclassname"><span class="pre">Devices.Switch.</span></span><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Switch.html#Switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Switch.Switch" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Switch.</span></span><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Switch.html#Switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Switch.Switch" title="Link to this definition"></a></dt>
 <dd><p>Electrical switch.</p>
 <p>Commutes the output <span class="math notranslate nohighlight">\(P_{out}(t)\)</span> between 2 inputs of water flow <span class="math notranslate nohighlight">\(P_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(P_{in,1}(t)\)</span></p>
 <dl class="field-list simple">
@@ -1747,12 +2100,13 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 
 </section>
 <section id="battery">
-<span id="id2"></span><h3>Battery<a class="headerlink" href="#battery" title="Permalink to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/Block_Battery.svg"><img alt="Battery block" height="107" src="_images/Block_Battery.svg" width="131" /></a>
-<span class="target" id="module-Devices.Batteries"></span><p>Battery pyomo block containing the characteristics of a battery.</p>
+<span id="id4"></span><h3>Battery<a class="headerlink" href="#battery" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="_images/Block_Battery.svg"><img alt="Battery block" src="_images/Block_Battery.svg" style="width: 131.0px; height: 107.0px;" />
+</a>
+<p id="module-Devices.Batteries">Battery pyomo block containing the characteristics of a battery.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Batteries.Battery">
-<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">Battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#Battery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.Battery" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">Battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#Battery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.Battery" title="Link to this definition"></a></dt>
 <dd><p>Simple Battery for testing and example purposes.
 It is used in Example21.</p>
 <dl class="field-list simple">
@@ -1849,7 +2203,7 @@ It is used in Example21.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.Batteries.NewBattery">
-<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">NewBattery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#NewBattery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.NewBattery" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Devices.Batteries.</span></span><span class="sig-name descname"><span class="pre">NewBattery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Batteries.html#NewBattery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Batteries.NewBattery" title="Link to this definition"></a></dt>
 <dd><p>Battery set for sizing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
