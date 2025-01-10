@@ -22,6 +22,25 @@ from pyomo.environ import value
 from Utilities import clear_clc, model_to_file
 from Utilities import get_results, get_n_variables
 
+df_full = pd.DataFrame(columns=['test','T_OSMSES','O_OSMSES','T_ISGTb','O_ISGTb','T_ISGT1','O_ISGT1',
+                                'T_ISGT2','O_ISGT2','T_ISGT3','O_ISGT3'])
+test_name = 'B-Ecp'
+test_file_name = 'test/df_full_asd.csv'
+
+for i in range(10):
+    print(i)
+    df_full.loc[-1,'test'] = test_name
+    
+    %runcell -n FUNCTIONS
+    %runcell -n OSMSES
+    %runcell -n ISGTb
+    %runcell -n ISGT1
+    %runcell -n ISGT2
+    %runcell -n ISGT3
+    
+    df_full.reset_index(inplace=True,drop=True)
+    df_full.to_csv(test_file_name, index=False)
+    
 
 #%% FUNCTIONS
 
@@ -80,7 +99,8 @@ def solve(m, solver='couenne'):
     
     return instance, results, exec_time
 
-#%% ACADEMIC CASE (OSMSES - 2024 CONFERENCE PAPER) https://doi.org/10.1109/OSMSES62085.2024.10668997
+#%% OSMSES 
+# ACADEMIC CASE (OSMSES - 2024 CONFERENCE PAPER) https://doi.org/10.1109/OSMSES62085.2024.10668997
 
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
@@ -203,13 +223,16 @@ df_benchmark.reset_index(inplace=True,drop=True)
 df_benchmark.loc[-1] = ['OSMSES_2024Nov',value(instance.goal),exec_time,-1918.0601869271836,5.869357049,get_n_variables(m),269]
 df_benchmark.reset_index(inplace=True,drop=True)
 
+df_full.loc[-1,'T_OSMSES'] = exec_time
+df_full.loc[-1,'O_OSMSES'] = value(instance.goal)
+
 file = './test/Benchmark/OSMSES'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
-
-#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Base case) 
+#%% ISGTb
+# LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Base case) 
 
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
@@ -446,6 +469,10 @@ instance, results, exec_time = solve(m,'bonmin')
 df_benchmark.loc[-1] = ['ISGTbase',value(instance.goal),exec_time,24.963233294640837,508.1471881866455,get_n_variables(m),2166]
 df_benchmark.reset_index(inplace=True,drop=True)
 
+
+df_full.loc[-1,'T_ISGTb'] = exec_time
+df_full.loc[-1,'O_ISGTb'] = value(instance.goal)
+
 file = './test/Benchmark/ISGTbase'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
@@ -455,8 +482,8 @@ del init_bat, init_c1, init_Ebre, init_p, init_R1
 del l_costs, l_costw, l_excs, l_excw
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
-
-#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 1) 
+#%% ISGT1
+# LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 1) 
 
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
@@ -693,6 +720,10 @@ instance, results, exec_time = solve(m,'bonmin')
 df_benchmark.loc[-1] = ['ISGTcase1',value(instance.goal),exec_time,12.904817912002599,679.13290238380398,get_n_variables(m),2456]
 df_benchmark.reset_index(inplace=True,drop=True)
 
+
+df_full.loc[-1,'T_ISGT1'] = exec_time
+df_full.loc[-1,'O_ISGT1'] = value(instance.goal)
+
 file = './test/Benchmark/ISGTcase1'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
@@ -702,8 +733,8 @@ del init_bat, init_c1, init_Ebre, init_p, init_R1, init_t
 del l_costs, l_costw, l_excs, l_excw
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
-
-#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 2) 
+#%% ISGT2
+# LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 2) 
 
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
@@ -940,6 +971,10 @@ instance, results, exec_time = solve(m,'bonmin')
 df_benchmark.loc[-1] = ['ISGTcase2',value(instance.goal),exec_time,-29.510384042216199,3950.4513001441901,get_n_variables(m),2070]
 df_benchmark.reset_index(inplace=True,drop=True)
 
+
+df_full.loc[-1,'T_ISGT2'] = exec_time
+df_full.loc[-1,'O_ISGT2'] = value(instance.goal)
+
 file = './test/Benchmark/ISGTcase2'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
@@ -950,9 +985,8 @@ del l_costs, l_costw, l_excs, l_excw
 del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 
 
-
-
-#%% LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
+#%% ISGT3
+# LES PLANES CASE (ISGT - 2024 CONFERENCE PAPER -- Case 3) 
 
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
@@ -1188,6 +1222,10 @@ instance, results, exec_time = solve(m,'bonmin')
 
 df_benchmark.loc[-1] = ['ISGTcase3',value(instance.goal),exec_time,-30.22893512732645,400.43591022491455,get_n_variables(m),2550]
 df_benchmark.reset_index(inplace=True,drop=True)
+
+
+df_full.loc[-1,'T_ISGT3'] = exec_time
+df_full.loc[-1,'O_ISGT3'] = value(instance.goal)
 
 file = './test/Benchmark/ISGTcase3'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
