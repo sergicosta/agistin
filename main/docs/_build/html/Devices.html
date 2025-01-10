@@ -366,7 +366,7 @@
 <dt class="sig sig-object py" id="Devices.HydroSwitch.HydroSwitch">
 <span class="sig-prename descclassname"><span class="pre">Devices.HydroSwitch.</span></span><span class="sig-name descname"><span class="pre">HydroSwitch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/HydroSwitch.html#HydroSwitch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.HydroSwitch.HydroSwitch" title="Link to this definition"></a></dt>
 <dd><p>Hydraulic switch.</p>
-<p>Commutes the output <span class="math notranslate nohighlight">\(Q_{out}(t)\)</span> between 2 inputs of water flow <span class="math notranslate nohighlight">\(Q_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(Q_{in,1}(t)\)</span> , analogous of an electrical switch</p>
+<p>Computes the output flow <span class="math notranslate nohighlight">\(Q_{out}(t)\)</span> between 2 inputs of flow <span class="math notranslate nohighlight">\(Q_{in,0}(t)\)</span> and <span class="math notranslate nohighlight">\(Q_{in,1}(t)\)</span> , analogous of an electrical switch</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -394,7 +394,7 @@
 <li><p>Hin0 (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
 <li><p>Hin1 (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
 <li><p>Hout (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
-<li><p>alpha (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
+<li><p>b (t) <span class="math notranslate nohighlight">\(\in \{0,1\}\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -404,9 +404,9 @@
 <li><p>port_Qin0 &#64; Qin0 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
 <li><p>port_Qin1 &#64; Qin1 as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
 <li><p>port_Qout &#64; Qout as <code class="docutils literal notranslate"><span class="pre">Extensive</span></code></p></li>
-<li><p>port_Hout &#64; Hout as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
 <li><p>port_Hin0 &#64; Hin0 as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
 <li><p>port_Hin1 &#64; Hin1 as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
+<li><p>port_Hout &#64; Hout as <code class="docutils literal notranslate"><span class="pre">Equality</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -415,9 +415,9 @@
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_State: <span class="math notranslate nohighlight">\(Q_{in,0}(t) \, Q_{in,1}(t) = 0\)</span></p></li>
 <li><p>c_Qout: <span class="math notranslate nohighlight">\(- Q_{out}(t) + Q_{in,0}(t) + Q_{in,1}(t) = 0\)</span></p></li>
-<li><p>c_Hout: <span class="math notranslate nohighlight">\(- H_{out}(t) + H_{in1}(t) \, b_{H}(t) + H_{in0} \, (1-b_{H}(t)) = 0\)</span></p></li>
-<li><p>c_Qin0: <span class="math notranslate nohighlight">\(Q_{in0}(t) \, H{in1}(t) \, b_{H}(t) = 0\)</span></p></li>
-<li><p>c_Qin1: <span class="math notranslate nohighlight">\(Q_{in1}(t) \, H{in0}(t) \, (1-b_{H}(t)) = 0\)</span></p></li>
+<li><p>c_Hout: <span class="math notranslate nohighlight">\(- H_{out}(t) + H_{in,1}(t) \, b(t) + H_{in,0}(t) \, (1-b(t)) = 0\)</span></p></li>
+<li><p>c_Qin0: <span class="math notranslate nohighlight">\(Q_{in,0}(t) \, H_{in,1}(t) \, b(t) = 0\)</span></p></li>
+<li><p>c_Qin1: <span class="math notranslate nohighlight">\(Q_{in,1}(t) \, H_{in,0}(t) \, (1-b(t)) = 0\)</span></p></li>
 </ul>
 </dd>
 </dl>
