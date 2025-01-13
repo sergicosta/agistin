@@ -85,7 +85,7 @@ def VarSource(b, t, data, init_data):
     b.Qmin = pyo.Param(initialize=data['Qmin'])
 
     #Variables
-    b.Qin = pyo.Var(t, initialize=-init_data['Q'], within=pyo.Reals, bounds = (-b.Qmax, -b.Qmin))
+    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.Reals, bounds = (-b.Qmax, -b.Qmin))
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.Reals, bounds = (b.Qmin, b.Qmax))
 
     # Ports
