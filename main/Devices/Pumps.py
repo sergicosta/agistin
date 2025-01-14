@@ -184,7 +184,7 @@ def RealPump(b, t, data, init_data):
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
     # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
-    # b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
 
 
     # Ports
@@ -198,13 +198,13 @@ def RealPump(b, t, data, init_data):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
 
-    # def Constraint_H(_b, _t):
-    #     return _b.H[_t] == _b.npu2[_t]*_b.A - _b.B*_b.Qout[_t]**2
-    # b.c_H = pyo.Constraint(t, rule=Constraint_H)
-    
     def Constraint_H(_b, _t):
-        return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
+        return _b.H[_t] == _b.npu2[_t]*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
+    
+    # def Constraint_H(_b, _t):
+    #     return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
+    # b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
 
     def Constraint_Ph(_b, _t):

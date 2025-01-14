@@ -473,7 +473,7 @@
 <li><dl class="simple">
 <dt>Variables:</dt><dd><ul>
 <li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \ge 0\)</span></p></li>
-<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \ge 0\)</span></p></li>
+<li><p>Qin (t) bounded <span class="math notranslate nohighlight">\(Q_{in} \le 0\)</span></p></li>
 <li><p>Qout (t) bounded <span class="math notranslate nohighlight">\(Q_{out} \ge 0\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>Ph (t) bounded <span class="math notranslate nohighlight">\(P_h \ge 0\)</span></p></li>
@@ -540,15 +540,17 @@
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
-<li><p>‘H0’: Static height <span class="math notranslate nohighlight">\(H_0\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘zlow’: Lower height <span class="math notranslate nohighlight">\(z_{low}(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘zhigh’: Higher height <span class="math notranslate nohighlight">\(z_{high}(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
 <li><p>K</p></li>
+<li><p>Qmax</p></li>
 </ul>
 </dd>
 </dl>
@@ -559,8 +561,8 @@
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>zlow (t) bounded <span class="math notranslate nohighlight">\(z_{low} \ge 0\)</span></p></li>
 <li><p>zhigh (t) bounded <span class="math notranslate nohighlight">\(z_{high} \ge 0\)</span></p></li>
-<li><p>Qp(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
-<li><p>Qn(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
+<li><p>Qp(t) bounded <span class="math notranslate nohighlight">\(Q_p \in [0, Q_{max}]\)</span></p></li>
+<li><p>Qn(t) bounded <span class="math notranslate nohighlight">\(Q_n \in [0, Q_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -577,9 +579,9 @@
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0(t) + K\, Q(t)^2 - K\, Q(t)^2\)</span></p></li>
-<li><p>c_Q: :math:’Q(t)= Qp(t)- Qn(t)’</p></li>
-<li><p>c_QpQn0: :math:’0 = Qp(t), Qn(t)’</p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = z_{high}(t)-z_{low}(t) + K (Q_p(t)^2 - Q_n(t)^2)\)</span></p></li>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q(t)= Qp(t) - Qn(t)\)</span></p></li>
+<li><p>c_QpQn0: :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>0 = Qp(t),Qn(t)</p></li>
 </ul>
 </dd>
 </dl>
@@ -593,9 +595,9 @@
 <dt class="sig sig-object py" id="Devices.Pipes.PipeValve">
 <span class="sig-prename descclassname"><span class="pre">Devices.Pipes.</span></span><span class="sig-name descname"><span class="pre">PipeValve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/Pipes.html#PipeValve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.Pipes.PipeValve" title="Link to this definition"></a></dt>
 <dd><p>Pipe that transports water and has implicit energy losses.</p>
-<p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
+<p>Acts as a flow transportation device which also applies an energy loss to the fluid and considers the aperture <span class="math notranslate nohighlight">\(a(t)\)</span> of a valve as:</p>
 <div class="math notranslate nohighlight">
-\[H(t) = H_0(t) + K \, Q(t)^2\]</div>
+\[H(t) = H_0(t) \pm (K + C_v/a(t) )\, Q(t)^2\]</div>
 <p>where <span class="math notranslate nohighlight">\(H_0(t)\)</span> is the static height and is computed as the difference of heights between both pipe extremes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -610,19 +612,24 @@
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘K’: Linear pressure loss coefficient of the pipe <span class="math notranslate nohighlight">\(K\)</span></p></li>
+<li><p>‘Cv’: Linear pressure loss coefficient of the valve <span class="math notranslate nohighlight">\(C_{v}\)</span></p></li>
 <li><p>‘Qmax’: Maximum allowed flow <span class="math notranslate nohighlight">\(Q_{max}\)</span></p></li>
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
-<li><p>‘H0’: Static height <span class="math notranslate nohighlight">\(H_0\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘zlow’: Lower height <span class="math notranslate nohighlight">\(z_{low}(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘zhigh’: Higher height <span class="math notranslate nohighlight">\(z_{high}(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘alpha’: Valve aperture <span class="math notranslate nohighlight">\(a(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
 <li><p>K</p></li>
+<li><p>Cv</p></li>
+<li><p>Qmax</p></li>
 </ul>
 </dd>
 </dl>
@@ -633,8 +640,8 @@
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
 <li><p>zlow (t) bounded <span class="math notranslate nohighlight">\(z_{low} \ge 0\)</span></p></li>
 <li><p>zhigh (t) bounded <span class="math notranslate nohighlight">\(z_{high} \ge 0\)</span></p></li>
-<li><p>Qp(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
-<li><p>Qn(t) bounded :math: <cite>in [-Q_{max}, Q_{max}]</cite></p></li>
+<li><p>Qp (t) bounded <span class="math notranslate nohighlight">\(\in [0, Q_{max}]\)</span></p></li>
+<li><p>Qn (t) bounded <span class="math notranslate nohighlight">\(\in [0, Q_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -651,8 +658,9 @@
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_H: :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>H(t) = H_0(t) + K, Qp(t)^2 - K, Qn(t)^2</p></li>
-<li><p>c_Q: <span class="math notranslate nohighlight">\(Q(t) = Qp(t) - Qn(t)\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = z_{high}(t)-z_{low}(t) + (K+C_v/a(t)) (Q_p(t)^2 - Q_n(t)^2)\)</span></p></li>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q(t)= Qp(t) - Qn(t)\)</span></p></li>
+<li><p>c_QpQn0: <span class="math notranslate nohighlight">\(0 = Qp(t)\,Qn(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -669,8 +677,8 @@
 It is utilised in Example0.</p>
 <p>Acts as a flow transportation device which also applies an energy loss to the fluid as:</p>
 <div class="math notranslate nohighlight">
-\[H(t) = H_0 + K \cdot Q(t)^2\]</div>
-<p>where <span class="math notranslate nohighlight">\(H_0\)</span> is the static height and is constant and defined by the user.</p>
+\[H(t) = H_0 \pm K \cdot Q(t)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(H_0\)</span> is the static height, which is considered constant as defined by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -689,8 +697,8 @@ It is utilised in Example0.</p>
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
-<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘H’: Head <span class="math notranslate nohighlight">\(H(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
@@ -698,6 +706,7 @@ It is utilised in Example0.</p>
 <dt>Parameters: </dt><dd><ul>
 <li><p>H0</p></li>
 <li><p>K</p></li>
+<li><p>Qmax</p></li>
 </ul>
 </dd>
 </dl>
@@ -706,6 +715,8 @@ It is utilised in Example0.</p>
 <dt>Variables: </dt><dd><ul>
 <li><p>Q (t) bounded <span class="math notranslate nohighlight">\(\in [-Q_{max}, Q_{max}]\)</span></p></li>
 <li><p>H (t) bounded <span class="math notranslate nohighlight">\(H \ge 0\)</span></p></li>
+<li><p>Qp (t) bounded <span class="math notranslate nohighlight">\(\in [0, Q_{max}]\)</span></p></li>
+<li><p>Qn (t) bounded <span class="math notranslate nohighlight">\(\in [0, Q_{max}]\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -720,7 +731,9 @@ It is utilised in Example0.</p>
 </li>
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
-<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0 + K \, Q(t)^2 \, (2\, signQ(t) - 1)\)</span></p></li>
+<li><p>c_H: <span class="math notranslate nohighlight">\(H(t) = H_0 + K(Q_p(t)^2 - Q_n(t)^2)\)</span></p></li>
+<li><p>c_Q: <span class="math notranslate nohighlight">\(Q(t)= Qp(t) - Qn(t)\)</span></p></li>
+<li><p>c_QpQn0: <span class="math notranslate nohighlight">\(0 = Qp(t)\,Qn(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
