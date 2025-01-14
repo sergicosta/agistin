@@ -29,7 +29,7 @@ The tool runs in [Python](https://www.python.org/) and uses the [Pyomo](http://w
 
 In order to run the tool you require:
 * **Python $\geq$ 3.11**: Download from the [official site](https://www.python.org/downloads/)
-* **Pyomo $\geq$ 6.8**: Install the library using ``pip`` or ``conda``, following the instructions at the [official site](https://pyomo.readthedocs.io/en/stable/installation.html)
+* **Pyomo $\geq$ 6.8**: Install the library using ``pip`` or ``conda``, following the instructions at the [official site](https://pyomo.readthedocs.io/en/stable/getting_started/installation.html)
 	* Using pip:
 		```
 		$ pip install pyomo
@@ -38,11 +38,22 @@ In order to run the tool you require:
 		```
 		$ conda install -c conda-forge pyomo
 		```
-* **Solver(s)**: Find the [supported Pyomo solvers](https://pyomo.readthedocs.io/en/stable/solving_pyomo_models.html#supported-solvers) at the official site or by running:
+* **Solver(s)**: Find the [supported Pyomo solvers](https://pyomo.readthedocs.io/en/stable/explanation/solvers/index.html) at the official site or by running:
 	```
 	$ pyomo help --solvers
 	```
-	You may use [Interior Point Optimizer (Ipopt)](https://coin-or.github.io/Ipopt/), which latest realease can be downloaded from the [official github](https://github.com/coin-or/Ipopt)
+  	Although many solvers and algorithms do exist and may be suitable for your particular case, we obtained good results with those listed below.
+
+	For Non-Linear Problems (NLP):
+	* COIN-OR [Interior Point Optimizer (Ipopt)](https://coin-or.github.io/Ipopt/), (see the [official github](https://github.com/coin-or/Ipopt))
+
+	For Mixed Integer Non-Linear Problems (MINLP):
+	* COIN-OR [Bonmin algorithms](https://coin-or.github.io/Bonmin/), (see the [official github](https://github.com/coin-or/Bonmin))
+ 	* COIN-OR [Couenne](https://www.coin-or.org/Couenne/), (see the [official github](https://github.com/coin-or/Couenne)).
+
+   	To install COIN-OR solvers you may follow their [official github](https://github.com/coin-or) instructions, download the binaries, use the [coinbrew](https://coin-or.github.io/coinbrew/) script or find your Linux distribution package in [repology](https://repology.org/project/coin-or-bonmin/versions).
+
+	
 
 ## Usage
 
@@ -66,7 +77,7 @@ In alphabetical order:
 
 ## Citation
 
-If used in a scientific publication, we appreciate a citation on the following paper:
+If used in a scientific publication, we appreciate you cite the following paper:
 
 S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
 in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024
