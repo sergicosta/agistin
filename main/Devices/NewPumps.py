@@ -36,7 +36,7 @@ def NewPump(b, t, data, init_data):
             - eff
         - Variables:
             - Pdim bounded :math:`P_{dim} \ge 0`
-            - Qin (t) bounded :math:`Q_{in} \ge 0`
+            - Qin (t) bounded :math:`Q_{in} \le 0`
             - Qout (t) bounded :math:`Q_{out} \ge 0`
             - H (t) bounded :math:`H \ge 0`
             - Ph (t) bounded :math:`P_h \ge 0`
