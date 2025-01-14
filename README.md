@@ -28,8 +28,8 @@ The tool runs in [Python](https://www.python.org/) and uses the [Pyomo](http://w
 ## Installation
 
 In order to run the tool you require:
-* **Python $\geq$ 3.9**: Download from the [official site](https://www.python.org/downloads/)
-* **Pyomo $\geq$ 6.4**: Install the library using ``pip`` or ``conda``, following the instructions at the [official site](https://pyomo.readthedocs.io/en/stable/installation.html)
+* **Python $\geq$ 3.11**: Download from the [official site](https://www.python.org/downloads/)
+* **Pyomo $\geq$ 6.8**: Install the library using ``pip`` or ``conda``, following the instructions at the [official site](https://pyomo.readthedocs.io/en/stable/installation.html)
 	* Using pip:
 		```
 		$ pip install pyomo
