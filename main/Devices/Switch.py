@@ -16,7 +16,7 @@ def Switch(b, t, data=None, init_data=None):
     """
     Electrical switch.
     
-    Commutes the output :math:`P_{out}(t)` between 2 inputs of water flow :math:`P_{in,0}(t)` and :math:`P_{in,1}(t)`
+    Commutes the output :math:`P_{out}(t)` between 2 inputs of power :math:`P_{in,0}(t)` and :math:`P_{in,1}(t)`
     
     :param b: pyomo ``Block()`` to be set
     :param t: pyomo ``Set()`` referring to time
@@ -25,7 +25,7 @@ def Switch(b, t, data=None, init_data=None):
     
     Pyomo declarations    
         - Parameters:
-            - `None`
+            - *None*
         - Variables: 
             - Pin0 (t) :math:`\in \mathbb{R}`
             - Pin1 (t) :math:`\in \mathbb{R}`
