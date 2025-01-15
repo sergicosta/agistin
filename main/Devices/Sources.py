@@ -28,10 +28,12 @@ def Source(b, t, data, init_data=None):
             - Qin (t) 
             - Qout (t)
         - Variables: 
+            - *None*
         - Ports: 
             - port_Qin @ Qin as ``Extensive``
             - port_Qout @ Qout as ``Extensive``
         - Constraints:
+            - *None*
     """
     
     # Parameters
