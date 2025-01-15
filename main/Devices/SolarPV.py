@@ -26,7 +26,7 @@ def SolarPV(b, t, data, init_data=None):
     data
          - 'Pmax': Maximum allowed power to be installed :math:`P_{max}`
          - 'Pinst': Installed power :math:`P_{inst}`
-         - 'forecast': Forecast as power in p.u. :math:`f(t)` as a ``list``
+         - 'forecast': Forecast as power in p.u. :math:`f(t)` as a ``list`` or pandas ``Series``
          - 'eff': Efficiency of the PV panels :math:`\eta`
     
     Pyomo declarations

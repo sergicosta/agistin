@@ -1603,7 +1603,6 @@ It also defines whether the power is consumed from the grid <span class="math no
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{sell}(t) \,  P_{buy}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -1639,7 +1638,7 @@ The plant will be able to expand up to a <span class="math notranslate nohighlig
 <dt>data</dt><dd><ul class="simple">
 <li><p>‘Pmax’: Maximum allowed power to be installed <span class="math notranslate nohighlight">\(P_{max}\)</span></p></li>
 <li><p>‘Pinst’: Installed power <span class="math notranslate nohighlight">\(P_{inst}\)</span></p></li>
-<li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘forecast’: Forecast as power in p.u. <span class="math notranslate nohighlight">\(f(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 <li><p>‘eff’: Efficiency of the PV panels <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 </ul>
 </dd>

@@ -40,12 +40,10 @@ def Grid(b, t, data, init_data=None):
             - port_P @ P as ``Extensive``
         - Constraints: 
             - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`
-            - c_P0: :math:`0 = P_{sell}(t) \,  P_{buy}(t)`
     """
     
     # Parameters
     b.Pmax = pyo.Param(initialize=data['Pmax'])
-
     
     # Variables
     b.P = pyo.Var(t, initialize={k:0.0 for k in range(len(t))}, bounds=(-b.Pmax, b.Pmax), domain=pyo.Reals)
