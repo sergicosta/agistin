@@ -87,7 +87,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#electrical-devices">Electrical devices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#eb-pumping-station">EB (Pumping Station)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#energy-balance-eb">Energy Balance (EB)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Devices.EB.EB"><code class="docutils literal notranslate"><span class="pre">EB()</span></code></a></li>
 </ul>
 </li>
@@ -1423,12 +1423,11 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </section>
 <section id="electrical-devices">
 <h2>Electrical devices<a class="headerlink" href="#electrical-devices" title="Link to this heading"></a></h2>
-<section id="eb-pumping-station">
-<h3>EB (Pumping Station)<a class="headerlink" href="#eb-pumping-station" title="Link to this heading"></a></h3>
+<section id="energy-balance-eb">
+<h3>Energy Balance (EB)<a class="headerlink" href="#energy-balance-eb" title="Link to this heading"></a></h3>
 <a class="reference internal image-reference" href="_images/Block_EB.svg"><img alt="EB block" src="_images/Block_EB.svg" style="width: 97.0px; height: 74.0px;" />
 </a>
-<p id="module-Devices.EB">EB pyomo block containing the characteristics of a pumping station.</p>
-<p>It is meant to act as a node for power balance.</p>
+<p id="module-Devices.EB">EB pyomo block containing the characteristics of an energy balance node.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="Devices.EB.EB">
 <span class="sig-prename descclassname"><span class="pre">Devices.EB.</span></span><span class="sig-name descname"><span class="pre">EB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Devices/EB.html#EB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Devices.EB.EB" title="Link to this definition"></a></dt>
@@ -1449,7 +1448,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
-<li><p>P_bal (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
+<li><p>P_bal (t) <span class="math notranslate nohighlight">\(= 0\)</span></p></li>
 </ul>
 </dd>
 </dl>

@@ -207,7 +207,7 @@ Electrical devices
 ------------------
 
 
-EB (Pumping Station)
+Energy Balance (EB)
 `````````````````````
 
 .. image:: img/Block_EB.svg
