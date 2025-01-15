@@ -1,20 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Devices.Turbines &mdash; AGISTIN 0.0.20230919 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b6851926"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -88,7 +88,9 @@
 <span class="c1"># data: eff</span>
 <span class="c1"># init_data: Q(t), H(t), Pe(t)</span>
 
-<div class="viewcode-block" id="Turbine"><a class="viewcode-back" href="../../Devices.html#Devices.Turbines.Turbine">[docs]</a><span class="k">def</span> <span class="nf">Turbine</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Turbine">
+<a class="viewcode-back" href="../../Devices.html#Devices.Turbines.Turbine">[docs]</a>
+<span class="k">def</span> <span class="nf">Turbine</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Turbine.</span>
@@ -106,20 +108,21 @@
 <span class="sd">         - &#39;Qmax&#39;: Maximum allowed flow :math:`Q_{max}`</span>
 <span class="sd">    </span>
 <span class="sd">    init_data</span>
-<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
-<span class="sd">         - &#39;H&#39;: Head :math:`H(t)` as a ``list``</span>
-<span class="sd">         - &#39;Pe&#39;: Electrical power :math:`P_e(t)` as a ``list``</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list`` or pandas ``Series``</span>
+<span class="sd">         - &#39;H&#39;: Head :math:`H(t)` as a ``list`` or pandas ``Series``</span>
+<span class="sd">         - &#39;Pe&#39;: Electrical power :math:`P_e(t)` as a ``list`` or pandas ``Series``</span>
 <span class="sd">         </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
-<span class="sd">            - eff </span>
+<span class="sd">            - eff  </span>
+<span class="sd">            - Pmax</span>
 <span class="sd">        - Variables: </span>
 <span class="sd">            - Pdim bounded :math:`P_{dim} \ge 0`</span>
 <span class="sd">            - Qin (t) bounded :math:`Q_{in} \le 0`</span>
 <span class="sd">            - Qout (t) bounded :math:`Q_{out} \ge 0`</span>
 <span class="sd">            - H (t) bounded :math:`H \ge 0`</span>
-<span class="sd">            - Ph (t) bounded :math:`P_{h} \le 0`</span>
-<span class="sd">            - Pe (t) bounded :math:`P_{e} \le 0`</span>
+<span class="sd">            - Ph (t) bounded :math:`P_h \in [-P_{max}, 0]`</span>
+<span class="sd">            - Pe (t) bounded :math:`P_e \in [-P_{max}\,\eta, 0]`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Qin @ Qin as ``Extensive``</span>
 <span class="sd">            - port_Qout @ Qout as ``Extensive``</span>
@@ -127,9 +130,9 @@
 <span class="sd">            - port_H @ H as ``Equality``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`</span>
-<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}`</span>
+<span class="sd">            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}(t)`</span>
 <span class="sd">            - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`</span>
-<span class="sd">            - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`</span>
+<span class="sd">            - c_Pdim: :math:`P_{dim} \ge -P_e(t)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
@@ -141,8 +144,8 @@
     <span class="n">b</span><span class="o">.</span><span class="n">Qin</span>  <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">Qout</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">H</span>    <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
-    <span class="n">b</span><span class="o">.</span><span class="n">Ph</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">Pe</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Ph</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">Pe</span>   <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Pe&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pmax&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;eff&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonPositiveReals</span><span class="p">)</span>
     
     <span class="c1"># Ports</span>
     <span class="n">b</span><span class="o">.</span><span class="n">port_Qin</span>  <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Qin</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
@@ -166,6 +169,7 @@
     <span class="k">def</span> <span class="nf">Constraint_Pdim</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Pe</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_Pdim</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_Pdim</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

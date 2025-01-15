@@ -31,20 +31,21 @@ def Turbine(b, t, data, init_data):
          - 'Qmax': Maximum allowed flow :math:`Q_{max}`
     
     init_data
-         - 'Q': Flow :math:`Q(t)` as a ``list``
-         - 'H': Head :math:`H(t)` as a ``list``
-         - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
+         - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
+         - 'H': Head :math:`H(t)` as a ``list`` or pandas ``Series``
+         - 'Pe': Electrical power :math:`P_e(t)` as a ``list`` or pandas ``Series``
          
     Pyomo declarations    
         - Parameters: 
-            - eff 
+            - eff  
+            - Pmax
         - Variables: 
             - Pdim bounded :math:`P_{dim} \ge 0`
             - Qin (t) bounded :math:`Q_{in} \le 0`
             - Qout (t) bounded :math:`Q_{out} \ge 0`
             - H (t) bounded :math:`H \ge 0`
-            - Ph (t) bounded :math:`P_{h} \le 0`
-            - Pe (t) bounded :math:`P_{e} \le 0`
+            - Ph (t) bounded :math:`P_h \in [-P_{max}, 0]`
+            - Pe (t) bounded :math:`P_e \in [-P_{max}\,\eta, 0]`
         - Ports: 
             - port_Qin @ Qin as ``Extensive``
             - port_Qout @ Qout as ``Extensive``
@@ -52,9 +53,9 @@ def Turbine(b, t, data, init_data):
             - port_H @ H as ``Equality``
         - Constraints: 
             - c_Q: :math:`Q_{in}(t) = -Q_{out}(t)`
-            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}`
+            - c_Ph: :math:`P_h(t) = 9810\, H(t)\, Q_{in}(t)`
             - c_Pe: :math:`P_e(t) = P_h(t)\, \eta`
-            - c_Pdim: :math:`P_{dim}(t) \ge -P_e(t)`
+            - c_Pdim: :math:`P_{dim} \ge -P_e(t)`
     """
     
     # Parameters
