@@ -1870,8 +1870,8 @@ It is used in Example21.</p>
 </ul>
 </dd>
 <dt>init_data:</dt><dd><ul class="simple">
-<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘E’: Energy <span class="math notranslate nohighlight">\(E(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘P’: Power <span class="math notranslate nohighlight">\(P(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declaration</dt><dd><ul class="simple">
@@ -1895,7 +1895,6 @@ It is used in Example21.</p>
 <li><p>P (t) bounded <span class="math notranslate nohighlight">\(P(t) \in [-P_{max}, P_{max}]\)</span></p></li>
 <li><p>Pch (t) bounded <span class="math notranslate nohighlight">\(P_{ch}(t) \in [0, P_{max}]\)</span></p></li>
 <li><p>Pdc (t) bounded <span class="math notranslate nohighlight">\(P_{dc}(t) \in [0, P_{max}]\)</span></p></li>
-<li><p>SOC (t) bounded <span class="math notranslate nohighlight">\(SOC(t) \in [SOC_{min}, SOC_{max}]\)</span></p></li>
 <li><p>Edim bounded <span class="math notranslate nohighlight">\(E_{dim} \in [0, E_{max}]\)</span></p></li>
 <li><p>Pdim bounded <span class="math notranslate nohighlight">\(P_{dim} \in [0, P_{max}]\)</span></p></li>
 </ul>
@@ -1911,13 +1910,11 @@ It is used in Example21.</p>
 </li>
 <li><dl class="simple">
 <dt>Constraints:</dt><dd><ul>
-<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)/ \eta_{dc}\)</span></p></li>
-<li><p>c_P0: <span class="math notranslate nohighlight">\(0 = P_{ch}(t) \, P_{dc}(t)\)</span></p></li>
-<li><p>c_SOC: <span class="math notranslate nohighlight">\(SOC(t) = E(t) /(E_{dim}+E_{inst})\)</span></p></li>
-<li><p>c_ch: <span class="math notranslate nohighlight">\(P_{ch}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
-<li><p>dc: <span class="math notranslate nohighlight">\(P_{dc}(t) \leq (P_{inst} + P_{dim})\)</span></p></li>
-<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq (E{inst} + E{dim})\, SOC{max}\)</span></p></li>
-<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \geq (E{inst} + E{dim})\, SOC{min}\)</span></p></li>
+<li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{ch}(t)\, \eta_{ch} - P_{dc}(t)/ \eta_{dc}\)</span></p></li>
+<li><p>c_ch: <span class="math notranslate nohighlight">\(P_{ch}(t) \leq P_{dim}\)</span></p></li>
+<li><p>c_dc: <span class="math notranslate nohighlight">\(P_{dc}(t) \leq P_{dim}\)</span></p></li>
+<li><p>c_Emax: <span class="math notranslate nohighlight">\(E(t) \leq E_{dim}\, SOC_{max}\)</span></p></li>
+<li><p>c_Emin: <span class="math notranslate nohighlight">\(E(t) \geq E_{dim}\, SOC_{min}\)</span></p></li>
 <li><dl class="simple">
 <dt>c_E: </dt><dd><ul>
 <li><p><span class="math notranslate nohighlight">\(E(t) = E(t-1) + \Delta t \, P(t) \quad\)</span> if  <span class="math notranslate nohighlight">\(t&gt;0\)</span></p></li>
