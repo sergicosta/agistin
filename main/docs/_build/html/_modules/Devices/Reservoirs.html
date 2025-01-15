@@ -1,20 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Devices.Reservoirs &mdash; AGISTIN 0.0.20230919 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=b6851926"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b6851926"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -108,10 +108,12 @@
 <span class="sd">         - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
 <span class="sd">         - &#39;zmin&#39;: Height at minimum volume :math:`z_{min}`</span>
 <span class="sd">         - &#39;zmax&#39;: Height at maximum volume :math:`z_{max}`</span>
+<span class="sd">         - &#39;WT_min&#39;: Minimum allowed volume at t=T :math:`W_{min,T}` (optional)</span>
+<span class="sd">         - &#39;WT_max&#39;: Maximum allowed volume at t=T :math:`W_{max,T}` (optional)</span>
 <span class="sd">    </span>
 <span class="sd">    init_data</span>
-<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
-<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list``</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list`` or pandas ``Series``</span>
+<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list`` or pandas ``Series``</span>
 <span class="sd">    </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
@@ -122,7 +124,7 @@
 <span class="sd">            - zmax</span>
 <span class="sd">        - Variables: </span>
 <span class="sd">            - Q (t) :math:`\in \mathbb{R}`</span>
-<span class="sd">            - W (t) bounded :math:`W \in [W_{min},W_{max}]`</span>
+<span class="sd">            - W (t) bounded :math:`W \in [W_{min},W_{max}]` and :math:`W(T) \in [W_{min,T},W_{max,T}]`</span>
 <span class="sd">            - z (t) bounded :math:`z \in [z_{min},z_{max}]`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_Q @ Q as ``Extensive``</span>
@@ -137,7 +139,7 @@
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">Wmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">zmax</span><span class="o">-</span><span class="n">_b</span><span class="o">.</span><span class="n">zmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">zmin</span>
     
-    <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> 
     
     <span class="c1"># Parameters</span>
     <span class="n">b</span><span class="o">.</span><span class="n">W0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;W0&#39;</span><span class="p">])</span>
@@ -150,7 +152,11 @@
     <span class="n">b</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Wmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
     <span class="n">b</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">z</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">init_data</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))},</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmin&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;zmax&#39;</span><span class="p">]),</span> <span class="n">within</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span> 
-
+    
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;WT_min&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;WT_max&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WT_min&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;WT_max&#39;</span><span class="p">])</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">WTmin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WT_min&#39;</span><span class="p">])</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">WTmax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WT_max&#39;</span><span class="p">])</span>
     
     <span class="c1"># Ports</span>
     <span class="n">b</span><span class="o">.</span><span class="n">port_Q</span> <span class="o">=</span> <span class="n">Port</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Q&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="n">Port</span><span class="o">.</span><span class="n">Extensive</span><span class="p">)})</span>
@@ -196,8 +202,8 @@
 <span class="sd">         - &#39;Wmax&#39;: Maximum allowed volume :math:`W_{max}`</span>
 <span class="sd">         </span>
 <span class="sd">    init_data</span>
-<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list``</span>
-<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list``</span>
+<span class="sd">         - &#39;Q&#39;: Flow :math:`Q(t)` as a ``list`` or pandas ``Series``</span>
+<span class="sd">         - &#39;W&#39;: Volume :math:`W(t)` as a ``list`` or pandas ``Series``</span>
 <span class="sd">    </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>

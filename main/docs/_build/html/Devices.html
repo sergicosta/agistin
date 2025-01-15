@@ -1211,11 +1211,13 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <li><p>‘Wmax’: Maximum allowed volume <span class="math notranslate nohighlight">\(W_{max}\)</span></p></li>
 <li><p>‘zmin’: Height at minimum volume <span class="math notranslate nohighlight">\(z_{min}\)</span></p></li>
 <li><p>‘zmax’: Height at maximum volume <span class="math notranslate nohighlight">\(z_{max}\)</span></p></li>
+<li><p>‘WT_min’: Minimum allowed volume at t=T <span class="math notranslate nohighlight">\(W_{min,T}\)</span> (optional)</p></li>
+<li><p>‘WT_max’: Maximum allowed volume at t=T <span class="math notranslate nohighlight">\(W_{max,T}\)</span> (optional)</p></li>
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
-<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
@@ -1233,7 +1235,7 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 <li><dl class="simple">
 <dt>Variables: </dt><dd><ul>
 <li><p>Q (t) <span class="math notranslate nohighlight">\(\in \mathbb{R}\)</span></p></li>
-<li><p>W (t) bounded <span class="math notranslate nohighlight">\(W \in [W_{min},W_{max}]\)</span></p></li>
+<li><p>W (t) bounded <span class="math notranslate nohighlight">\(W \in [W_{min},W_{max}]\)</span> and <span class="math notranslate nohighlight">\(W(T) \in [W_{min,T},W_{max,T}]\)</span></p></li>
 <li><p>z (t) bounded <span class="math notranslate nohighlight">\(z \in [z_{min},z_{max}]\)</span></p></li>
 </ul>
 </dd>
@@ -1292,8 +1294,8 @@ the aggregated input flows <span class="math notranslate nohighlight">\(Q(t)\)</
 </ul>
 </dd>
 <dt>init_data</dt><dd><ul class="simple">
-<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p>‘Q’: Flow <span class="math notranslate nohighlight">\(Q(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
+<li><p>‘W’: Volume <span class="math notranslate nohighlight">\(W(t)\)</span> as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
