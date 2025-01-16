@@ -1,5 +1,6 @@
 # Benchmark comparison
 
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -20,7 +21,11 @@ cbcolors = sns.color_palette('colorblind')
 
 df = pd.DataFrame()
 
-for f in ['df_base.csv','df_full_bb.csv','df_full_bb_eff.csv', 'df_full_ecp.csv','df_full_ecp_eff.csv', 'df_full_ecp_eqpump.csv']:
+list_cases = ['df_base.csv',
+              'df_full_bb.csv','df_full_bb_eff.csv', 'df_full_bb_eqpump.csv', 
+              'df_full_ecp.csv','df_full_ecp_eff.csv', 'df_full_ecp_eqpump.csv']
+
+for f in list_cases:
     df = pd.concat([df, pd.read_csv(f)])
 
 
@@ -43,13 +48,22 @@ df_b.columns = ['test','case','objective']
 df_a['objective'] = df_b['objective']
 
 df = df_a.copy(deep=True)
+
+df['objective_rel'] = np.nan
+for c in df['case'].unique():
+    df_base = df.query('test==\'Base\'')
+    base_val = df_base.query('case==@c')['objective'].mean()
+    df['objective_rel'] = df.apply(lambda x: (x.loc['objective']-base_val)/abs(base_val)*100 if x.loc['case']==c else x.loc['objective_rel'], axis=1) 
+
 del df_a, df_b, lst, f
 
 #%% Plots
 
+fig = plt.figure()
+
 # execution time
-plt.figure()
-sns.boxplot(data=df.query('test!=\'Base\''), x='case', y='time', hue='test', palette=cbcolors, linewidth=0.5)
+plt.subplot(211)
+ax1 = sns.boxplot(data=df.query('test!=\'Base\''), x='case', y='time', hue='test', palette=cbcolors, linewidth=0.5, legend=False)
 n=0
 for e in df.query('test==\'Base\'')['time']:
     plt.axvline(n+0.5, color='k', linewidth=0.5)
@@ -57,9 +71,24 @@ for e in df.query('test==\'Base\'')['time']:
     n=n+1
 plt.yscale('log')
 plt.ylabel('Execution time (s)')
+plt.xlabel(None)
 plt.xlim(-0.5)
-plt.legend(loc='lower right')
 plt.show()
+
+# objective function relative to Base
+plt.subplot(212, sharex=ax1)
+sns.barplot(data=df.query('test!=\'Base\''), x='case', y='objective_rel',hue='test', palette=cbcolors)
+n=0
+N = len(df.query('test==\'Base\'')['objective'])
+for e in df.query('test==\'Base\'')['objective']:
+    plt.axvline(n+0.5, color='k', linewidth=0.5)
+    n=n+1
+plt.axhline(0,color='k')
+plt.ylabel('Objective value difference (\% from Base)')
+plt.xlim(-0.5)
+plt.legend(loc='best')
+plt.show()
+plt.tight_layout()
 
 # objective function
 plt.figure()
