@@ -1573,13 +1573,15 @@ It also defines whether the power is consumed from the grid <span class="math no
 </dl>
 <dl class="simple">
 <dt>data</dt><dd><ul class="simple">
-<li><p>‘Pmax’: Maximum allowed power</p></li>
+<li><p>‘Pmax’: Maximum allowed power as a <code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p>‘Pcontr’: Contracted power at each instant (optiona) as a <code class="docutils literal notranslate"><span class="pre">list</span></code> or pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code></p></li>
 </ul>
 </dd>
 <dt>Pyomo declarations    </dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Parameters: </dt><dd><ul>
 <li><p>Pmax</p></li>
+<li><p>Pcontr (optional)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1603,6 +1605,7 @@ It also defines whether the power is consumed from the grid <span class="math no
 <li><dl class="simple">
 <dt>Constraints: </dt><dd><ul>
 <li><p>c_P: <span class="math notranslate nohighlight">\(P(t) = P_{sell}(t) -  P_{buy}(t)\)</span></p></li>
+<li><p>c_Pcontr: <span class="math notranslate nohighlight">\(P(t) &lt;= P_{contr}(t)\)</span></p></li>
 </ul>
 </dd>
 </dl>

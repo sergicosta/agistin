@@ -104,11 +104,13 @@
 <span class="sd">    :param init_data: ``None``</span>
 <span class="sd">        </span>
 <span class="sd">    data</span>
-<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power</span>
+<span class="sd">         - &#39;Pmax&#39;: Maximum allowed power as a ``float``</span>
+<span class="sd">         - &#39;Pcontr&#39;: Contracted power at each instant (optiona) as a ``list`` or pandas ``Series``</span>
 <span class="sd">    </span>
 <span class="sd">    Pyomo declarations    </span>
 <span class="sd">        - Parameters: </span>
 <span class="sd">            - Pmax</span>
+<span class="sd">            - Pcontr (optional)</span>
 <span class="sd">        - Variables: </span>
 <span class="sd">            - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`</span>
 <span class="sd">            - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`</span>
@@ -117,6 +119,7 @@
 <span class="sd">            - port_P @ P as ``Extensive``</span>
 <span class="sd">        - Constraints: </span>
 <span class="sd">            - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`</span>
+<span class="sd">            - c_Pcontr: :math:`P(t) &lt;= P_{contr}(t)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c1"># Parameters</span>
@@ -133,10 +136,17 @@
     <span class="c1"># Constraints</span>
     <span class="k">def</span> <span class="nf">Constraint_P</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Psell</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pbuy</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">c_P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_P</span><span class="p">)</span></div>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_P</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>    
+        <span class="n">b</span><span class="o">.</span><span class="n">Pcontr</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Param</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Pcontr&#39;</span><span class="p">])</span>
+        <span class="k">def</span> <span class="nf">Constraint_Pmax</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pcontr</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">c_Pc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">Constraint_Pmax</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span></div>
 
     
-
 <div class="viewcode-block" id="FlexibleGrid">
 <a class="viewcode-back" href="../../Devices.html#Devices.MainGrid.FlexibleGrid">[docs]</a>
 <span class="k">def</span> <span class="nf">FlexibleGrid</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
