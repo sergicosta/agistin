@@ -27,11 +27,13 @@ def Grid(b, t, data, init_data=None):
     :param init_data: ``None``
         
     data
-         - 'Pmax': Maximum allowed power
+         - 'Pmax': Maximum allowed power as a ``float``
+         - 'Pcontr': Contracted power at each instant (optiona) as a ``list`` or pandas ``Series``
     
     Pyomo declarations    
         - Parameters: 
             - Pmax
+            - Pcontr (optional)
         - Variables: 
             - P (t) bounded :math:`P(t) \in (-P_{max}, P_{max})`
             - Psell (t) bounded :math:`P_{sell}(t) \in (0, P_{max})`
@@ -40,6 +42,7 @@ def Grid(b, t, data, init_data=None):
             - port_P @ P as ``Extensive``
         - Constraints: 
             - c_P: :math:`P(t) = P_{sell}(t) -  P_{buy}(t)`
+            - c_Pcontr: :math:`P(t) <= P_{contr}(t)`
     """
     
     # Parameters
@@ -58,7 +61,14 @@ def Grid(b, t, data, init_data=None):
         return _b.P[_t] == _b.Psell[_t] - _b.Pbuy[_t]
     b.c_P = pyo.Constraint(t, rule=Constraint_P)
     
-
+    try:    
+        b.Pcontr = pyo.Param(t, initialize=data['Pcontr'])
+        def Constraint_Pmax(_b, _t):
+            return _b.P[_t] <= _b.Pcontr[_t]
+        b.c_Pc = pyo.Constraint(t, rule=Constraint_Pmax)
+    except:
+        pass
+    
 def FlexibleGrid(b, t, data, init_data=None):
     # TODO doc flexible grid
 
