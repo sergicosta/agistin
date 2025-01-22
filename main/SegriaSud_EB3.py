@@ -15,7 +15,6 @@ RUGOSITAT:
     - PE-100: Ka = 0.050 mm
     - PVC-O: Ka = 0.050 mm
 """
-
 from pyomo.util.infeasible import log_infeasible_constraints
 import logging
 
@@ -64,7 +63,7 @@ df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Ho
 
 
 # time
-T = 24
+T = 5
 l_t = list(range(T))
 m.tw = pyo.Set(initialize=l_t)
 m.ts = pyo.Set(initialize=l_t)
@@ -100,7 +99,7 @@ m.PVw = pyo.Block()
 m.Gridw = pyo.Block()
 m.EBgw = pyo.Block()
 m.EBpvw = pyo.Block()
-m.Batw = pyo.Block()
+# m.Batw = pyo.Block()
 
 m.B4s = pyo.Block()
 m.B5s = pyo.Block()
@@ -114,7 +113,7 @@ m.PVs = pyo.Block()
 m.Grids = pyo.Block()
 m.EBgs = pyo.Block()
 m.EBpvs = pyo.Block()
-m.Bats = pyo.Block()
+# m.Bats = pyo.Block()
 
 
 data_irr = {'Q':df_cons_jan['Qirr'].head(T)/3600} # irrigation
@@ -122,13 +121,13 @@ Source(m.Irrigation1w, m.tw, data_irr, {})
 data_irr = {'Q':df_cons_aug['Qirr'].head(T)/3600} # irrigation
 Source(m.Irrigation1s, m.ts, data_irr, {})
 
-data_B4 = {'dt':3600, 'W0':230e3, 'Wmin':0.9*230e3, 'Wmax':270e3, 'zmin':420.19+(431.06-420.19)*0.9*230e3/269485, 'zmax':431.06}
+data_B4 = {'dt':3600, 'W0':230e3, 'Wmin':0*230e3, 'Wmax':270e3, 'zmin':420.19+(431.06-420.19)*0*230e3/269485, 'zmax':431.06}
 init_B4 = {'Q':[0]*T, 'W':[230e3]*T}
 Reservoir(m.B4w, m.tw, data_B4, init_B4)
 Reservoir(m.B4s, m.ts, data_B4, init_B4)
-data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.95*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':0.95*160e3, 'WT_max':1.02*160e3}
+data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.95*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':0.97*160e3, 'WT_max':1.02*160e3}
 init_B5s = {'Q':[0]*T, 'W':[160e3]*T}
-data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.95*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':0.95*124e3, 'WT_max':1.02*124e3}
+data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.95*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':0.97*124e3, 'WT_max':1.02*124e3}
 init_B5w = {'Q':[0]*T, 'W':[124e3]*T}
 Reservoir(m.B5w, m.tw, data_B5w, init_B5w)
 Reservoir(m.B5s, m.ts, data_B5s, init_B5s)
@@ -159,10 +158,10 @@ SolarPV(m.PVw, m.tw, data_pv)
 data_pv = {'Pinst':236e3, 'Pmax':236e3, 'forecast':df_meteo_aug['Irr'].head(T)/1000, 'eff':0.98} # PV
 SolarPV(m.PVs, m.ts, data_pv)
 
-data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
-init_bat = {'E':[0]*T, 'P':[0]*T}
-NewBattery(m.Batw, m.tw, data_bat, init_bat)
-NewBattery(m.Bats, m.ts, data_bat, init_bat)
+# data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+# init_bat = {'E':[0]*T, 'P':[0]*T}
+# NewBattery(m.Batw, m.tw, data_bat, init_bat)
+# NewBattery(m.Bats, m.ts, data_bat, init_bat)
 
 Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
 Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
@@ -196,10 +195,10 @@ m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 # m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
 
 
-m.Batw.Edim.fix(0)
-m.Bats.Edim.fix(0)
-m.Batw.Pdim.fix(0)
-m.Bats.Pdim.fix(0)
+# m.Batw.Edim.fix(0)
+# m.Bats.Edim.fix(0)
+# m.Batw.Pdim.fix(0)
+# m.Bats.Pdim.fix(0)
 
 m.Turb1s.Pdim.fix(160e3)
 m.Turb1w.Pdim.fix(110e3)
@@ -275,7 +274,7 @@ import time
 # Objective function
 def obj_fun(m):
     return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+              m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) # + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 
     # return sum( m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6 for t in l_t ) + (m.Bats.Pdim*cp_bat + m.Bats.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
     # return sum( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
@@ -289,26 +288,26 @@ instance = m.create_instance()
 start_time = time.time()
 
  
-os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
-solver_manager = pyo.SolverManagerFactory('neos')
-results = solver_manager.solve(instance, solver="knitro")
-results = solver_manager.solve(instance, solver="couenne")
-results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
-results = solver_manager.solve(instance, solver="bonmin")
-results = solver_manager.solve(instance, solver="minlp")
-results.write()
-
-# with open("couenne.opt", "w") as file:
-#     file.write('''time_limit 100000
-#                 convexification_cuts 2
-#                 convexification_points 2
-#                 delete_redundant yes
-#                 use_quadratic no
-#                 feas_tolerance 1e-1
-#                 ''')
-# solver = pyo.SolverFactory('asl:couenne')
-# results = solver.solve(instance, tee=True)
+# os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
+# solver_manager = pyo.SolverManagerFactory('neos')
+# # results = solver_manager.solve(instance, solver="knitro")
+# results = solver_manager.solve(instance, solver="couenne")
+# # results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
+# # results = solver_manager.solve(instance, solver="bonmin")
+# # results = solver_manager.solve(instance, solver="minlp")
 # results.write()
+
+with open("couenne.opt", "w") as file:
+    file.write('''time_limit 100000
+                convexification_cuts 2
+                convexification_points 2
+                delete_redundant yes
+                use_quadratic no
+                feas_tolerance 1e-1
+                ''')
+solver = pyo.SolverFactory('asl:couenne')
+results = solver.solve(instance, tee=True)
+results.write()
 # os.remove('couenne.opt') #Delete options
 
 # solver = pyo.SolverFactory('asl:SCIP')
@@ -325,7 +324,7 @@ exec_time = time.time() - start_time
 #%% GET RESULTS
 from Utilities import get_results
 
-file = './results/EB3/Proves/'
+file = './results/EB3/Proves/T5'
 df_out, df_param, df_size = get_results(file=file+'/EB3', instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%% PLOTS
@@ -356,11 +355,11 @@ df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
 
 
-df_param = pd.read_csv('results/EB3/'+file+'_param.csv')
+df_param = pd.read_csv('results/EB3/Proves/T5/'+file+'_param.csv')
 w_lim = df_param['B5w.Wmin'][0]
 w_lim = df_param['B5s.Wmin'][0]
 
-df = pd.read_csv('results/EB3/'+file+'.csv')
+df = pd.read_csv('results/EB3/Proves/T5/'+file+'.csv')
 df['PVw.Pf'] = -df_meteo_jan['Irr']/1000*215.28e3*0.98
 df['PVs.Pf'] = -df_meteo_aug['Irr']/1000*215.28e3*0.98
 
@@ -433,9 +432,9 @@ for df in [df_S]:
     plt.show()
     
     plt.rcParams['savefig.format']='pdf'
-    plt.savefig('results/EB3/' + file + season[i] + '_P', dpi=300)
+    plt.savefig('results/EB3/Proves/T5' + file + season[i] + '_P', dpi=300)
     plt.rcParams['savefig.format']='svg'
-    plt.savefig('results/EB3/' + file + season[i] + '_P', dpi=300)
+    plt.savefig('results/EB3/Proves/T5' + file + season[i] + '_P', dpi=300)
     
      
     fig = plt.figure(figsize=(3.4, 1.9))
@@ -443,11 +442,11 @@ for df in [df_S]:
     gs = gridspec.GridSpec(2,1,height_ratios=[2,1])
     
     ax1 = fig.add_subplot(gs[0])
-    ax1.set_ylim(-0.12,0.12)
-    df.plot(y=['Pump2.Qout','Irrigation1.Qout','Rev1.Qout'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
+    ax1.set_ylim(-0.5,0.5)
+    df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='bar', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
             color=[cbcolors[0],cbcolors[2],cbcolors[1]], edgecolor=None)
     #sns.lineplot(df_cons_jan, x='Hour' ,y=-df_cons_jan['Qirr']/3600, color='tab:red')
-    sns.lineplot(df_cons_aug, x='Hour' ,y=-df_cons_aug['Qirr']/3600, ax=ax1, color='tab:red')
+    # sns.lineplot(df_cons_aug, x='Hour' ,y=-df_cons_aug['Qirr']/3600, ax=ax1, color='tab:red')
     bars = ax1.patches
     patterns =(None,None,None)
     hatches = [p for p in patterns for i in range(len(df))]
@@ -477,7 +476,7 @@ for df in [df_S]:
     ax1.text(1.02,-0.45,'Time (h)', transform=ax1.transAxes)
     
     
-    df.plot(y=['Pump2.Qout','Irrigation1.Qout','Rev1.Qout'], kind='line', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
+    df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='line', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
             color=[cbcolors[0],cbcolors[2],cbcolors[1]], edgecolor=None)
     plt.show()
     
