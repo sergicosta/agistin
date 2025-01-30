@@ -18,7 +18,7 @@ from Devices.Sources import Source
 from Utilities import clear_clc
 
 #clean console and variable pane
-clear_clc() #consider removing if you are not working with Spyder
+# clear_clc() #consider removing if you are not working with Spyder
 
 # model
 m = pyo.ConcreteModel()
