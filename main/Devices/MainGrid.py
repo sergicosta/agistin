@@ -64,7 +64,7 @@ def Grid(b, t, data, init_data=None):
     try:    
         b.Pcontr = pyo.Param(t, initialize=data['Pcontr'])
         def Constraint_Pmax(_b, _t):
-            return _b.P[_t] <= _b.Pcontr[_t]
+            return _b.Pbuy[_t] <= _b.Pcontr[_t]
         b.c_Pc = pyo.Constraint(t, rule=Constraint_Pmax)
     except:
         pass
