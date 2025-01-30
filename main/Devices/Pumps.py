@@ -75,6 +75,7 @@ def Pump(b, t, data, init_data):
     b.B = pyo.Param(initialize=data['B'])
     b.Qnom = pyo.Param(initialize=data['Qnom'])
     b.eff = pyo.Param(initialize=data['eff'])
+    b.npmax = pyo.Param(initialize=data['nmax'])
 
     # Variables
     b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
@@ -82,7 +83,6 @@ def Pump(b, t, data, init_data):
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
     b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
     
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -96,7 +96,7 @@ def Pump(b, t, data, init_data):
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
     
     def Constraint_H(_b, _t):
-        return _b.H[_t] == (_b.npu2[_t])*_b.A - _b.B*_b.Qout[_t]**2
+        return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
 
     def Constraint_Ph(_b, _t):
