@@ -67,14 +67,30 @@ def set_current_canvas_function(func):
 
 # Selects an item on canvas
 def select_item(event):
+    prev_item = item_selection.get()
     item = canvas.gettags("current")
+    
     if len(item)>0:
         item = item[0].replace("_txt","")
         item_selection.set(item)
         item_selection_label.config(text=item)
+        
+        # previous item
+        if prev_item in arcs_dict:
+            canvas.itemconfig(prev_item, fill='black')
+        elif prev_item in blocks_dict:
+            canvas.itemconfig(prev_item, fill='')
+            
+        # current item
+        if item in arcs_dict:
+            canvas.itemconfig(item, fill='blue')
+        elif item in blocks_dict:
+            canvas.itemconfig(item, fill='blue')
+            
 
 # Place an arc on canvas
 # TODO: (issue #28) fix error when selecting something that is not a Block -> do not allow
+# TODO: (issue #29) cancel an arc
 def draw_arc(event):
     global is_drawing, init_pos, arcs_dict, last_arc_id, block_from, block_to
     
@@ -117,7 +133,7 @@ def draw_block(event):
     
     txt = canvas.create_text(event.x, event.y, tag=block_name+'_txt')
     canvas.insert(txt, 10, block_name)
-    canvas.create_rectangle(event.x-10, event.y-10, event.x+10, event.y+10, tag=block_name, activefill="red")
+    canvas.create_rectangle(event.x-12, event.y-12, event.x+12, event.y+12, tag=block_name, activefill="red")
     
     # TODO: (issue #21) add full info to dict
     blocks_dict[block_name]={'type':devices_menu_selection.get()}
