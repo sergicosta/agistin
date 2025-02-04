@@ -90,12 +90,13 @@ def draw_arc(event):
         txt = canvas.create_text((event.x+init_pos[0])/2, (event.y+init_pos[1])/2, tag=arc_name+'_txt')
         canvas.insert(txt, 10, arc_name)
         
+        # TODO: (issue #19) get blocks' ports from and to of arcs. Also beware of _txt item!
         block_to = canvas.gettags("current")[0]
         
         init_pos = [0,0]
         is_drawing = False
         
-        # TODO: add full info to dict. From and to should be BlockName.Port
+        # TODO: (issue #20) add full info to dict. From and to should be BlockName.PortName
         arcs_dict[arc_name]={'from':block_from, 'to':block_to}
         resfresh_arcs_list()
         
@@ -115,14 +116,15 @@ def draw_block(event):
     canvas.insert(txt, 10, block_name)
     canvas.create_rectangle(event.x-10, event.y-10, event.x+10, event.y+10, tag='block_'+block_name, activefill="red")
     
-    # TODO: add full info to dict
+    # TODO: (issue #21) add full info to dict
     blocks_dict[block_name]={}
         
     resfresh_blocks_list()
 
 # Delete block/arc
-# TODO: error when no blocks or arcs left
-# TODO: error when last block/arc when setting var, since list is empty --> delete_menu2_selection.set(arcs_list[0])
+# TODO: (issue #25) better delete for arcs and blocks
+# TODO: (issue #26) error when no blocks or arcs left
+# TODO: (issue #27) error when last block/arc when setting var, since list is empty --> delete_menu2_selection.set(arcs_list[0])
 def delete_block(block_name):
     global blocks_dict
     
