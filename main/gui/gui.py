@@ -10,11 +10,11 @@ import tkinter as tk
 
 # GLOBAL VARIABLES
 
-devices_list = read_devices()    
+devices_dict = read_devices()
 
 blocks_dict = {} #{tag:{'id':int, 'device':str, 'pos':(x,y,xf,yf)}, ...}
 arcs_dict = {} #{tag:{'from':,'to':}, ...}
-last_block_id = {d: 0 for d in devices_list}
+last_block_id = {d: 0 for d in devices_dict}
 last_arc_id = 0
 blocks_list = ['']
 arcs_list = ['']
@@ -29,14 +29,20 @@ is_drawing = False
 
 # Read and return the available devices from the main/Devices folder
 def read_devices():
-    dev_list = []
+    # dev_list = []
+    dev_dict = dict()
+    dev_name = ""
     for n in os.listdir("../Devices"):
         if "_" not in n:
             with open("../Devices/"+n,'r') as f:
                 for l in f:
                     if l[0:3] == "def":
-                        dev_list.append(l[4:].split("(")[0])
-    return dev_list
+                        dev_name = l[4:].split("(")[0]
+                        # dev_list.append(dev_name)
+                        dev_dict[dev_name] = []
+                    if "Port(" in l and dev_name!="":
+                        dev_dict[dev_name].append(l.split(".")[1].split()[0])
+    return dev_dict
 
 # Binds canvas functions to cursor event depending on selection
 def set_current_canvas_function(func):
@@ -90,20 +96,22 @@ def draw_arc(event):
         txt = canvas.create_text((event.x+init_pos[0])/2, (event.y+init_pos[1])/2, tag=arc_name+'_txt')
         canvas.insert(txt, 10, arc_name)
         
-        # TODO: (issue #19) get blocks' ports from and to of arcs. Also beware of _txt item!
-        block_to = canvas.gettags("current")[0]
+        block_to = canvas.gettags("current")[0].replace("_txt","").replace("block_","")
+        port_to = tk.simpledialog.askstring(title=block_to, parent=window, prompt=str(devices_dict[blocks_dict[block_to]['type']]))
+        block_to = block_to+'.'+port_to
         
         init_pos = [0,0]
         is_drawing = False
         
-        # TODO: (issue #20) add full info to dict. From and to should be BlockName.PortName
         arcs_dict[arc_name]={'from':block_from, 'to':block_to}
         resfresh_arcs_list()
         
     else: # start
         is_drawing = True
         init_pos[0], init_pos[1] = event.x, event.y
-        block_from = canvas.gettags("current")[0]
+        block_from = canvas.gettags("current")[0].replace("_txt","").replace("block_","")
+        port_from = tk.simpledialog.askstring(title=block_from, parent=window, prompt=str(devices_dict[blocks_dict[block_from]['type']]))
+        block_from = block_from+'.'+port_from
     
 # Place a block on canvas   
 def draw_block(event):
@@ -117,7 +125,7 @@ def draw_block(event):
     canvas.create_rectangle(event.x-10, event.y-10, event.x+10, event.y+10, tag='block_'+block_name, activefill="red")
     
     # TODO: (issue #21) add full info to dict
-    blocks_dict[block_name]={}
+    blocks_dict[block_name]={'type':devices_menu_selection.get()}
         
     resfresh_blocks_list()
 
@@ -191,8 +199,8 @@ device_btn = tk.Button(frame_tool_left, text='Device', command=lambda: set_curre
 device_btn.grid(row=0,column=1)
     
 devices_menu_selection = tk.StringVar()
-devices_menu_selection.set(devices_list[0])
-devices_menu = tk.OptionMenu(frame_tool_left, devices_menu_selection, *devices_list)
+devices_menu_selection.set(list(devices_dict.keys())[0])
+devices_menu = tk.OptionMenu(frame_tool_left, devices_menu_selection, *list(devices_dict.keys()))
 devices_menu.grid(row=0,column=2)
 
 # Delete
