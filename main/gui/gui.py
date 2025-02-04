@@ -95,7 +95,7 @@ def draw_arc(event):
         init_pos = [0,0]
         is_drawing = False
         
-        # TODO: add full info to dict
+        # TODO: add full info to dict. From and to should be BlockName.Port
         arcs_dict[arc_name]={'from':block_from, 'to':block_to}
         resfresh_arcs_list()
         
@@ -142,8 +142,8 @@ def delete_arc(arc_name):
     
 # write the code of the current system
 def write_code():
-    code_blocks = ""
-    code_arcs = ""
+    code_blocks = "# model\nm = pyo.ConcreteModel()\n\n#BLOCKS\n"
+    code_arcs = "#CONNECTIONS\n"
     
     for b in blocks_dict:
         # TODO: full data, init and t
@@ -155,7 +155,11 @@ def write_code():
         
         code_blocks = code_blocks + code
 
-    # TODO: arcs code
+    for a in arcs_dict:
+        code = "m.{}=Arc(ports=(m.{}, m.{}), directed=True)\n".format(a, arcs_dict[a]['from'], arcs_dict[a]['to'])
+        code_arcs = code_arcs + code
+    
+    code_arcs = code_arcs + "pyo.TransformationFactory(\"network.expand_arcs\").apply_to(m)\n"
 
     print("Writing to file ...")
     with open("model_from_gui.py",'w') as f:
