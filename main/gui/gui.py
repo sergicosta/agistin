@@ -18,6 +18,8 @@ last_block_id = {d: 0 for d in devices_list}
 last_arc_id = 0
 blocks_list = ['']
 arcs_list = ['']
+block_from = ''
+block_to = ''
 
 init_pos = [0,0]
 is_drawing = False
@@ -77,29 +79,30 @@ def resfresh_arcs_list():
              
 # Place an arc on canvas   
 def draw_arc(event):
-    global is_drawing, init_pos, arcs_dict, last_arc_id
+    global is_drawing, init_pos, arcs_dict, last_arc_id, block_from, block_to
     
     if is_drawing: # end
         
         arc_name = "arc" + str(last_arc_id)
         last_arc_id = last_arc_id+1
     
-        canvas.create_line(init_pos[0], init_pos[1], event.x, event.y, arrow=tk.LAST, tag=arc_name)
+        canvas.create_line(init_pos[0], init_pos[1], event.x, event.y, arrow=tk.LAST, tag=arc_name, activefill="red")
         txt = canvas.create_text((event.x+init_pos[0])/2, (event.y+init_pos[1])/2, tag=arc_name+'_txt')
         canvas.insert(txt, 10, arc_name)
         
-        # TODO: get blocks from and to
+        block_to = canvas.gettags("current")[0]
         
         init_pos = [0,0]
         is_drawing = False
         
         # TODO: add full info to dict
-        arcs_dict[arc_name]={}
+        arcs_dict[arc_name]={'from':block_from, 'to':block_to}
         resfresh_arcs_list()
         
     else: # start
         is_drawing = True
         init_pos[0], init_pos[1] = event.x, event.y
+        block_from = canvas.gettags("current")[0]
     
 # Place a block on canvas   
 def draw_block(event):
@@ -108,9 +111,9 @@ def draw_block(event):
     block_name = devices_menu_selection.get() + str(last_block_id[devices_menu_selection.get()])
     last_block_id[devices_menu_selection.get()] = last_block_id[devices_menu_selection.get()]+1
     
-    canvas.create_rectangle(event.x-10, event.y-10, event.x+10, event.y+10, tag='block_'+block_name)
     txt = canvas.create_text(event.x, event.y, tag='block_'+block_name+'_txt')
     canvas.insert(txt, 10, block_name)
+    canvas.create_rectangle(event.x-10, event.y-10, event.x+10, event.y+10, tag='block_'+block_name, activefill="red")
     
     # TODO: add full info to dict
     blocks_dict[block_name]={}
@@ -118,6 +121,8 @@ def draw_block(event):
     resfresh_blocks_list()
 
 # Delete block/arc
+# TODO: error when no blocks or arcs left
+# TODO: error when last block/arc when setting var, since list is empty --> delete_menu2_selection.set(arcs_list[0])
 def delete_block(block_name):
     global blocks_dict
     
@@ -157,7 +162,6 @@ def write_code():
         f.write(code_blocks)
         f.write(code_arcs)
     print("DONE")
-
 
 # === TKINTER WINDOW === 
 
