@@ -124,9 +124,6 @@ def draw_block(event):
         
     
 # Delete block/arc
-# TODO: (issue #25) better delete for arcs and blocks
-# TODO: (issue #26) error when no blocks or arcs left
-# TODO: (issue #27) error when last block/arc when setting var, since list is empty --> delete_menu2_selection.set(arcs_list[0])
 def delete_item(item_name):
     global blocks_dict, arcs_dict
     
