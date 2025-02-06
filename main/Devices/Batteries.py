@@ -131,7 +131,6 @@ def Battery(b, t, data, init_data):
     def ConstraintE_min(_b,_t):
         return _b.E[_t] >= (_b.Einst + _b.Edim)*_b.SOCmin
     b.MinEnergy = pyo.Constraint(t, rule = ConstraintE_min)
-  
     
 def NewBattery(b, t, data, init_data):
     """
@@ -152,8 +151,8 @@ def NewBattery(b, t, data, init_data):
          - 'eff_dc': Effiency of discharge :math:`\eta_{dc}`
              
     init_data:
-         - 'E': Energy :math:`E(t)` as a ``list``
-         - 'P': Power :math:`P(t)` as a ``list``
+         - 'E': Energy :math:`E(t)` as a ``list`` or pandas ``Series``
+         - 'P': Power :math:`P(t)` as a ``list`` or pandas ``Series``
          
     Pyomo declaration
         - Parameters: 
@@ -170,19 +169,16 @@ def NewBattery(b, t, data, init_data):
             - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`
             - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`
             - Pdc (t) bounded :math:`P_{dc}(t) \in [0, P_{max}]`
-            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`
             - Edim bounded :math:`E_{dim} \in [0, E_{max}]`
             - Pdim bounded :math:`P_{dim} \in [0, P_{max}]`
         - Ports: 
             - port_P @ P (Extensive)
         - Constraints:
-            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)/ \eta_{dc}`
-            - c_P0: :math:`0 = P_{ch}(t) \, P_{dc}(t)`
-            - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst})`
-            - c_ch: :math:`P_{ch}(t) \leq (P_{inst} + P_{dim})`
-            - dc: :math:`P_{dc}(t) \leq (P_{inst} + P_{dim})`
-            - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\, SOC{max}`
-            - c_Emin: :math:`E(t) \geq (E{inst} + E{dim})\, SOC{min}`
+            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{dc}(t)/ \eta_{dc}`
+            - c_ch: :math:`P_{ch}(t) \leq P_{dim}`
+            - c_dc: :math:`P_{dc}(t) \leq P_{dim}`
+            - c_Emax: :math:`E(t) \leq E_{dim}\, SOC_{max}`
+            - c_Emin: :math:`E(t) \geq E_{dim}\, SOC_{min}`
             - c_E: 
                 - :math:`E(t) = E(t-1) + \Delta t \, P(t) \quad` if  :math:`t>0`
                 - :math:`E(t) = E(T) + \Delta t \, P(t) \quad` otherwise
@@ -235,8 +231,8 @@ def NewBattery(b, t, data, init_data):
     
     def ConstraintE_max(_b,_t):
         return _b.E[_t] <= _b.Edim*_b.SOCmax
-    b.MaxEnergy = pyo.Constraint(t, rule = ConstraintE_max)
+    b.c_Emax = pyo.Constraint(t, rule = ConstraintE_max)
     
     def ConstraintE_min(_b,_t):
         return _b.E[_t] >= _b.Edim*_b.SOCmin
-    b.MinEnergy = pyo.Constraint(t, rule = ConstraintE_min)
+    b.c_Emin = pyo.Constraint(t, rule = ConstraintE_min)

@@ -19,7 +19,7 @@ import seaborn as sns
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import RealPump, ReversibleRealPump
+from Devices.Pumps import RealPump
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -72,7 +72,7 @@ data_c1 = {'K':0.01, 'Qmax':5} # canal
 init_c1 = {'Q':[0]*T, 'H':[1]*T, 'H0':[1]*T, 'zlow':[0.01]*T, 'zhigh':[0.75]*T}
 Pipe(m.Pipe1, m.t, data_c1, init_c1)
 
-data_p = {'A':1, 'B':0.1, 'n_n':1, 'eff':0.9, 'Qnom':1, 'Pmax':9810*1*1, 'Qmin':0.5, 'Qmax':2, 'eff_t':0.5, 'S':1/4.5} # pumps (both equal)
+data_p = {'A':1, 'B':0.1, 'n_n':1, 'nmax':1, 'eff':0.9, 'Qnom':1, 'Pmax':9810*1*1, 'Qmin':0.5, 'Qmax':2, 'eff_t':0.5, 'S':1/4.5} # pumps (both equal)
 init_p = {'Q':[0]*T, 'H':[1]*T, 'n':[1]*T, 'Pe':[9810*1*1]*T}
 RealPump(m.Pump1, m.t, data_p, init_p)
 RealPump(m.Pump2, m.t, data_p, init_p)
@@ -84,7 +84,8 @@ Turbine(m.Turb1, m.t, data_t, init_t)
 data_pv = {'Pinst':9810, 'Pmax':9810*2, 'forecast':[0,0.1,0.6,1.2,0.2], 'eff': 0.98} # PV
 SolarPV(m.PV, m.t, data_pv)
 
-Grid(m.Grid, m.t, {'Pmax':9810e3}) # grid
+data_grid = {'Pmax':9810e3, 'Pcontr':[9810e3,10e3,9810e3,9810e3,20e3]}
+Grid(m.Grid, m.t, data_grid) # grid
 
 EB(m.EB, m.t)
 
@@ -170,22 +171,31 @@ start_time = time.time()
 # # results = solver_manager.solve(instance, solver="minlp")
 # results.write()
 
-with open("couenne.opt", "w") as file:
-    file.write('''time_limit 100000
-                convexification_cuts 2
-                convexification_points 2
-                delete_redundant yes
-                use_quadratic no
-                feas_tolerance 1e-4
-                ''')
-solver = pyo.SolverFactory('asl:couenne')
-results = solver.solve(instance, tee=True)
-results.write()
-os.remove('couenne.opt') #Delete options
+# with open("couenne.opt", "w") as file:
+#     file.write('''time_limit 100000
+#                 convexification_cuts 2
+#                 convexification_points 2
+#                 delete_redundant yes
+#                 use_quadratic no
+#                 feas_tolerance 1e-4
+#                 ''')
+# solver = pyo.SolverFactory('asl:couenne')
+# results = solver.solve(instance, tee=True)
+# results.write()
+# os.remove('couenne.opt') #Delete options
 
-instance = m.create_instance()
-solver = pyo.SolverFactory('ipopt')
+with open("bonmin.opt", "w") as file:
+    file.write('''bonmin.algorithm B-Ecp
+               bonmin.ecp_abs_tol 0.0001
+               bonmin.warm_start optimum
+               tol 0.0001
+                ''')
+solver = pyo.SolverFactory('bonmin')
 results = solver.solve(instance, tee=True)
+
+# instance = m.create_instance()
+# solver = pyo.SolverFactory('ipopt')
+# results = solver.solve(instance, tee=True)
 
 exec_time = time.time() - start_time
 
@@ -193,6 +203,7 @@ exec_time = time.time() - start_time
 from Utilities import get_results
 
 file = './results/OSMSES/OSMSES_B015_b'
+file = None
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%%Battery test

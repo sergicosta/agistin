@@ -16,7 +16,7 @@ from pyomo.network import Arc, Port
 def NewPump(b, t, data, init_data):
     
     """
-    Power sizing :math:`P_{dim}` of a new pump
+    Sizing of a new pump's nominal power :math:`P_{dim}`
     
     :param b: pyomo ``Block()`` to be set
     :param t: pyomo ``Set()`` referring to time
@@ -24,19 +24,19 @@ def NewPump(b, t, data, init_data):
     :param init_data: init_data ``dict``
         
     data
-         - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta`
+         - 'eff': Efficiency at the nominal operating point in p.u. :math:`\eta` as a ``float``
          
     init_data
-         - 'Q': Flow :math:`Q(t)` as a ``list``
-         - 'H': Head :math:`H(t)` as a ``list``
-         - 'Pe': Electrical power :math:`P_e(t)` as a ``list``
-    
+         - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
+         - 'H': Head :math:`H(t)` as a ``list`` or pandas ``Series``
+         - 'Pe': Electrical power :math:`P_e(t)` as a ``list`` or pandas ``Series``
+
     Pyomo declarations    
         - Parameters:
             - eff
         - Variables:
-            - Pdim (t) bounded :math:`P_{dim} \ge 0`
-            - Qin (t) bounded :math:`Q_{in} \ge 0`
+            - Pdim bounded :math:`P_{dim} \ge 0`
+            - Qin (t) bounded :math:`Q_{in} \le 0`
             - Qout (t) bounded :math:`Q_{out} \ge 0`
             - H (t) bounded :math:`H \ge 0`
             - Ph (t) bounded :math:`P_h \ge 0`

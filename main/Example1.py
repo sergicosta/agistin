@@ -60,8 +60,8 @@ data_c1 = {'H0':20, 'K':0.05, 'Qmax':50} # canal
 init_c1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
 Pipe_Ex0(m.Pipe1, m.t, data_c1, init_c1)
 
-data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
-init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
+data_p = {'A':50, 'B':0.1, 'nmax':1, 'eff':0.9, 'Qmax':4, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
+init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'Pe':[9810*0.1*20,9810*0.1*20,9810*0.1*20,9810*0.1*20,9810*0.1*20]}
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
@@ -92,8 +92,8 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
-solver = pyo.SolverFactory('asl:couenne')
-solver.solve(instance, tee=True)
+solver = pyo.SolverFactory('ipopt')
+results = solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()

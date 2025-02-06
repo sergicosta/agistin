@@ -31,7 +31,13 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump
+<<<<<<< HEAD
 from Devices.Turbines import Turbine
+=======
+#ReversiblePump, ReversibleRealPump, RealPumpS
+from Devices.Turbines import Turbine
+#DiscreteTurbine
+>>>>>>> 83d859a416c6bc671bd69b9f47a51759c2dbc7b0
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -273,7 +279,11 @@ import time
 # Objective function
 def obj_fun(m):
     return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
+<<<<<<< HEAD
               m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) # + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+=======
+              m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+>>>>>>> 83d859a416c6bc671bd69b9f47a51759c2dbc7b0
 
     # return sum( m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6 for t in l_t ) + (m.Bats.Pdim*cp_bat + m.Bats.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
     # return sum( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
@@ -283,9 +293,13 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
+instance.write(filename='instance.nl', io_options={'symbolic_solver_labels':True})
+
+# read_sol(m, instance, symbol_map_filename, suffixes=[".*"])
 
 start_time = time.time()
 
+<<<<<<< HEAD
  
 # os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
 # solver_manager = pyo.SolverManagerFactory('neos')
@@ -294,6 +308,36 @@ start_time = time.time()
 # # results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
 # # results = solver_manager.solve(instance, solver="bonmin")
 # # results = solver_manager.solve(instance, solver="minlp")
+=======
+with open("bonmin.opt", "w") as file:
+    file.write('''bonmin.algorithm B-Ecp
+               bonmin.ecp_abs_tol 0.0001
+               bonmin.warm_start optimum
+               tol 0.0001
+                ''')
+solver = pyo.SolverFactory('bonmin')
+results = solver.solve(instance, keepfiles= True, tee=True)
+
+# os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
+# solver_manager = pyo.SolverManagerFactory('neos')
+# results = solver_manager.solve(instance, solver="knitro")
+# results = solver_manager.solve(instance, solver="couenne")
+# results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
+# results = solver_manager.solve(instance, solver="bonmin")
+# results = solver_manager.solve(instance, solver="minlp")
+# results.write()
+
+# with open("couenne.opt", "w") as file:
+#     file.write('''time_limit 100000
+#                 convexification_cuts 2
+#                 convexification_points 2
+#                 delete_redundant yes
+#                 use_quadratic no
+#                 feas_tolerance 1e-1
+#                 ''')
+# solver = pyo.SolverFactory('asl:couenne')
+# results = solver.solve(instance, tee=True)
+>>>>>>> 83d859a416c6bc671bd69b9f47a51759c2dbc7b0
 # results.write()
 
 with open("couenne.opt", "w") as file:
@@ -319,6 +363,139 @@ results.write()
 # results = solver.solve(instance, tee=True)
 
 exec_time = time.time() - start_time
+#%%
+import pyomo.environ
+from pyomo.core import ComponentUID
+from pyomo.opt import ProblemFormat, ReaderFactory, ResultsFormat
+from pyomo.core.base.var import _GeneralVarData
+from pyomo.core import SymbolMap
+from six.moves import cPickle as pickle
+
+def write_nl(model, nl_filename, **kwds):
+    symbol_map_filename = nl_filename + ".symbol_map.pickle"
+    _, smap_id = model.write(nl_filename, format=ProblemFormat.nl, io_options=kwds)
+    symbol_map = model.solutions.symbol_map[smap_id]
+
+    tmp_buffer = {}  # To speed up the process
+
+    symbol_cuid_pairs = tuple(
+        (symbol, ComponentUID(var, cuid_buffer=tmp_buffer))
+        for symbol, var_weakref in symbol_map.bySymbol.items()
+        if isinstance((var := var_weakref()), _GeneralVarData)  # Filter only variables
+    )
+
+    with open(symbol_map_filename, "wb") as f:
+        pickle.dump(symbol_cuid_pairs, f)
+
+    return symbol_map_filename
+
+# Reading .sol file and returning results --- 
+def read_sol(model, sol_filename, symbol_map_filename, suffixes=[".*"]):
+    if suffixes is None:
+        suffixes = []
+
+    with ReaderFactory(ResultsFormat.sol) as reader:
+        results = reader(sol_filename, suffixes=suffixes)
+
+    with open(symbol_map_filename, "rb") as f:
+        symbol_cuid_pairs = pickle.load(f)
+
+    symbol_map = SymbolMap()
+    symbol_map.addSymbols((cuid.find_component(model), symbol) for symbol, cuid in symbol_cuid_pairs)
+    results._smap = symbol_map
+
+    return results
+
+# Reading the .col file to extract variable names
+def read_col_file(col_filename):
+    with open(col_filename, "r") as col_file:
+        variable_names = [line.strip() for line in col_file.readlines()]
+    return variable_names
+
+def sol_read(filename, model):
+    
+    """
+    Reads a .sol solution file and returns a DataFrame with the variables.
+
+    Parameters: 
+        filename (str): Name of the file without extension. Note that all .nl, .sol, and .col must have the same name.
+        model (pyomo.environ.AbstractModel): Pyomo model with variables and parameters.
+
+    Returns:
+        pd.DataFrame: DataFrame with variables and their values for each step time.
+        str: Status description from the solver.
+    """
+
+    # Generating mapping file 
+    
+    # --- If Var not initialized, initialize to 0
+    for v in model.component_objects(pyomo.environ.Var, active=True):
+        for index in v:
+            if v[index].value is None:
+                v[index].set_value(0.0)  # Initialize variables to 0 if they have no value
+
+    # 1. Reading symbol_map_filename
+    nl_filename = filename + '.nl'
+    col_filename = filename + '.col'
+    symbol_map_filename = write_nl(model, nl_filename)
+
+    # 2. Reading .sol
+    sol_filename = filename + ".sol"
+    symbol_map_filename = filename + ".nl.symbol_map.pickle"
+    results = read_sol(model, sol_filename, symbol_map_filename)
+
+    # Extract solver condition directly from results
+    condition = results['Solver'][0]
+    # 3. Reading variable names from .col file
+    variable_names = read_col_file(col_filename)
+
+    # 4. Reading the variable values from the .sol file
+    variable_values = {}
+
+    for solution in results['Solution']:
+        for idx, (var, value) in enumerate(solution['Variable'].items()):
+            if idx < len(variable_names):  # Ensure there is a mapping available
+                real_var_name = variable_names[idx]  # Assign the correct name from .col
+                variable_values[real_var_name] = value['Value']  # Store in dictionary
+
+    # 5. Organizing data for DataFrame
+    organized_data = {}
+    max_time_index = 0
+
+    for var, value in variable_values.items():
+        # Extract base variable name without temporal index
+        if '[' in var and ']' in var:
+            base_name = var.split('[')[0]
+            time_index = int(var.split('[')[1].split(']')[0])
+        else:
+            base_name = var
+            time_index = 0  # Non-temporal variable
+
+        # Initialize variable list
+        if base_name not in organized_data:
+            organized_data[base_name] = []
+
+        while len(organized_data[base_name]) <= time_index:
+            organized_data[base_name].append(None)
+
+        organized_data[base_name][time_index] = value
+
+        max_time_index = max(max_time_index, time_index)
+
+    # 6. Adjusting variable index
+    for key in organized_data:
+        while len(organized_data[key]) <= max_time_index:
+            organized_data[key].append(None)
+
+    # 7. Converting to data frame
+    df = pd.DataFrame()
+    df = pd.DataFrame(organized_data)
+
+    # Return the DataFrame and a clear condition message
+    return df, condition
+
+#%%
+df, condition = sol_read('instance', m)
 
 #%%
 def sol_read(filename, model):

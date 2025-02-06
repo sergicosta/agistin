@@ -31,10 +31,12 @@ def Reservoir(b, t, data, init_data):
          - 'Wmax': Maximum allowed volume :math:`W_{max}`
          - 'zmin': Height at minimum volume :math:`z_{min}`
          - 'zmax': Height at maximum volume :math:`z_{max}`
+         - 'WT_min': Minimum allowed volume at t=T :math:`W_{min,T}` (optional)
+         - 'WT_max': Maximum allowed volume at t=T :math:`W_{max,T}` (optional)
     
     init_data
-         - 'Q': Flow :math:`Q(t)` as a ``list``
-         - 'W': Volume :math:`W(t)` as a ``list``
+         - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
+         - 'W': Volume :math:`W(t)` as a ``list`` or pandas ``Series``
     
     Pyomo declarations    
         - Parameters: 
@@ -45,7 +47,7 @@ def Reservoir(b, t, data, init_data):
             - zmax
         - Variables: 
             - Q (t) :math:`\in \mathbb{R}`
-            - W (t) bounded :math:`W \in [W_{min},W_{max}]`
+            - W (t) bounded :math:`W \in [W_{min},W_{max}]` and :math:`W(T) \in [W_{min,T},W_{max,T}]`
             - z (t) bounded :math:`z \in [z_{min},z_{max}]`
         - Ports: 
             - port_Q @ Q as ``Extensive``
@@ -120,8 +122,8 @@ def Reservoir_Ex0(b, t, data, init_data):
          - 'Wmax': Maximum allowed volume :math:`W_{max}`
          
     init_data
-         - 'Q': Flow :math:`Q(t)` as a ``list``
-         - 'W': Volume :math:`W(t)` as a ``list``
+         - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
+         - 'W': Volume :math:`W(t)` as a ``list`` or pandas ``Series``
     
     Pyomo declarations    
         - Parameters: 

@@ -1,20 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Devices.Batteries &mdash; AGISTIN 0.0.20230919 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=b6851926"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -84,7 +84,9 @@
 
 
 
-<div class="viewcode-block" id="Battery"><a class="viewcode-back" href="../../Devices.html#Devices.Batteries.Battery">[docs]</a><span class="k">def</span> <span class="nf">Battery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Battery">
+<a class="viewcode-back" href="../../Devices.html#Devices.Batteries.Battery">[docs]</a>
+<span class="k">def</span> <span class="nf">Battery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Battery for testing and example purposes.</span>
 <span class="sd">    It is used in Example21.</span>
@@ -206,9 +208,11 @@
     <span class="k">def</span> <span class="nf">ConstraintE_min</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Einst</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="p">)</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmin</span>
     <span class="n">b</span><span class="o">.</span><span class="n">MinEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_min</span><span class="p">)</span></div>
-  
+
     
-<div class="viewcode-block" id="NewBattery"><a class="viewcode-back" href="../../Devices.html#Devices.Batteries.NewBattery">[docs]</a><span class="k">def</span> <span class="nf">NewBattery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
+<div class="viewcode-block" id="NewBattery">
+<a class="viewcode-back" href="../../Devices.html#Devices.Batteries.NewBattery">[docs]</a>
+<span class="k">def</span> <span class="nf">NewBattery</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">init_data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Battery set for sizing.</span>
 <span class="sd">    </span>
@@ -227,8 +231,8 @@
 <span class="sd">         - &#39;eff_dc&#39;: Effiency of discharge :math:`\eta_{dc}`</span>
 <span class="sd">             </span>
 <span class="sd">    init_data:</span>
-<span class="sd">         - &#39;E&#39;: Energy :math:`E(t)` as a ``list``</span>
-<span class="sd">         - &#39;P&#39;: Power :math:`P(t)` as a ``list``</span>
+<span class="sd">         - &#39;E&#39;: Energy :math:`E(t)` as a ``list`` or pandas ``Series``</span>
+<span class="sd">         - &#39;P&#39;: Power :math:`P(t)` as a ``list`` or pandas ``Series``</span>
 <span class="sd">         </span>
 <span class="sd">    Pyomo declaration</span>
 <span class="sd">        - Parameters: </span>
@@ -245,19 +249,16 @@
 <span class="sd">            - P (t) bounded :math:`P(t) \in [-P_{max}, P_{max}]`</span>
 <span class="sd">            - Pch (t) bounded :math:`P_{ch}(t) \in [0, P_{max}]`</span>
 <span class="sd">            - Pdc (t) bounded :math:`P_{dc}(t) \in [0, P_{max}]`</span>
-<span class="sd">            - SOC (t) bounded :math:`SOC(t) \in [SOC_{min}, SOC_{max}]`</span>
 <span class="sd">            - Edim bounded :math:`E_{dim} \in [0, E_{max}]`</span>
 <span class="sd">            - Pdim bounded :math:`P_{dim} \in [0, P_{max}]`</span>
 <span class="sd">        - Ports: </span>
 <span class="sd">            - port_P @ P (Extensive)</span>
 <span class="sd">        - Constraints:</span>
-<span class="sd">            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{disc}(t)/ \eta_{dc}`</span>
-<span class="sd">            - c_P0: :math:`0 = P_{ch}(t) \, P_{dc}(t)`</span>
-<span class="sd">            - c_SOC: :math:`SOC(t) = E(t) /(E_{dim}+E_{inst})`</span>
-<span class="sd">            - c_ch: :math:`P_{ch}(t) \leq (P_{inst} + P_{dim})`</span>
-<span class="sd">            - dc: :math:`P_{dc}(t) \leq (P_{inst} + P_{dim})`</span>
-<span class="sd">            - c_Emax: :math:`E(t) \leq (E{inst} + E{dim})\, SOC{max}`</span>
-<span class="sd">            - c_Emin: :math:`E(t) \geq (E{inst} + E{dim})\, SOC{min}`</span>
+<span class="sd">            - c_P: :math:`P(t) = P_{ch}(t)\, \eta_{ch} - P_{dc}(t)/ \eta_{dc}`</span>
+<span class="sd">            - c_ch: :math:`P_{ch}(t) \leq P_{dim}`</span>
+<span class="sd">            - c_dc: :math:`P_{dc}(t) \leq P_{dim}`</span>
+<span class="sd">            - c_Emax: :math:`E(t) \leq E_{dim}\, SOC_{max}`</span>
+<span class="sd">            - c_Emin: :math:`E(t) \geq E_{dim}\, SOC_{min}`</span>
 <span class="sd">            - c_E: </span>
 <span class="sd">                - :math:`E(t) = E(t-1) + \Delta t \, P(t) \quad` if  :math:`t&gt;0`</span>
 <span class="sd">                - :math:`E(t) = E(T) + \Delta t \, P(t) \quad` otherwise</span>
@@ -289,32 +290,33 @@
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_P</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">Constraint_P0</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">*</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">c_P0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_P0</span><span class="p">)</span>
+    <span class="c1"># def Constraint_P0(_b, _t):</span>
+    <span class="c1">#     return 0 == _b.Pch[_t] * _b.Pdc[_t]</span>
+    <span class="c1"># b.c_P0 = pyo.Constraint(t, rule = Constraint_P0)</span>
     
     <span class="k">def</span> <span class="nf">Constraint_E</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span> <span class="n">_t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_ch</span> <span class="o">-</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span><span class="o">/</span><span class="n">_b</span><span class="o">.</span><span class="n">eff_dc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">==</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_b</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_b</span><span class="o">.</span><span class="n">dt</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_E</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_E</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">Constraint_ch</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span>
     <span class="n">b</span><span class="o">.</span><span class="n">c_ch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_ch</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">Constraint_disc</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Constraint_dc</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span>  <span class="n">_b</span><span class="o">.</span><span class="n">Pdc</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Pdim</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">c_dc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_disc</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_dc</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">Constraint_dc</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">ConstraintE_max</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmax</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">MaxEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_max</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Emax</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_max</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">ConstraintE_min</span><span class="p">(</span><span class="n">_b</span><span class="p">,</span><span class="n">_t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_b</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">_t</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">_b</span><span class="o">.</span><span class="n">Edim</span><span class="o">*</span><span class="n">_b</span><span class="o">.</span><span class="n">SOCmin</span>
-    <span class="n">b</span><span class="o">.</span><span class="n">MinEnergy</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_min</span><span class="p">)</span></div>
+    <span class="n">b</span><span class="o">.</span><span class="n">c_Emin</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="n">ConstraintE_min</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

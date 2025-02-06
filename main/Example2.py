@@ -67,8 +67,8 @@ data_c1 = {'H0':20, 'K':0.05, 'Qmax':50} # canal
 init_c1 = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20]}
 Pipe_Ex0(m.Pipe1, m.t, data_c1, init_c1)
 
-data_p = {'A':50, 'B':0.1, 'n_n':1450, 'eff':0.9, 'Qmax':20, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
-init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'n':[1450,1450,1450,1450,1450], 'Pe':[9810*5*20,9810*5*20,9810*5*20,9810*5*20,9810*5*20]}
+data_p = {'A':50, 'B':0.1, 'nmax':1, 'eff':0.9, 'Qmax':4, 'Qnom':5, 'Pmax':9810*50*20} # pumps (both equal)
+init_p = {'Q':[0,0,0,0,0], 'H':[20,20,20,20,20], 'Pe':[9810*0.1*20,9810*0.1*20,9810*0.1*20,9810*0.1*20,9810*0.1*20]}
 Pump(m.Pump1, m.t, data_p, init_p)
 Pump(m.Pump2, m.t, data_p, init_p)
 
@@ -107,7 +107,7 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=True)
+results = solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
@@ -117,25 +117,25 @@ instance.PV.Pdim.pprint()
 # RESULTS
     # W : Size=5, Index=t
     #     Key : Lower : Value              : Upper : Fixed : Stale : Domain
-    #       0 :     0 :  3.000000000000001 :    20 : False : False : NonNegativeReals
-    #       1 :     0 : 2.0541284389069854 :    20 : False : False : NonNegativeReals
-    #       2 :     0 :  1.729357795463353 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 0.9999999899996314 :    20 : False : False : NonNegativeReals
+    #       0 :     0 :  3.000000000000006 :    20 : False : False : NonNegativeReals
+    #       1 :     0 :  2.054209870661257 :    20 : False : False : NonNegativeReals
+    #       2 :     0 : 1.7289984025070158 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 0.9999999899999171 :    20 : False : False : NonNegativeReals
     #       4 :     0 :                0.0 :    20 : False : False : NonNegativeReals
     # W : Size=5, Index=t
     #     Key : Lower : Value              : Upper : Fixed : Stale : Domain
-    #       0 :     0 :  4.999999999999999 :    20 : False : False : NonNegativeReals
-    #       1 :     0 :  4.945871561093015 :    20 : False : False : NonNegativeReals
-    #       2 :     0 :  4.270642204536647 :    20 : False : False : NonNegativeReals
-    #       3 :     0 : 4.0000000100003685 :    20 : False : False : NonNegativeReals
-    #       4 :     0 :  4.000000009999997 :    20 : False : False : NonNegativeReals
+    #       0 :     0 :  4.999999999999994 :    20 : False : False : NonNegativeReals
+    #       1 :     0 :  4.945790129338743 :    20 : False : False : NonNegativeReals
+    #       2 :     0 :  4.271001597492984 :    20 : False : False : NonNegativeReals
+    #       3 :     0 : 4.0000000100000825 :    20 : False : False : NonNegativeReals
+    #       4 :     0 :  4.000000009999999 :    20 : False : False : NonNegativeReals
     # P : Size=5, Index=t
     #     Key : Lower     : Value                  : Upper    : Fixed : Stale : Domain
-    #       0 : -100000.0 :  9.433823557412372e-09 : 100000.0 : False : False :  Reals
-    #       1 : -100000.0 : -6.936451635126821e-09 : 100000.0 : False : False :  Reals
+    #       0 : -100000.0 :  8.508149532847933e-09 : 100000.0 : False : False :  Reals
+    #       1 : -100000.0 : -6.103573816990847e-09 : 100000.0 : False : False :  Reals
     #       2 : -100000.0 :              -100000.0 : 100000.0 : False : False :  Reals
-    #       3 : -100000.0 : -6.936451640813962e-09 : 100000.0 : False : False :  Reals
-    #       4 : -100000.0 :      5899.999840768967 : 100000.0 : False : False :  Reals
+    #       3 : -100000.0 : -5.986341529814071e-09 : 100000.0 : False : False :  Reals
+    #       4 : -100000.0 :      5908.919313237837 : 100000.0 : False : False :  Reals
     # Pdim : Size=1, Index=None
     #     Key  : Lower : Value              : Upper   : Fixed : Stale : Domain
-    #     None :     0 : 10204.079508677134 : 50000.0 : False : False : NonNegativeReals
+    #     None :     0 : 10295.094533227224 : 50000.0 : False : False : NonNegativeReals

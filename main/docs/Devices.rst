@@ -153,10 +153,6 @@ New Pump
 
 Pipes
 ```````````````````
-
-.. image:: img/Block_Pipe.svg
-   :scale: 100 %
-   :alt: Pipe_Ex0 block
    
 .. image:: img/Block_Pipe_full.svg
    :scale: 100 %
@@ -183,10 +179,6 @@ Pumps
 
 Reservoirs
 ```````````````````
-
-.. image:: img/Block_Reservoir.svg
-   :scale: 100 %
-   :alt: Reservoir_Ex0 block
    
 .. image:: img/Block_Reservoir_full.svg
    :scale: 100 %
@@ -215,7 +207,7 @@ Electrical devices
 ------------------
 
 
-EB (Pumping Station)
+Energy Balance (EB)
 `````````````````````
 
 .. image:: img/Block_EB.svg
