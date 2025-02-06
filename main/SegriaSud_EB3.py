@@ -30,8 +30,8 @@ from pyomo.network import Arc, Port
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump, RealPumpS
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Pumps import Pump, RealPump
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -56,14 +56,14 @@ df_cons_jan = pd.read_excel('data/irrigation/EB5_irrigation_w.xlsx')
 df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
 
-df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 # df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
-df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 # df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
 
 
 # time
-T = 5
+T = 24
 l_t = list(range(T))
 m.tw = pyo.Set(initialize=l_t)
 m.ts = pyo.Set(initialize=l_t)
@@ -99,7 +99,7 @@ m.PVw = pyo.Block()
 m.Gridw = pyo.Block()
 m.EBgw = pyo.Block()
 m.EBpvw = pyo.Block()
-# m.Batw = pyo.Block()
+m.Batw = pyo.Block()
 
 m.B4s = pyo.Block()
 m.B5s = pyo.Block()
@@ -113,7 +113,7 @@ m.PVs = pyo.Block()
 m.Grids = pyo.Block()
 m.EBgs = pyo.Block()
 m.EBpvs = pyo.Block()
-# m.Bats = pyo.Block()
+m.Bats = pyo.Block()
 
 
 data_irr = {'Q':df_cons_jan['Qirr'].head(T)/3600} # irrigation
@@ -125,20 +125,20 @@ data_B4 = {'dt':3600, 'W0':230e3, 'Wmin':0*230e3, 'Wmax':270e3, 'zmin':420.19+(4
 init_B4 = {'Q':[0]*T, 'W':[230e3]*T}
 Reservoir(m.B4w, m.tw, data_B4, init_B4)
 Reservoir(m.B4s, m.ts, data_B4, init_B4)
-data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.95*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':0.97*160e3, 'WT_max':1.02*160e3}
+data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.90*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':1*160e3, 'WT_max':1.03*160e3}
 init_B5s = {'Q':[0]*T, 'W':[160e3]*T}
-data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.95*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':0.97*124e3, 'WT_max':1.02*124e3}
+data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.90*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':1*124e3, 'WT_max':1.03*124e3}
 init_B5w = {'Q':[0]*T, 'W':[124e3]*T}
 Reservoir(m.B5w, m.tw, data_B5w, init_B5w)
 Reservoir(m.B5s, m.ts, data_B5s, init_B5s)
 
 data_c1 = {'K':6.1042, 'Qmax':1.2} # canal
-init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
+init_c1 = {'Q':[0]*T, 'H':[20]*T, 'H0':[20]*T, 'zlow':[425]*T, 'zhigh':[445]*T}
 Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
 data_p = {'A':37.84, 'B':38.88, 'n_n':998, 'nmax':1, 'eff':0.861, 'eff_t':0.5, 'S':0.24*0.24*3.14, 'Qmin':0.5947, 'Qmax':1.2436, 'Qnom':0.4691, 'Pmax':160e3} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[37]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+init_p = {'Q':[0]*T, 'H':[20]*T, 'n':[0.99]*T, 'Pe':[0]*T}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
 data_p['eff']=0.84
@@ -149,7 +149,7 @@ RealPump(m.Pump2s, m.ts, data_p, init_p)
 # RealPump(m.Pump3s, m.ts, data_p, init_p) 
 
 data_t = {'eff':0.5, 'Pmax':160e3}
-init_t = {'Q':[0]*T, 'H':[37]*T, 'Pe':[0]*T}
+init_t = {'Q':[0]*T, 'H':[20]*T, 'Pe':[0]*T}
 Turbine(m.Turb1w, m.tw, data_t, init_t)
 Turbine(m.Turb1s, m.ts, data_t, init_t)
 
@@ -158,33 +158,33 @@ SolarPV(m.PVw, m.tw, data_pv)
 data_pv = {'Pinst':236e3, 'Pmax':236e3, 'forecast':df_meteo_aug['Irr'].head(T)/1000, 'eff':0.98} # PV
 SolarPV(m.PVs, m.ts, data_pv)
 
-# data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
-# init_bat = {'E':[0]*T, 'P':[0]*T}
-# NewBattery(m.Batw, m.tw, data_bat, init_bat)
-# NewBattery(m.Bats, m.ts, data_bat, init_bat)
+data_bat = {'dt':3600, 'E0':0.05, 'Emax':200e3, 'Pmax':200e3, 'SOCmin':0.2, 'SOCmax':1.0, 'eff_ch':0.8, 'eff_dc':0.8,'Einst':0.1, 'Pinst':0}
+init_bat = {'E':[0]*T, 'P':[0]*T}
+NewBattery(m.Batw, m.tw, data_bat, init_bat)
+NewBattery(m.Bats, m.ts, data_bat, init_bat)
 
 Grid(m.Gridw, m.tw, {'Pmax':100e6}) # grid
 Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
 
 EB(m.EBgw, m.tw)
 EB(m.EBgs, m.ts)
-EB(m.EBpvw, m.tw)
-EB(m.EBpvs, m.ts)
+# EB(m.EBpvw, m.tw)
+# EB(m.EBpvs, m.ts)
 
-def ConstraintPumpTurbw(m, t):
-    return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
-m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
+# def ConstraintPumpTurbw(m, t):
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
 
-def ConstraintPumpTurbs(m, t):
-    return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
-m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+# def ConstraintPumpTurbs(m, t):
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
 
-def ConstraintPump2w(m, t):
-    return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
-m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
-def ConstraintPump2s(m, t):
-    return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
-m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 
 # def ConstraintBatEws(m):
 #     return m.Batw.Edim == m.Bats.Edim
@@ -194,14 +194,13 @@ m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 #     return m.Batw.Pdim == m.Bats.Pdim
 # m.c_BatPws = pyo.Constraint(rule=ConstraintBatPws)
 
+m.Batw.Edim.fix(0)
+m.Bats.Edim.fix(0)
+m.Batw.Pdim.fix(0)
+m.Bats.Pdim.fix(0)
 
-# m.Batw.Edim.fix(0)
-# m.Bats.Edim.fix(0)
-# m.Batw.Pdim.fix(0)
-# m.Bats.Pdim.fix(0)
-
-m.Turb1s.Pdim.fix(160e3)
-m.Turb1w.Pdim.fix(110e3)
+# m.Turb1s.Pdim.fix(160e3)
+# m.Turb1w.Pdim.fix(110e3)
 
 # m.PVw.Pdim.fix(0)
 
@@ -321,6 +320,155 @@ results.write()
 
 exec_time = time.time() - start_time
 
+#%%
+def sol_read(filename, model):
+    import pyomo.environ
+    from pyomo.core import ComponentUID
+    from pyomo.opt import ProblemFormat, ReaderFactory, ResultsFormat
+    from pyomo.core.base.var import _GeneralVarData
+    from pyomo.core import SymbolMap
+    from six.moves import cPickle as pickle
+    import pandas as pd
+
+    """
+    Reads a .sol solution file and returns a DataFrame with the variables.
+
+    Parameters: 
+        filename (str): Name of the file without extension. Note that all .nl, .sol, and .col must have the same name.
+        model (pyomo.environ.AbstractModel): Pyomo model with variables and parameters.
+
+    Returns:
+        pd.DataFrame: DataFrame with variables and their values for each step time.
+        str: Status description from the solver.
+    """
+
+    # Generating mapping file -
+    def write_nl(model, nl_filename, **kwds):
+        symbol_map_filename = nl_filename + ".symbol_map.pickle"
+        _, smap_id = model.write(nl_filename, format=ProblemFormat.nl, io_options=kwds)
+        symbol_map = model.solutions.symbol_map[smap_id]
+
+        tmp_buffer = {}  # To speed up the process
+
+        symbol_cuid_pairs = tuple(
+            (symbol, ComponentUID(var, cuid_buffer=tmp_buffer))
+            for symbol, var_weakref in symbol_map.bySymbol.items()
+            if isinstance((var := var_weakref()), _GeneralVarData)  # Filter only variables
+        )
+
+        with open(symbol_map_filename, "wb") as f:
+            pickle.dump(symbol_cuid_pairs, f)
+
+        return symbol_map_filename
+    
+# Reading .sol file and returning results --- 
+    def read_sol(model, sol_filename, symbol_map_filename, suffixes=[".*"]):
+        if suffixes is None:
+            suffixes = []
+
+        with ReaderFactory(ResultsFormat.sol) as reader:
+            results = reader(sol_filename, suffixes=suffixes)
+
+        with open(symbol_map_filename, "rb") as f:
+            symbol_cuid_pairs = pickle.load(f)
+
+        symbol_map = SymbolMap()
+        symbol_map.addSymbols((cuid.find_component(model), symbol) for symbol, cuid in symbol_cuid_pairs)
+        results._smap = symbol_map
+
+        return results
+
+    # Reading the .col file to extract variable names
+    def read_col_file(col_filename):
+        with open(col_filename, "r") as col_file:
+            variable_names = [line.strip() for line in col_file.readlines()]
+        return variable_names
+
+    # --- If Var not initialized, initialize to 0
+    for v in model.component_objects(pyomo.environ.Var, active=True):
+        for index in v:
+            if v[index].value is None:
+                v[index].set_value(0.0)  # Initialize variables to 0 if they have no value
+
+    # 1. Reading symbol_map_filename
+    nl_filename = filename + '.nl'
+    col_filename = filename + '.col'
+    symbol_map_filename = write_nl(model, nl_filename)
+
+    # 2. Reading .sol
+    sol_filename = filename + ".sol"
+    symbol_map_filename = filename + ".nl.symbol_map.pickle"
+    results = read_sol(model, sol_filename, symbol_map_filename)
+
+    # Extract solver condition directly from results
+    condition = results['Solver'][0]
+    # 3. Reading variable names from .col file
+    variable_names = read_col_file(col_filename)
+
+    # 4. Reading the variable values from the .sol file
+    variable_values = {}
+
+    for solution in results['Solution']:
+        for idx, (var, value) in enumerate(solution['Variable'].items()):
+            if idx < len(variable_names):  # Ensure there is a mapping available
+                real_var_name = variable_names[idx]  # Assign the correct name from .col
+                variable_values[real_var_name] = value['Value']  # Store in dictionary
+                
+    #- 5. --- Read Parameter Values ---
+    parameter_values = {}
+    if "Parameter" in solution:
+        for param, value in solution["Parameter"].items():
+            parameter_values[param] = value["Value"]
+
+    # 5. Organizing data for DataFrame
+    organized_data = {}
+    max_time_index = 0
+
+    for var, value in variable_values.items():
+        # Extract base variable name without temporal index
+        if '[' in var and ']' in var:
+            base_name = var.split('[')[0]
+            time_index = int(var.split('[')[1].split(']')[0])
+        else:
+            base_name = var
+            time_index = 0  # Non-temporal variable
+
+        # Initialize variable list
+        if base_name not in organized_data:
+            organized_data[base_name] = []
+
+        while len(organized_data[base_name]) <= time_index:
+            organized_data[base_name].append(None)
+
+        organized_data[base_name][time_index] = value
+
+        max_time_index = max(max_time_index, time_index)
+
+    # 6. Adjusting variable index
+    for key in organized_data:
+        while len(organized_data[key]) <= max_time_index:
+            organized_data[key].append(None)
+
+    # 7. Converting to data frame
+    df = pd.DataFrame(organized_data)
+
+    # Return the DataFrame and a clear condition message
+    return df,condition
+
+#%%
+df, condition = sol_read('EB3_ReadSol/Results/instance', m)
+
+#%% Parameters
+
+parameters = {}
+
+for param in m.component_objects(pyo.Param, active=True):
+    param_name = param.name
+    parameters[param_name] = {}  # Store values in a dictionary
+    for index in param:
+        parameters[param_name][index]= param[index]
+param_df = pd.DataFrame.from_dict(parameters, orient='index').T
+
 #%% GET RESULTS
 from Utilities import get_results
 
@@ -355,11 +503,12 @@ df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
 
 
-df_param = pd.read_csv('results/EB3/Proves/T5/'+file+'_param.csv')
+# df_param = pd.read_csv('results/EB3/Proves/T5/'+file+'_param.csv')
+df_param= param_df
 w_lim = df_param['B5w.Wmin'][0]
 w_lim = df_param['B5s.Wmin'][0]
 
-df = pd.read_csv('results/EB3/Proves/T5/'+file+'.csv')
+# df = pd.read_csv('results/EB3/Proves/T5/'+file+'.csv')
 df['PVw.Pf'] = -df_meteo_jan['Irr']/1000*215.28e3*0.98
 df['PVs.Pf'] = -df_meteo_aug['Irr']/1000*215.28e3*0.98
 
@@ -375,8 +524,8 @@ else:
     df['Rev1w.Qout'] = df['Pump1w.Qout']
     df['Rev1w.Pe'] = df['Pump1w.Pe']
 
-df['Irrigation1s.Qin'] = -df['Irrigation1s.Qout'] # no se per que passa pero Qin a vegades es reseteja a 0. La resta tot be
-df['Irrigation1w.Qin'] = -df['Irrigation1w.Qout']
+df['Irrigation1s.Qin'] = -df_param['Irrigation1s.Qout'] # no se per que passa pero Qin a vegades es reseteja a 0. La resta tot be
+df['Irrigation1w.Qin'] = -df_param['Irrigation1w.Qout']
 
 for c in df.columns:
     df[c] = df[c].apply(lambda x: 0 if (x>-1e-5 and x<1e-5) else x)
@@ -469,11 +618,26 @@ for df in [df_S]:
     ax1.axhline(160000,color='#AFAFAF', alpha=1, linewidth=1)
     ax1.axhline(160e3*0.95, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
     ax1.axhline(160e3*1.05, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
-    # sns.lineplot(df_W, x='t', y='B5.W', ax=ax1, color='tab:red', linewidth=1.5)
     sns.lineplot(df_S, x='t', y='B5.W', ax=ax1, color='tab:red', linewidth=1.5)
     # sns.lineplot(B5W_dt, x='Hour', y='mean', ax=ax1, color='blue', linestyle='--', linewidth= 1.5)
     ax1.set_xticks(range(24), labels=labels_hours, rotation=90)
     ax1.text(1.02,-0.45,'Time (h)', transform=ax1.transAxes)
+    
+    # fig = plt.figure(figsize=(3.4, 1.9))
+    # plt.rcParams['axes.spines.right'] = False
+    # gs = gridspec.GridSpec(2,1,height_ratios=[2,1])       
+    # ax1 = fig.add_subplot(gs[1],sharex=ax1)
+    # ax1.figsize=(3.4,2)
+    # ax1.set_ylim(124000*0.9,185814)
+    # ax1.set_yticks([124e3*0.9,124e3,185814])
+    # ax1.axhline(w_lim,color='#AFAFAF', alpha=1, linewidth=1)
+    # ax1.axhline(124000,color='#AFAFAF', alpha=1, linewidth=1)
+    # ax1.axhline(124e3*0.95, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
+    # ax1.axhline(124e3*1.05, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
+    # sns.lineplot(df_W, x='t', y='B5.W', ax=ax1, color='tab:red', linewidth=1.5)
+    # # sns.lineplot(B5W_dt, x='Hour', y='mean', ax=ax1, color='blue', linestyle='--', linewidth= 1.5)
+    # ax1.set_xticks(range(24), labels=labels_hours, rotation=90)
+    # ax1.text(1.02,-0.45,'Time (h)', transform=ax1.transAxes)
     
     
     df.plot(y=['Pump2.Qout','Irrigation1.Qin','Rev1.Qout'], kind='line', stacked=True, ax=ax1, ylabel='Q (m$^3$/s)',
