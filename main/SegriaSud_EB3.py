@@ -31,8 +31,10 @@ from pyomo.network import Arc, Port
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump, RealPumpS
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Pumps import Pump, RealPump
+#ReversiblePump, ReversibleRealPump, RealPumpS
+from Devices.Turbines import Turbine
+#DiscreteTurbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -57,9 +59,9 @@ df_cons_jan = pd.read_excel('data/irrigation/EB5_irrigation_w.xlsx')
 df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv')
 
 
-df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1-0.3*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_jan['Excedentes_cut'] = df_grid_jan['Excedentes']*(1*df_grid_jan['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 # df_grid_jan['Excedentes'] = df_grid_jan['Excedentes_cut']
-df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1-0.3*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
+df_grid_aug['Excedentes_cut'] = df_grid_aug['Excedentes']*(1*df_grid_aug['Hour'].apply(lambda x: 1 if (x in [8,9,10,11,12,13,14,15,16]) else 0))
 # df_grid_aug['Excedentes'] = df_grid_aug['Excedentes_cut']
 
 
@@ -126,20 +128,20 @@ data_B4 = {'dt':3600, 'W0':230e3, 'Wmin':0.9*230e3, 'Wmax':270e3, 'zmin':420.19+
 init_B4 = {'Q':[0]*T, 'W':[230e3]*T}
 Reservoir(m.B4w, m.tw, data_B4, init_B4)
 Reservoir(m.B4s, m.ts, data_B4, init_B4)
-data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.95*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':0.95*160e3, 'WT_max':1.02*160e3}
+data_B5s = {'dt':3600, 'W0':160e3, 'Wmin':0.90*160e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*160e3/185814, 'zmax':450.5, 'WT_min':1*160e3, 'WT_max':1.03*160e3}
 init_B5s = {'Q':[0]*T, 'W':[160e3]*T}
-data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.95*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':0.95*124e3, 'WT_max':1.02*124e3}
+data_B5w = {'dt':3600, 'W0':124e3, 'Wmin':0.90*124e3, 'Wmax':185814, 'zmin':444.1+(450.5-444.1)*0.9*124e3/185814, 'zmax':450.5, 'WT_min':1*124e3, 'WT_max':1.03*124e3}
 init_B5w = {'Q':[0]*T, 'W':[124e3]*T}
 Reservoir(m.B5w, m.tw, data_B5w, init_B5w)
 Reservoir(m.B5s, m.ts, data_B5s, init_B5s)
 
 data_c1 = {'K':6.1042, 'Qmax':1.2} # canal
-init_c1 = {'Q':[0]*T, 'H':[108]*T, 'H0':[108]*T, 'zlow':[30]*T, 'zhigh':[138]*T}
+init_c1 = {'Q':[0]*T, 'H':[20]*T, 'H0':[20]*T, 'zlow':[425]*T, 'zhigh':[445]*T}
 Pipe(m.Pipe1w, m.tw, data_c1, init_c1)
 Pipe(m.Pipe1s, m.ts, data_c1, init_c1)
 
 data_p = {'A':37.84, 'B':38.88, 'n_n':998, 'nmax':1, 'eff':0.861, 'eff_t':0.5, 'S':0.24*0.24*3.14, 'Qmin':0.5947, 'Qmax':1.2436, 'Qnom':0.4691, 'Pmax':160e3} # pumps (both equal)
-init_p = {'Q':[0]*T, 'H':[37]*T, 'n':[0.99]*T, 'Pe':[0]*T}
+init_p = {'Q':[0]*T, 'H':[20]*T, 'n':[0.99]*T, 'Pe':[0]*T}
 RealPump(m.Pump1w, m.tw, data_p, init_p)
 RealPump(m.Pump1s, m.ts, data_p, init_p)
 data_p['eff']=0.84
@@ -150,7 +152,7 @@ RealPump(m.Pump2s, m.ts, data_p, init_p)
 # RealPump(m.Pump3s, m.ts, data_p, init_p) 
 
 data_t = {'eff':0.5, 'Pmax':160e3}
-init_t = {'Q':[0]*T, 'H':[37]*T, 'Pe':[0]*T}
+init_t = {'Q':[0]*T, 'H':[20]*T, 'Pe':[0]*T}
 Turbine(m.Turb1w, m.tw, data_t, init_t)
 Turbine(m.Turb1s, m.ts, data_t, init_t)
 
@@ -169,23 +171,23 @@ Grid(m.Grids, m.ts, {'Pmax':100e6}) # grid
 
 EB(m.EBgw, m.tw)
 EB(m.EBgs, m.ts)
-EB(m.EBpvw, m.tw)
-EB(m.EBpvs, m.ts)
+# EB(m.EBpvw, m.tw)
+# EB(m.EBpvs, m.ts)
 
-def ConstraintPumpTurbw(m, t):
-    return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
-m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
+# def ConstraintPumpTurbw(m, t):
+#     return m.Turb1w.Qin[t] * (m.Pump1w.PumpOn[t] + m.Pump2w.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbw = pyo.Constraint(m.tw, rule=ConstraintPumpTurbw)
 
-def ConstraintPumpTurbs(m, t):
-    return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
-m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
+# def ConstraintPumpTurbs(m, t):
+#     return m.Turb1s.Qin[t] * (m.Pump1s.PumpOn[t] + m.Pump2s.PumpOn[t]) == 0
+# m.Turb1_c_PumpTurbs = pyo.Constraint(m.ts, rule=ConstraintPumpTurbs)
 
-def ConstraintPump2w(m, t):
-    return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
-m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
-def ConstraintPump2s(m, t):
-    return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
-m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
+# def ConstraintPump2w(m, t):
+#     return m.Pump2w.Qin[t] * m.Pump1w.PumpOn[t] == 0
+# m.Turb1_c_Pump2w = pyo.Constraint(m.tw, rule=ConstraintPump2w)
+# def ConstraintPump2s(m, t):
+#     return m.Pump2s.Qin[t] * m.Pump1s.PumpOn[t] == 0
+# m.Turb1_c_Pump2s = pyo.Constraint(m.ts, rule=ConstraintPump2s)
 
 # def ConstraintBatEws(m):
 #     return m.Batw.Edim == m.Bats.Edim
@@ -201,8 +203,8 @@ m.Bats.Edim.fix(0)
 m.Batw.Pdim.fix(0)
 m.Bats.Pdim.fix(0)
 
-m.Turb1s.Pdim.fix(160e3)
-m.Turb1w.Pdim.fix(110e3)
+# m.Turb1s.Pdim.fix(160e3)
+# m.Turb1w.Pdim.fix(110e3)
 
 # m.PVw.Pdim.fix(0)
 
@@ -275,7 +277,7 @@ import time
 # Objective function
 def obj_fun(m):
     return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-             m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+              m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2  for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
 
     # return sum( m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6 for t in l_t ) + (m.Bats.Pdim*cp_bat + m.Bats.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
     # return sum( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
@@ -285,18 +287,29 @@ def obj_fun(m):
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
+instance.write(filename='instance.nl', io_options={'symbolic_solver_labels':True})
+
+# read_sol(m, instance, symbol_map_filename, suffixes=[".*"])
 
 start_time = time.time()
 
- 
-os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
-solver_manager = pyo.SolverManagerFactory('neos')
-results = solver_manager.solve(instance, solver="knitro")
-results = solver_manager.solve(instance, solver="couenne")
-results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
-results = solver_manager.solve(instance, solver="bonmin")
-results = solver_manager.solve(instance, solver="minlp")
-results.write()
+with open("bonmin.opt", "w") as file:
+    file.write('''bonmin.algorithm B-Ecp
+               bonmin.ecp_abs_tol 0.0001
+               bonmin.warm_start optimum
+               tol 0.0001
+                ''')
+solver = pyo.SolverFactory('bonmin')
+results = solver.solve(instance, keepfiles= True, tee=True)
+
+# os.environ['NEOS_EMAIL'] = 'carla.cinto@upc.edu'
+# solver_manager = pyo.SolverManagerFactory('neos')
+# results = solver_manager.solve(instance, solver="knitro")
+# results = solver_manager.solve(instance, solver="couenne")
+# results = solver_manager.solve(instance, solver="ipopt", options_string='max_iter=10000000')
+# results = solver_manager.solve(instance, solver="bonmin")
+# results = solver_manager.solve(instance, solver="minlp")
+# results.write()
 
 # with open("couenne.opt", "w") as file:
 #     file.write('''time_limit 100000
@@ -321,6 +334,139 @@ results.write()
 # results = solver.solve(instance, tee=True)
 
 exec_time = time.time() - start_time
+#%%
+import pyomo.environ
+from pyomo.core import ComponentUID
+from pyomo.opt import ProblemFormat, ReaderFactory, ResultsFormat
+from pyomo.core.base.var import _GeneralVarData
+from pyomo.core import SymbolMap
+from six.moves import cPickle as pickle
+
+def write_nl(model, nl_filename, **kwds):
+    symbol_map_filename = nl_filename + ".symbol_map.pickle"
+    _, smap_id = model.write(nl_filename, format=ProblemFormat.nl, io_options=kwds)
+    symbol_map = model.solutions.symbol_map[smap_id]
+
+    tmp_buffer = {}  # To speed up the process
+
+    symbol_cuid_pairs = tuple(
+        (symbol, ComponentUID(var, cuid_buffer=tmp_buffer))
+        for symbol, var_weakref in symbol_map.bySymbol.items()
+        if isinstance((var := var_weakref()), _GeneralVarData)  # Filter only variables
+    )
+
+    with open(symbol_map_filename, "wb") as f:
+        pickle.dump(symbol_cuid_pairs, f)
+
+    return symbol_map_filename
+
+# Reading .sol file and returning results --- 
+def read_sol(model, sol_filename, symbol_map_filename, suffixes=[".*"]):
+    if suffixes is None:
+        suffixes = []
+
+    with ReaderFactory(ResultsFormat.sol) as reader:
+        results = reader(sol_filename, suffixes=suffixes)
+
+    with open(symbol_map_filename, "rb") as f:
+        symbol_cuid_pairs = pickle.load(f)
+
+    symbol_map = SymbolMap()
+    symbol_map.addSymbols((cuid.find_component(model), symbol) for symbol, cuid in symbol_cuid_pairs)
+    results._smap = symbol_map
+
+    return results
+
+# Reading the .col file to extract variable names
+def read_col_file(col_filename):
+    with open(col_filename, "r") as col_file:
+        variable_names = [line.strip() for line in col_file.readlines()]
+    return variable_names
+
+def sol_read(filename, model):
+    
+    """
+    Reads a .sol solution file and returns a DataFrame with the variables.
+
+    Parameters: 
+        filename (str): Name of the file without extension. Note that all .nl, .sol, and .col must have the same name.
+        model (pyomo.environ.AbstractModel): Pyomo model with variables and parameters.
+
+    Returns:
+        pd.DataFrame: DataFrame with variables and their values for each step time.
+        str: Status description from the solver.
+    """
+
+    # Generating mapping file 
+    
+    # --- If Var not initialized, initialize to 0
+    for v in model.component_objects(pyomo.environ.Var, active=True):
+        for index in v:
+            if v[index].value is None:
+                v[index].set_value(0.0)  # Initialize variables to 0 if they have no value
+
+    # 1. Reading symbol_map_filename
+    nl_filename = filename + '.nl'
+    col_filename = filename + '.col'
+    symbol_map_filename = write_nl(model, nl_filename)
+
+    # 2. Reading .sol
+    sol_filename = filename + ".sol"
+    symbol_map_filename = filename + ".nl.symbol_map.pickle"
+    results = read_sol(model, sol_filename, symbol_map_filename)
+
+    # Extract solver condition directly from results
+    condition = results['Solver'][0]
+    # 3. Reading variable names from .col file
+    variable_names = read_col_file(col_filename)
+
+    # 4. Reading the variable values from the .sol file
+    variable_values = {}
+
+    for solution in results['Solution']:
+        for idx, (var, value) in enumerate(solution['Variable'].items()):
+            if idx < len(variable_names):  # Ensure there is a mapping available
+                real_var_name = variable_names[idx]  # Assign the correct name from .col
+                variable_values[real_var_name] = value['Value']  # Store in dictionary
+
+    # 5. Organizing data for DataFrame
+    organized_data = {}
+    max_time_index = 0
+
+    for var, value in variable_values.items():
+        # Extract base variable name without temporal index
+        if '[' in var and ']' in var:
+            base_name = var.split('[')[0]
+            time_index = int(var.split('[')[1].split(']')[0])
+        else:
+            base_name = var
+            time_index = 0  # Non-temporal variable
+
+        # Initialize variable list
+        if base_name not in organized_data:
+            organized_data[base_name] = []
+
+        while len(organized_data[base_name]) <= time_index:
+            organized_data[base_name].append(None)
+
+        organized_data[base_name][time_index] = value
+
+        max_time_index = max(max_time_index, time_index)
+
+    # 6. Adjusting variable index
+    for key in organized_data:
+        while len(organized_data[key]) <= max_time_index:
+            organized_data[key].append(None)
+
+    # 7. Converting to data frame
+    df = pd.DataFrame()
+    df = pd.DataFrame(organized_data)
+
+    # Return the DataFrame and a clear condition message
+    return df, condition
+
+#%%
+df, condition = sol_read('instance', m)
 
 #%% GET RESULTS
 from Utilities import get_results
