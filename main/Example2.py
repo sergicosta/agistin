@@ -40,7 +40,7 @@ m.t = pyo.Set(initialize=l_t)
 # electricity cost
 l_cost = [10,5,1,5,10]
 m.cost = pyo.Param(m.t, initialize=l_cost)
-cost_new_pv = 2
+cost_new_pv = 1.5
 
 
 # ===== Create the system =====
@@ -107,12 +107,16 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
 instance.Grid.P.pprint()
+
+instance.PV.Pinst.pprint()
 instance.PV.Pdim.pprint()
+instance.PV.P.pprint()
+
 
 
 

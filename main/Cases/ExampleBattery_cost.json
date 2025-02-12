@@ -1,0 +1,7 @@
+{
+"cost_MainGrid":[10, 5, 1, 5, 10],
+"cost_PumpNew":[10],
+"cost_Turb1":[2],
+"cost_PV1":[10],
+"cost_Battery1":[10]
+}

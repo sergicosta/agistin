@@ -61,7 +61,8 @@ def data_parser(NameTest, dt):
     df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
     df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
     df_cost = pd.read_excel(f'Cases/{NameTest}_cost.xlsx', sheet_name=None)
-    special = ['SolarPV','Source', 'Battery_MV']
+    #special = ['SolarPV','Source','Battery_MV']
+    special = ['Source', 'Battery_MV']
     T = df_time['Reservoir'].shape[0]
     
     with open(f'Cases/{NameTest}.json', 'w') as f:

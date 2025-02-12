@@ -53,7 +53,7 @@ m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
 
 instance = m.create_instance()
 solver = pyo.SolverFactory('ipopt')
-solver.solve(instance, tee=False)
+solver.solve(instance, tee=True)
 
 instance.Reservoir1.W.pprint()
 instance.Reservoir0.W.pprint()
@@ -61,7 +61,14 @@ instance.Grid.P.pprint()
 instance.Grid.Psell.pprint()#
 instance.Grid.Pbuy.pprint()
 
+instance.PV.Pinst.pprint()
 instance.PV.Pdim.pprint()
+instance.PV.P.pprint()
+
+instance.Pump1.Pe.pprint()
+instance.Pump2.Pe.pprint()
+
+instance.Pump1.Ph.pprint()
 
 # RESULTS
     # W : Size=5, Index=t
