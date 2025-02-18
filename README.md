@@ -96,6 +96,3 @@ in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1â€
   doi={10.1109/OSMSES62085.2024.10668997}
 }
 ```
-## License
-
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
