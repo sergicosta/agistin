@@ -1,3 +1,5 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # AGISTIN Task 4.6 Optimization Tool
 
 [<img src="https://www.agistin.eu/wp-content/uploads/2022/10/AGISTIN_logo_1.png" height="128px" align="center" alt="AGISTIN logo">](https://www.agistin.eu)
@@ -23,7 +25,6 @@ The tool runs in [Python](https://www.python.org/) and uses the [Pyomo](http://w
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributors](#contributors)
-- [License](#license)
 
 ## Installation
 
@@ -95,3 +96,6 @@ in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1â€
   doi={10.1109/OSMSES62085.2024.10668997}
 }
 ```
+## License
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
