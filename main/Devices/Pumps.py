@@ -78,12 +78,16 @@ def Pump(b, t, data, init_data):
     b.npmax = pyo.Param(initialize=data['nmax'])
 
     # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
+    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']],
+                    bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(
+        0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
-    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-    
+    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']],
+                   bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
+    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
+        0, data['Pmax']), within=pyo.NonNegativeReals)
+
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
@@ -94,7 +98,7 @@ def Pump(b, t, data, init_data):
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
-    
+
     def Constraint_H(_b, _t):
         return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
@@ -108,12 +112,11 @@ def Pump(b, t, data, init_data):
     b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
 
 
-
 def RealPump(b, t, data, init_data):
     """
     In RealPump it's added the working flow limits of the pump.  
     Be wary of binary variables when choosing a solver.
-    
+
     It's introduced :math:`Q_{max}` and :math:`Q_{min}` which determines the working limits.
 
     :param b: pyomo ``Block()`` to be set
@@ -177,15 +180,20 @@ def RealPump(b, t, data, init_data):
     b.npmax = pyo.Param(initialize=data['nmax'])
 
     # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'],  bounds=(0, data['A']), within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
-    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
+    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']],
+                    bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(
+        0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'],  bounds=(
+        0, data['A']), within=pyo.NonNegativeReals)
+    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']],
+                   bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
+    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
+        0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
     # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
-
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(
+        0, data['nmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -201,11 +209,10 @@ def RealPump(b, t, data, init_data):
     # def Constraint_H(_b, _t):
     #     return _b.H[_t] == _b.npu2[_t]*_b.A - _b.B*_b.Qout[_t]**2
     # b.c_H = pyo.Constraint(t, rule=Constraint_H)
-    
+
     def Constraint_H(_b, _t):
         return _b.H[_t] <= _b.npmax**2*_b.A - _b.B*_b.Qout[_t]**2
     b.c_H = pyo.Constraint(t, rule=Constraint_H)
-
 
     def Constraint_Ph(_b, _t):
         return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qout[_t]
@@ -218,11 +225,11 @@ def RealPump(b, t, data, init_data):
     def Constraint_Qmax(_b, _t):
         return _b.Qout[_t] <= _b.Qmax * _b.PumpOn[_t]
     b.c_Qmax = pyo.Constraint(t, rule=Constraint_Qmax)
-    
+
     def Constraint_Qmin(_b, _t):
         return _b.Qout[_t] >= _b.Qmin * _b.PumpOn[_t]
     b.c_Qmin = pyo.Constraint(t, rule=Constraint_Qmin)
-    
+
     # def Constraint_onoff(_b, _t):
     #     return _b.PumpOn[_t]*(1-_b.PumpOn[_t]) == 0
     # b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
@@ -231,12 +238,12 @@ def RealPump(b, t, data, init_data):
 def RealPumpControlled(b, t, data, init_data):
     """   
     In RealPumpControlled, three working regimes are added depending on the height (z) between the surfaces of the reservoirs.
-        
+
     :param b: pyomo ``Block()`` to be set
     :param t: pyomo ``Set()`` referring to time
     :param data: data ``dict``
     :param init_data: init_data ``dict``
-    
+
     data
          - 'A': Constant characteristic coefficient of the pump :math:`A`
          - 'B': Quadratic characteristic coefficient of the pump :math:`B`
@@ -267,7 +274,7 @@ def RealPumpControlled(b, t, data, init_data):
             - eff
             - zmin
 
-            
+
         - Variables:
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}]`
@@ -278,13 +285,13 @@ def RealPumpControlled(b, t, data, init_data):
             - PumpOn (t) bounded :math:`PumpOn =  [0,1]`
             - aux (t) bounded :math:`aux = [0,1]`
             - Qcontrol (t) bounded :math:`Q_{control} \in [Q_{min},{Q_{max}}]`
-            
+
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
             - port_Qout @ Qout with 'Q' as ``Extensive``
             - port_P @ Pe with 'P' as ``Extensive``
             - port_H @ H with 'H' as ``Equality``
-            
+
         - Constraints:
             - c_Q: :math:`Q_{in}(t) = - Q_{out}(t)`
             - c_H: :math:`H(t) = (n(t)/n_n)^2\cdot A - B \cdot Q_{out}(t)^2`
@@ -312,14 +319,18 @@ def RealPumpControlled(b, t, data, init_data):
     b.Qin = pyo.Var(
         t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'], bounds=(0, 35), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'], bounds=(
+        0, 35), within=pyo.NonNegativeReals)
     b.n = pyo.Var(t, initialize=init_data['n'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
-    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
+    b.Ph = pyo.Var(t, initialize=init_data['Pe'], bounds=(
+        0, data['Pmax']), within=pyo.NonNegativeReals)
+    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
+        0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    b.Qcontrol = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
-    b.aux = pyo.Var(t,initialize=1, within=pyo.Binary)
-    
+    b.Qcontrol = pyo.Var(
+        t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
+    b.aux = pyo.Var(t, initialize=1, within=pyo.Binary)
+
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
@@ -335,8 +346,8 @@ def RealPumpControlled(b, t, data, init_data):
     Q_bep = b.Qbep * b.Qnom
     Q_pmax = b.Qpmax * b.Qnom
 
-    Domain_PTS = [0,20,20,30,30,35]  # Z1,Z2,Z3,z4
-    Range_PTS = [Q_min,Q_min,Q_min,Q_bep,Q_bep,Q_pmax]
+    Domain_PTS = [0, 20, 20, 30, 30, 35]  # Z1,Z2,Z3,z4
+    Range_PTS = [Q_min, Q_min, Q_min, Q_bep, Q_bep, Q_pmax]
 
     b.con = Piecewise(
         t,
@@ -345,11 +356,12 @@ def RealPumpControlled(b, t, data, init_data):
         pw_pts=Domain_PTS,    # Domain points
         pw_constr_type='EQ',  # 'EQ' - Q variable is equal to the piecewise function
         f_rule=Range_PTS,     # Range points
-        pw_repn='DCC',        # + 'DCC' - Disaggregated convex combination model.
+        # + 'DCC' - Disaggregated convex combination model.
+        pw_repn='DCC',
         unbounded_domain_var=True)  # Indicates the type of piecewise representation to use
 
-
     # Constraints
+
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
@@ -370,18 +382,18 @@ def RealPumpControlled(b, t, data, init_data):
         return _b.Qout[_t] == _b.Qcontrol[_t] * _b.PumpOn[_t] * _b.aux[_t]
     b.c_Qcontrol = pyo.Constraint(t, rule=Constraint_Control)
 
-    def Constraint_Hmin1(_b,_t):
+    def Constraint_Hmin1(_b, _t):
         return _b.H[_t] >= _b.zmin * _b.aux[_t]
-    b.c_hmin  =pyo.Constraint(t, rule=Constraint_Hmin1)
+    b.c_hmin = pyo.Constraint(t, rule=Constraint_Hmin1)
 
-    def Constraint_Hmin2(_b,_t):
+    def Constraint_Hmin2(_b, _t):
         return _b.zmin >= _b.H[_t] * (1 - _b.aux[_t])
-    b.c_hmin2 = pyo.Constraint(t,rule = Constraint_Hmin2)
-    
-    def Constraint_Binary(_b,_t):
+    b.c_hmin2 = pyo.Constraint(t, rule=Constraint_Hmin2)
+
+    def Constraint_Binary(_b, _t):
         return _b.PumpOn[_t] + _b.aux[_t] >= 1
     b.c_bins = pyo.Constraint(t, rule=Constraint_Binary)
-    
+
 
 def DiscretePump(b, t, data, init_data):
     """
@@ -391,7 +403,7 @@ def DiscretePump(b, t, data, init_data):
         2. OFF.
     The model allows for the activation of an integer number of pumps ranging from 0 to "N".
     The total power consumed by the system is directly proportional to the number of pumps that are ON.
-    
+
     It's introduced :math:`P_{n}` wich is the individual nominal power of the pump and :math:`N_{pumps}` the maximum number of pumps that can be associated.
 
     :param b: pyomo ``Block()`` to be set
@@ -436,16 +448,18 @@ def DiscretePump(b, t, data, init_data):
 
     # Parameters
     b.eff = pyo.Param(initialize=data['eff'])
-    b.Pn = pyo.Param( initialize=data['Pn'])
+    b.Pn = pyo.Param(initialize=data['Pn'])
     b.Npumps = pyo.Param(initialize=data['Npumps'])
 
     # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
+    b.Qin = pyo.Var(
+        t, initialize=[-k for k in init_data['Q']], within=pyo.NonPositiveReals)
     b.Qout = pyo.Var(t, initialize=init_data['Q'], within=pyo.NonNegativeReals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals)
-    b.Ph = pyo.Var(t, initialize=init_data['Pe'],within=pyo.NonNegativeReals)
+    b.Ph = pyo.Var(t, initialize=init_data['Pe'], within=pyo.NonNegativeReals)
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], within=pyo.NonNegativeReals)
-    b.N_on = pyo.Var(t, initialize=0, within=pyo.Integers, bounds=(0, data['Npumps']))
+    b.N_on = pyo.Var(t, initialize=0, within=pyo.Integers,
+                     bounds=(0, data['Npumps']))
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -453,31 +467,30 @@ def DiscretePump(b, t, data, init_data):
     b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
     b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
 
+    # Constraints
 
-    #Constraints
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
-    
+
     def Constraint_Pe(_b, _t):
         return _b.Pe[_t] == _b.Pn * _b.N_on[_t]
-    b.c_Pe = pyo.Constraint(t, rule = Constraint_Pe)
-    
+    b.c_Pe = pyo.Constraint(t, rule=Constraint_Pe)
+
     def Constraint_Ph(_b, _t):
         return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qout[_t]
     b.c_Ph = pyo.Constraint(t, rule=Constraint_Ph)
-    
+
     def Constraint_eff(_b, _t):
         return _b.Pe[_t] == _b.Ph[_t]/_b.eff
     b.c_eff = pyo.Constraint(t, rule=Constraint_eff)
-    
-    
+
 
 def LinealizedPump(b, t, data, init_data):
     """
     In RealPump it's added the working flow limits of the pump.  
     Be wary of binary variables when choosing a solver.
-    
+
     It's introduced :math:`Q_{max}` and :math:`Q_{min}` which determines the working limits.
 
     :param b: pyomo ``Block()`` to be set
@@ -540,78 +553,132 @@ def LinealizedPump(b, t, data, init_data):
     b.Qmax = pyo.Param(initialize=data['Qmax']*data['Qnom'])
     b.npmax = pyo.Param(initialize=data['nmax'])
     b.intervals = pyo.Param(initialize=data['intervals'])
-    
-    # Variables
-    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']], bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
-    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
-    b.H = pyo.Var(t, initialize=init_data['H'],  bounds=(0, data['A']), within=pyo.NonNegativeReals)
-    b.Hfix = pyo.Var(t, initialize=init_data['H'],  bounds=(0, data['A']), within=pyo.NonNegativeReals)
 
-    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']], bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
-    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(0, data['Pmax']), within=pyo.NonNegativeReals)
+    # Variables
+    b.Qin = pyo.Var(t, initialize=[-k for k in init_data['Q']],
+                    bounds=(-data['Qmax']*data['Qnom'], 0), within=pyo.NonPositiveReals)
+    b.Qout = pyo.Var(t, initialize=init_data['Q'], bounds=(
+        0, data['Qmax']*data['Qnom']), within=pyo.NonNegativeReals)
+    b.H = pyo.Var(t, initialize=init_data['H'],  bounds=(
+        0, data['A']), within=pyo.NonNegativeReals)
+    b.Hfix = pyo.Var(t, initialize=init_data['H'],  bounds=(
+        0, data['A']), within=pyo.NonNegativeReals)
+
+    b.Ph = pyo.Var(t, initialize=[k*data['eff'] for k in init_data['Pe']],
+                   bounds=(0, data['Pmax']*data['eff']), within=pyo.NonNegativeReals)
+    b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
+        0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
     # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(0,data['nmax']), within=pyo.NonNegativeReals)
-
+    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(
+        0, data['nmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
     b.port_Qout = Port(initialize={'Q': (b.Qout, Port.Extensive)})
     b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
     b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
-    
-    
-    
-    x0 = []
-    
-    for i in range(1,b.intervals+1):
-        x0.append(b.Qmin + (i-1/2)*(b.Qmax-b.Qmin)/b.intervals)
-    
 
-    fpoints = []
-    for i in range(1,b.intervals.value+1):
-        fpoints.append((b.Qmax-b.Qmin)/b.intervals + (b.Qmin*i))    
-    
-    
-    HH=[]
-    for i in range(b.intervals.value+1):
-        if i == 0 :
-            ft = b.A* b.npmax.value**2 -x0[i]**2*b.B - 2*x0[i]*b.B*(b.Qmin-x0[0])
-        elif i == len(b.intervals)+1:
-            ft = b.A.value * b.npmax.value**2 - x0[len(x0)-1]**2 * b.B.value - 2 * x0[len(x0)-1] * b.B.value * (b.Qmax.value - x0[len(x0)-1])
-            
-        else:
-            ft = b.A* b.npmax.value**2 -x0[i-1]**2*b.B - 2*x0[i-1]*b.B*(fpoints[i-1]-x0[i-1])
-        HH.append(ft)
-    
-    # H and Qpoints vector creation
-    H=[HH[0]]
-    for i in range(1,len(HH)-1):
-        H.extend([HH[i], HH[i]])  # Añadimos HH[i] dos veces
-    H.append(HH[b.intervals.value])
+    # x0 = []
 
-    Qpoints = [0]
-    for i in range(1,len(fpoints)):
-        Qpoints.extend([fpoints[i-1],fpoints[i-1]])
-        
-    Qpoints.append(b.Qmax)
+    # for i in range(1, b.intervals+1):
+    #     x0.append(b.Qmin + (i-1/2)*(b.Qmax-b.Qmin)/b.intervals)
 
-        
-    Domain_PTS = Qpoints
-    Range_PTS = H
-    
-    b.con = Piecewise(
-        t,
-        b.H,  # variable
-        b.Qout,  # range and domain variables
-        pw_pts=Domain_PTS,    # Domain points
-        pw_constr_type='UB',  # UB - y variable is bounded above by piecewise function
-        f_rule=Range_PTS,     # Range points
-        pw_repn='SOS2',        # + 'SOS2' Standard representation using sos2 constraints.
-        unbounded_domain_var=True)# Allow an unbounded or partially bounded Pyomo Var to be used as the domain variable. 
+    # fpoints = []
+    # for i in range(1, b.intervals.value+1):
+    #     fpoints.append((b.Qmax-b.Qmin)/b.intervals + (b.Qmin*i))
 
-    
+    # HH = []
+    # for i in range(b.intervals.value+1):
+    #     if i == 0:
+    #         ft = b.A * b.npmax.value**2 - \
+    #             x0[i]**2*b.B - 2*x0[i]*b.B*(b.Qmin-x0[0])
+    #     elif i == len(b.intervals)+1:
+    #         ft = b.A.value * b.npmax.value**2 - \
+    #             x0[len(x0)-1]**2 * b.B.value - 2 * x0[len(x0)-1] * \
+    #             b.B.value * (b.Qmax.value - x0[len(x0)-1])
+
+    #     else:
+    #         ft = b.A * b.npmax.value**2 - \
+    #             x0[i-1]**2*b.B - 2*x0[i-1]*b.B*(fpoints[i-1]-x0[i-1])
+    #     HH.append(ft)
+
+    # # H and Qpoints vector creation
+    # H = [HH[0]]
+    # for i in range(1, len(HH)-1):
+    #     H.extend([HH[i], HH[i]])  # Añadimos HH[i] dos veces
+    # H.append(HH[b.intervals.value])
+
+    # Qpoints = [0]
+    # for i in range(1, len(fpoints)):
+    #     Qpoints.extend([fpoints[i-1], fpoints[i-1]])
+
+    # Qpoints.append(b.Qmax)
+
+    # Domain_PTS = Qpoints
+    # Range_PTS = H
+
+    # # Domain_PTS = [0, 0.05780176, 0.05780176, 0.09255176,
+    # #               0.09255176, 0.12]  # Reemplaza 0.12 si es necesario
+    # # Range_PTS = [117.3864353220961, 109.14095811137571, 109.14095811137571,
+    # #               88.32785475962848, 88.32785475962848, 63.62146227646453]
+
+    # b.Domain_PTS = Domain_PTS
+    # b.Range_PTS = Range_PTS
+    # b.con = Piecewise(
+    #     t,
+    #     b.H,  # variable
+    #     b.Qout,  # range and domain variables
+    #     pw_pts=Domain_PTS,    # Domain points
+    #     pw_constr_type='UB',  # UB - y variable is bounded above by piecewise function
+    #     f_rule=Range_PTS,     # Range points
+    #     # + 'SOS2' Standard representation using sos2 constraints.
+    #     pw_repn='SOS2',
+    #     unbounded_domain_var=True)  # Allow an unbounded or partially bounded Pyomo Var to be used as the domain variable.
+
     # Constraints
+    
+    def pump_curve(Q, A, B, npmax):
+        return npmax**2 * A - B * Q**2
+    
+    # Restricción con tres rectas equidistantes
+    def Constraint_H_linealized(_b, _t, i):
+        A = _b.A.value  
+        B = _b.B.value
+        Qmin = _b.Qmin.value  
+        Qmax = _b.Qmax.value 
+        npmax = _b.npmax.value
+        
+        # Definimos los tres puntos: Qmin, Qaux1, Qaux2, Qmax
+        Q_aux1 = Qmin + (Qmax - Qmin) / 3
+        Q_aux2 = Qmin + 2 * (Qmax - Qmin) / 3
+        Q_points = [Qmin, Q_aux1, Q_aux2, Qmax]
+         
+        if i >= len(Q_points)-1:
+            return pyo.Constraint.Skip  # Evita el IndexError si i excede el número de rectas
+        
+        # Obtener el punto de caudal para esta recta
+        Q0 = Q_points[i]
+        Q1 = Q_points[i + 1]
+        
+        # Calcular la altura en el punto Q0 usando la curva de la bomba
+        H_Q0 = pump_curve(Q0, A, B, npmax)
+        H_Q1 = pump_curve(Q1, A, B, npmax)
+        
+        # Calcular la pendiente de la recta entre los puntos Q0 y Q1
+        m = (H_Q1 - H_Q0) / (Q1 - Q0)
+        
+        # Ecuación de la recta entre Q0 y Q1
+        recta = m * (_b.Qout[_t] - Q0) + H_Q0
+        
+        # La restricción es que la altura no debe exceder la recta
+        return _b.H[_t] <= recta
+    
+    # Definir la restricción con el número adecuado de rectas (3 rectas)
+    b.c_H_linealized = pyo.Constraint(t, range(3), rule=Constraint_H_linealized)
+
+
+
     def Constraint_Q(_b, _t):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule=Constraint_Q)
@@ -627,12 +694,13 @@ def LinealizedPump(b, t, data, init_data):
     def Constraint_Qmax(_b, _t):
         return _b.Qout[_t] <= _b.Qmax * _b.PumpOn[_t]
     b.c_Qmax = pyo.Constraint(t, rule=Constraint_Qmax)
-    
+
     def Constraint_Qmin(_b, _t):
         return _b.Qout[_t] >= _b.Qmin * _b.PumpOn[_t]
     b.c_Qmin = pyo.Constraint(t, rule=Constraint_Qmin)
-    
+
     # def Constraint_onoff(_b, _t):
     #     return _b.PumpOn[_t]*(1-_b.PumpOn[_t]) == 0
     # b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
 
+    # return b, Domain_PTS, Range_PTS
