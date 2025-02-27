@@ -7,9 +7,10 @@ Pump pyomo block contains characteristics of a pump.
 
 
 import pyomo.environ as pyo
-
+import numpy as np
 from pyomo.network import Arc, Port
 from pyomo.core import *
+
 
 # data: A, B, n_n, eff, Qmax, Qnom, Pmax
 # init_data: Q(t), H(t), n(t), Pe(t)
@@ -488,11 +489,15 @@ def DiscretePump(b, t, data, init_data):
 
 def LinealizedPump(b, t, data, init_data):
     """
-    In RealPump it's added the working flow limits of the pump.  
+    In LinealizedPump, the quadratic Q-H relationship is approximated using multiple linear segments, minimizing computational effort.  
     Be wary of binary variables when choosing a solver.
 
-    It's introduced :math:`Q_{max}` and :math:`Q_{min}` which determines the working limits.
-
+    The parameters :math:Q_{max} and :math:Q_{min} are introduced to define the operating limits, 
+    along with the number of linear segments :math:n used for the approximation.
+    Note that the curve can be approximated with a maximum of 4 intervals. 
+    The approximation is obtained by dividing the distance between :math:Q_{max} and :math:Q_{min} into :math:n equal parts, 
+    and placing the points directly on the original Q-H curve.
+  
     :param b: pyomo ``Block()`` to be set
     :param t: pyomo ``Set()`` referring to time
     :param data: data ``dict``
@@ -506,6 +511,7 @@ def LinealizedPump(b, t, data, init_data):
          - 'Qmax': Maximum allowed flow (in p.u. of Qnom) :math:`Q_{max}`
          - 'Qmin': Minimum working flow (in p.u. of Qnom) :math:`Q_{min}`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
+         - 'intervals': Number of straights for the approximation :math:`n`
 
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list``
@@ -521,6 +527,7 @@ def LinealizedPump(b, t, data, init_data):
             - eff
             - Qmin
             - Qmax
+            - intervals
         - Variables:
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{n}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{n}]`
@@ -529,6 +536,7 @@ def LinealizedPump(b, t, data, init_data):
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
             - PumpOn (t) :math:`b_{ON}(t) \in \{0,1\}`
+
 
         - Ports:
             - port_Qin @ Qin with 'Q' as ``Extensive``
@@ -543,6 +551,7 @@ def LinealizedPump(b, t, data, init_data):
             - c_Qmax: :math:`Q_{out}(t) \leq Q_{n} \, Q_{max} \, b_{ON}(t)`
             - c_Qmin: :math:`Q_{out}(t) \geq Q_{n} \, Q_{min} \, b_{ON}(t)`
     """
+
 
     # Parameters
     b.A = pyo.Param(initialize=data['A'])
@@ -579,104 +588,39 @@ def LinealizedPump(b, t, data, init_data):
     b.port_P = Port(initialize={'P': (b.Pe, Port.Extensive)})
     b.port_H = Port(initialize={'H': (b.H, Port.Equality)})
 
-    # x0 = []
-
-    # for i in range(1, b.intervals+1):
-    #     x0.append(b.Qmin + (i-1/2)*(b.Qmax-b.Qmin)/b.intervals)
-
-    # fpoints = []
-    # for i in range(1, b.intervals.value+1):
-    #     fpoints.append((b.Qmax-b.Qmin)/b.intervals + (b.Qmin*i))
-
-    # HH = []
-    # for i in range(b.intervals.value+1):
-    #     if i == 0:
-    #         ft = b.A * b.npmax.value**2 - \
-    #             x0[i]**2*b.B - 2*x0[i]*b.B*(b.Qmin-x0[0])
-    #     elif i == len(b.intervals)+1:
-    #         ft = b.A.value * b.npmax.value**2 - \
-    #             x0[len(x0)-1]**2 * b.B.value - 2 * x0[len(x0)-1] * \
-    #             b.B.value * (b.Qmax.value - x0[len(x0)-1])
-
-    #     else:
-    #         ft = b.A * b.npmax.value**2 - \
-    #             x0[i-1]**2*b.B - 2*x0[i-1]*b.B*(fpoints[i-1]-x0[i-1])
-    #     HH.append(ft)
-
-    # # H and Qpoints vector creation
-    # H = [HH[0]]
-    # for i in range(1, len(HH)-1):
-    #     H.extend([HH[i], HH[i]])  # Añadimos HH[i] dos veces
-    # H.append(HH[b.intervals.value])
-
-    # Qpoints = [0]
-    # for i in range(1, len(fpoints)):
-    #     Qpoints.extend([fpoints[i-1], fpoints[i-1]])
-
-    # Qpoints.append(b.Qmax)
-
-    # Domain_PTS = Qpoints
-    # Range_PTS = H
-
-    # # Domain_PTS = [0, 0.05780176, 0.05780176, 0.09255176,
-    # #               0.09255176, 0.12]  # Reemplaza 0.12 si es necesario
-    # # Range_PTS = [117.3864353220961, 109.14095811137571, 109.14095811137571,
-    # #               88.32785475962848, 88.32785475962848, 63.62146227646453]
-
-    # b.Domain_PTS = Domain_PTS
-    # b.Range_PTS = Range_PTS
-    # b.con = Piecewise(
-    #     t,
-    #     b.H,  # variable
-    #     b.Qout,  # range and domain variables
-    #     pw_pts=Domain_PTS,    # Domain points
-    #     pw_constr_type='UB',  # UB - y variable is bounded above by piecewise function
-    #     f_rule=Range_PTS,     # Range points
-    #     # + 'SOS2' Standard representation using sos2 constraints.
-    #     pw_repn='SOS2',
-    #     unbounded_domain_var=True)  # Allow an unbounded or partially bounded Pyomo Var to be used as the domain variable.
 
     # Constraints
     
     def pump_curve(Q, A, B, npmax):
         return npmax**2 * A - B * Q**2
     
-    # Restricción con tres rectas equidistantes
     def Constraint_H_linealized(_b, _t, i):
         A = _b.A.value  
         B = _b.B.value
         Qmin = _b.Qmin.value  
         Qmax = _b.Qmax.value 
         npmax = _b.npmax.value
-        
-        # Definimos los tres puntos: Qmin, Qaux1, Qaux2, Qmax
-        Q_aux1 = Qmin + (Qmax - Qmin) / 3
-        Q_aux2 = Qmin + 2 * (Qmax - Qmin) / 3
-        Q_points = [Qmin, Q_aux1, Q_aux2, Qmax]
-         
-        if i >= len(Q_points)-1:
-            return pyo.Constraint.Skip  # Evita el IndexError si i excede el número de rectas
-        
-        # Obtener el punto de caudal para esta recta
+        intervals = _b.intervals.value  
+        intervals = min(intervals, 4)
+    
+        Q_points = np.linspace(Qmin, Qmax, intervals + 1)
+    
+        if i >= intervals:
+            return pyo.Constraint.Skip  
+    
         Q0 = Q_points[i]
         Q1 = Q_points[i + 1]
-        
-        # Calcular la altura en el punto Q0 usando la curva de la bomba
+    
         H_Q0 = pump_curve(Q0, A, B, npmax)
         H_Q1 = pump_curve(Q1, A, B, npmax)
-        
-        # Calcular la pendiente de la recta entre los puntos Q0 y Q1
+    
         m = (H_Q1 - H_Q0) / (Q1 - Q0)
-        
-        # Ecuación de la recta entre Q0 y Q1
+    
         recta = m * (_b.Qout[_t] - Q0) + H_Q0
-        
-        # La restricción es que la altura no debe exceder la recta
+    
         return _b.H[_t] <= recta
     
-    # Definir la restricción con el número adecuado de rectas (3 rectas)
-    b.c_H_linealized = pyo.Constraint(t, range(3), rule=Constraint_H_linealized)
-
+    b.c_H_linealized = pyo.Constraint(t, range(4), rule=Constraint_H_linealized)
 
 
     def Constraint_Q(_b, _t):
@@ -699,8 +643,3 @@ def LinealizedPump(b, t, data, init_data):
         return _b.Qout[_t] >= _b.Qmin * _b.PumpOn[_t]
     b.c_Qmin = pyo.Constraint(t, rule=Constraint_Qmin)
 
-    # def Constraint_onoff(_b, _t):
-    #     return _b.PumpOn[_t]*(1-_b.PumpOn[_t]) == 0
-    # b.c_onoff = pyo.Constraint(t, rule=Constraint_onoff)
-
-    # return b, Domain_PTS, Range_PTS
