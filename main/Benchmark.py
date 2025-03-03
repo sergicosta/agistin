@@ -106,7 +106,7 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump, LinealizedPump
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -238,7 +238,7 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump, LinealizedPump
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -489,7 +489,7 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump, LinealizedPump
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -740,7 +740,7 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump, LinealizedPump
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
@@ -992,7 +992,7 @@ from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
 from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
-from Devices.Turbines import Turbine, DiscreteTurbine
+from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
 from Devices.MainGrid import Grid
