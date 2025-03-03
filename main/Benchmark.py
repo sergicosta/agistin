@@ -991,7 +991,7 @@ del m, instance, T, l_t, df_out, df_param, df_size, results, file, exec_time
 from Devices.Reservoirs import Reservoir
 from Devices.Sources import Source
 from Devices.Pipes import Pipe
-from Devices.Pumps import Pump, RealPump, ReversiblePump, ReversibleRealPump
+from Devices.Pumps import Pump, RealPump, LinealizedPump
 from Devices.Turbines import Turbine
 from Devices.EB import EB
 from Devices.SolarPV import SolarPV
