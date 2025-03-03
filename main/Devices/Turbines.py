@@ -29,6 +29,7 @@ def Turbine(b, t, data, init_data):
          - 'eff': Efficiency of the turbine :math:`\eta`
          - 'Pmax': Maximum allowed power :math:`P_{max}`
          - 'Qmax': Maximum allowed flow :math:`Q_{max}`
+         - 'H_approx': Approximation for head :math:`\hat{H}` (optional)
     
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
@@ -81,8 +82,12 @@ def Turbine(b, t, data, init_data):
         return _b.Qin[_t] == -_b.Qout[_t]
     b.c_Q = pyo.Constraint(t, rule = Constraint_Q)
     
-    def Constraint_Ph(_b, _t):
-        return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qin[_t]
+    if('H_approx' in data):
+        def Constraint_Ph(_b, _t):
+            return _b.Ph[_t] == 9810*data['H_approx']*_b.Qin[_t]
+    else:
+        def Constraint_Ph(_b, _t):
+            return _b.Ph[_t] == 9810*_b.H[_t]*_b.Qin[_t]
     b.c_Ph = pyo.Constraint(t, rule = Constraint_Ph)
     
     def Constraint_Pe(_b, _t):
