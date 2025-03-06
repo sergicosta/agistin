@@ -55,54 +55,48 @@ def MeteoAPI2df(var,long,lat,days):
     return df
 
 
-
 def REEAPI2df(start_date, end_date):
-    ''' 
-    PVPC prices €/MWh in advanced and historical, source:REE. 
-    2 inputs:
-        
-        start_date = 2024-07-23T00:00
-        end_date = 2024-07-23T10:00
-    
-    Web info: https://www.ree.es/es/apidatos 
-
-    '''
     import json
     import requests
+    import pandas as pd
 
     uri = "https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date="+start_date+"&end_date="+end_date+"&time_trunc=hour"
     
     def download_and_read_json(uri):
         try:
             response = requests.get(uri)
-            response.raise_for_status()  
+            response.raise_for_status()
+            
+            if not response.content.strip():
+                print(f"Empty response for {uri}")
+                return None
     
-            data = response.json()
-    
-            return data
+            return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Download error: {e}")
+            return None
         except ValueError as e:
             print(f"Error reading JSON file: {e}")
+            return None
         
     
     json_data = download_and_read_json(uri)
-    
+
     values_list = []
-    for item in json_data["included"]:
-        if item["type"] == "PVPC (€/MWh)" and "attributes" in item and "values" in item["attributes"]:
+    for item in json_data.get("included", []):
+        if item["type"] == "PVPC" and "attributes" in item and "values" in item["attributes"]:
             values_list.extend(item["attributes"]["values"])
-    
-    # Convertir la lista en un DataFrame
-    df = pd.DataFrame(values_list)
-    
-    # Convertir la columna 'datetime' a formato de fecha y hora
-    df['datetime'] = pd.to_datetime(df['datetime'], format='%Y-%m-%dT%H:%M:%S.%f%z')
-    
-    # Formatear la columna 'datetime' a 'yyyy-mm-dd hh:mm'
-    df['datetime'] = df['datetime'].dt.strftime('%Y-%m-%d %H:%M')
-    
+
+    if values_list:
+        df = pd.DataFrame(values_list)
+        df['datetime'] = pd.to_datetime(df['datetime'], format='%Y-%m-%dT%H:%M:%S.%f%z',utc=True)
+        df['datetime'] = df['datetime'].dt.strftime('%Y-%m-%d %H:%M')
+    else:
+        df = pd.DataFrame()
+
     return df
+
+
 
 
 def clear_clc(): 
