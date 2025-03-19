@@ -31,6 +31,8 @@ def Pipe(b, t, data, init_data):
     data
          - 'K': Linear pressure loss coefficient of the pipe :math:`K`
          - 'Qmax': Maximum allowed flow :math:`Q_{max}`
+         - 'zlow_bounds': zmin and zmax of the lower reservoir as a ``tuple`` (optional)
+         - 'zhigh_bounds': zmin and zmax of the upper reservoir as a ``tuple`` (optional)
          
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
@@ -68,11 +70,19 @@ def Pipe(b, t, data, init_data):
     b.K = pyo.Param(initialize=data['K'])
     b.Qmax = pyo.Param(initialize=data['Qmax'])
     
+    
+    zlow_bounds = (0, None)
+    zhigh_bounds = (0, None)
+    if 'zlow_bounds' in data:
+        zlow_bounds = data['zlow_bounds']
+    if 'zhigh_bounds' in data:
+        zhigh_bounds = data['zhigh_bounds']
+    
     # Variables
     b.Q = pyo.Var(t, initialize=init_data['Q'], bounds=(-data['Qmax'], data['Qmax']), within=pyo.Reals)
     b.H = pyo.Var(t, initialize=init_data['H'], within=pyo.NonNegativeReals) 
-    b.zlow = pyo.Var(t, initialize=init_data['zlow'], within=pyo.NonNegativeReals) 
-    b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], within=pyo.NonNegativeReals) 
+    b.zlow = pyo.Var(t, initialize=init_data['zlow'], bounds=zlow_bounds, within=pyo.NonNegativeReals) 
+    b.zhigh = pyo.Var(t, initialize=init_data['zhigh'], bounds=zhigh_bounds, within=pyo.NonNegativeReals) 
     # b.signQ = pyo.Var(t, initialize=1, within=pyo.Binary)
     b.Qp = pyo.Var(t, initialize=init_data['Q'], bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
     b.Qn = pyo.Var(t, initialize=0, bounds=(0, data['Qmax']),within=pyo.NonNegativeReals)
