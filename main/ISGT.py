@@ -407,7 +407,7 @@ for df in [df_S, df_W]:
     ax1.axhline(0,color='k',label='_hidden')
     ax1.set_ylim(-200,200)
     bars = ax1.patches
-    patterns =(None, None, None, None, 'xxxxxx')
+    patterns =(None, None, None, None, None)#'xxxxxx')
     hatches = [p for p in patterns for i in range(len(df))]
     for bar, hatch in zip(bars, hatches):
         bar.set_hatch(hatch)
