@@ -322,6 +322,7 @@ file = './results/ISGT/Base'
 df_out, df_param, df_size = get_results(file=file+'/ISGT', instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 
 #%% PLOTS
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -338,7 +339,7 @@ labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','
 
 cbcolors = sns.color_palette('colorblind')
 
-file = 'Base/ISGT'
+file = 'results/ISGT/Base/ISGT'
 
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
 df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv').head(24)
@@ -348,10 +349,15 @@ df_cons_jan = pd.read_csv('data/irrigation/LesPlanes_irrigation_jan.csv').head(2
 df_grid_jan = pd.read_csv('data/costs/PVPC_jan.csv').head(24)
 
 
-df_param = pd.read_csv('results/ISGT/'+file+'_param.csv')
+df_param = pd.read_csv(file+'_param.csv')
 w_lim = df_param['Reservoir1w.Wmin'][0]
+w_min = df_param['Reservoir1w.Wmin'][0]
+w_minT = df_param['Reservoir1w.WTmin'][0]
+w_max = df_param['Reservoir1w.Wmax'][0]
+w_maxT = df_param['Reservoir1w.WTmax'][0]
 
-df = pd.read_csv('results/ISGT/'+file+'.csv')
+
+df = pd.read_csv(file+'.csv')
 df['PVw.Pf'] = -df_meteo_jan['Irr']/1000*215.28e3*0.98
 df['PVs.Pf'] = -df_meteo_aug['Irr']/1000*215.28e3*0.98
 
@@ -392,20 +398,21 @@ for df in [df_S, df_W]:
     
     fig = plt.figure(figsize=(3.4, 1.8))
     plt.rcParams['axes.spines.right'] = True
+    plt.rcParams['hatch.linewidth'] = 0.2
     ax1 = fig.add_subplot(1,1,1)
     df.apply(lambda x: x/1000).plot(y=['PV.Pf'], kind='bar', ax=ax1, stacked=False, ylabel='P (kW)', 
-                                color='#C0E3C0', alpha=1, edgecolor=None)
-    df.apply(lambda x: x/1000).plot(y=['PV.P','Pump2.Pe','Rev1.Pe'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)',
-                                color=[cbcolors[2],cbcolors[0],cbcolors[1]], edgecolor=None)
-    ax1.axhline(0,color='k')
+                                color='#C0E3C0', alpha=1, edgecolor=None, label=['$\hat{P}_{PV}$'])
+    df.apply(lambda x: x/1000).plot(y=['PV.P','Pump2.Pe','Rev1.Pe','Grid.P'], kind='bar', stacked=True, ax=ax1, ylabel='P (kW)',
+                                color=[cbcolors[2],cbcolors[0],cbcolors[1],cbcolors[7]], edgecolor=None, label=['$P_{PV}$','$P_{p,PV}$','$P_{p,g}$','$P_{g}$'])
+    ax1.axhline(0,color='k',label='_hidden')
     ax1.set_ylim(-200,200)
     bars = ax1.patches
-    patterns =(None, None, None, None)
+    patterns =(None, None, None, None, 'xxxxxx')
     hatches = [p for p in patterns for i in range(len(df))]
     for bar, hatch in zip(bars, hatches):
         bar.set_hatch(hatch)
-    ax1.legend(['_','$\hat{P}_{PV}$','$P_{PV}$','$P_{p,PV}$','$P_{p,g}$'],loc='upper center', bbox_to_anchor=(0.5, -0.18),
-          fancybox=False, shadow=False, ncol=4)
+    ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.18),
+          fancybox=False, shadow=False, ncol=5, columnspacing=1, handletextpad=0.3)
     
     ax2 = plt.twinx()
     ax2.set_ylim(45,300)
@@ -421,9 +428,9 @@ for df in [df_S, df_W]:
     plt.show()
     
     plt.rcParams['savefig.format']='pdf'
-    plt.savefig('results/ISGT/' + file + season[i] + '_P', dpi=300)
+    plt.savefig(file + season[i] + '_P', dpi=300)
     plt.rcParams['savefig.format']='svg'
-    plt.savefig('results/ISGT/' + file + season[i] + '_P', dpi=300)
+    plt.savefig(file + season[i] + '_P', dpi=300)
     
     
     
@@ -448,12 +455,12 @@ for df in [df_S, df_W]:
     
     ax2 = fig.add_subplot(gs[1],sharex=ax1)
     ax2.figsize=(3.4,2)
-    ax2.set_ylim(7500,14000)
-    ax2.set_yticks([8000,10000,13000])
-    ax2.axhline(w_lim,color='#AFAFAF', alpha=1, linewidth=1)
-    ax2.axhline(13000,color='#AFAFAF', alpha=1, linewidth=1)
-    ax2.axhline(10000*0.95, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
-    ax2.axhline(10000*1.05, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
+    # ax2.set_ylim(7500,14000)
+    # ax2.set_yticks([8000,10000,13000])
+    ax2.axhline(w_min,color='#AFAFAF', alpha=1, linewidth=1)
+    ax2.axhline(w_max,color='#AFAFAF', alpha=1, linewidth=1)
+    ax2.axhline(w_minT, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
+    ax2.axhline(w_maxT, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
     sns.lineplot(df, x='t', y='Reservoir1.W', ax=ax2, color='tab:red', linewidth=1.5)
     ax2.set_xticks(range(24), labels=labels_hours, rotation=90)
     ax2.text(1.02,-0.45,'Time (h)', transform=ax2.transAxes)
@@ -466,65 +473,102 @@ for df in [df_S, df_W]:
     plt.show()
 
     plt.rcParams['savefig.format']='pdf'
-    plt.savefig('results/ISGT/' + file + season[i] + '_Q', dpi=300)
+    plt.savefig(file + season[i] + '_Q', dpi=300)
     plt.rcParams['savefig.format']='svg'
-    plt.savefig('results/ISGT/' + file + season[i] + '_Q', dpi=300)
+    plt.savefig(file + season[i] + '_Q', dpi=300)
+    
+    
+    # PUMPS OPERATING POINT
+    fig = plt.figure(figsize=(3.4, 1.9))
+    ax1 = fig.add_subplot(1,1,1)
+        
+    sns.scatterplot(df, ax=ax1, x='Pump1.Qout', y='Pump1.H', marker='o', edgecolors=cbcolors[1], facecolors='none', linewidth=1)
+    sns.scatterplot(df, ax=ax1, x='Pump2.Qout', y='Pump2.H',color=cbcolors[0],marker='x', linewidth=1, legend=True)
+    
+    A = df_param['Pump1w.A'].squeeze()
+    B = df_param['Pump1w.B'].squeeze()
+    Qminpump = df_param['Pump1w.Qmin'].squeeze()
+    Qmaxpump = df_param['Pump1w.Qmax'].squeeze()
+    def Hpump(Q):
+        return A - B*Q**2
+    plt.vlines(Qminpump, 0, Hpump(Qminpump), 'tab:grey', linewidth=0.8)
+    plt.vlines(Qmaxpump, 0, Hpump(Qmaxpump), 'tab:grey', linewidth=0.8)
+    plt.vlines(0, 0, A, 'tab:grey', linewidth=0.8)
+    Qpump = np.linspace(Qminpump,Qmaxpump,50)
+    plt.plot(Qpump,Hpump(Qpump), 'tab:grey', linewidth=0.8)
+    Qpump = np.linspace(0,Qmaxpump*1.05,60)
+    plt.plot(Qpump,Hpump(Qpump), 'tab:grey', linestyle=':', linewidth=0.8)
+
+    ax1.set_ylim(0,A*1.05)
+    ax1.set_xlim(0,Qmaxpump*1.05)
+    ax1.legend(['Pump (g)', 'Pump (PV)'], ncols=2, loc='upper center', bbox_to_anchor=(0.5, -0.31),
+          fancybox=False, shadow=False)
+    
+    plt.ylabel('$H$ (m)')
+    plt.xlabel(r'$Q$ (m$^3$/s) €')
+    plt.subplots_adjust(left=0.18, right=0.84, top=0.97, bottom=0.35)
+    plt.show()
+    
+    plt.rcParams['savefig.format']='pdf'
+    plt.savefig(file + season[i] + '_pump', dpi=300)
+    plt.rcParams['savefig.format']='svg'
+    plt.savefig(file + season[i] + '_pump', dpi=300)
     
     
     i=i+1
 
 
 
-df = pd.read_csv('data/Analogiques.csv')
-df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
-df['month'] = df['date'].dt.month
-df['weekday'] = df['date'].dt.dayofweek
-df['Volum bassa'] = df['Nivell bassa']*13000/4.5
-df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
-df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
-df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
-df['Qreg_lag'] = df['Qreg'].shift(-1)
-df['diff'] = df['Qreg_lag'] - df['Qreg']
+# df = pd.read_csv('data/Analogiques.csv')
+# df['date'] = pd.to_datetime(df['Fecha'], format='%Y/%m/%d')
+# df['month'] = df['date'].dt.month
+# df['weekday'] = df['date'].dt.dayofweek
+# df['Volum bassa'] = df['Nivell bassa']*13000/4.5
+# df['Qdiff'] = df['Volum bassa'] - df['Volum bassa'].shift(1) 
+# df['Qreg'] = df['Cabal impulsio'] - df['Qdiff']
+# df['Qreg'] = df['Qreg'].apply(lambda x: 0 if x<0 else x)
+# df['Qreg_lag'] = df['Qreg'].shift(-1)
+# df['diff'] = df['Qreg_lag'] - df['Qreg']
 
-df['Season'] = df['month']/4
-df['Season'] = df['Season'].astype(int)
-fig = plt.figure(figsize=(3.4, 2.3))
-sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
-plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
-plt.xlabel('Hour')
-plt.ylabel('Irrigation demand (m$^3$/h)')
-plt.xticks(range(24),labels=labels_hours, rotation=90)
-plt.xlim([0,24])
-plt.ylim([0,250])
-plt.tight_layout()
-plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
-plt.show()
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('results/ISGT/Irrigation_season', dpi=300)
+# df['Season'] = df['month']/4
+# df['Season'] = df['Season'].astype(int)
+# fig = plt.figure(figsize=(3.4, 2.3))
+# sns.lineplot(df, x='hour', y='Qreg', style='Season', color='tab:grey')
+# plt.legend(labels=['Winter','_','Spring','_','Summer','_','Fall','_'], ncol=1, loc='upper right')
+# plt.xlabel('Hour')
+# plt.ylabel('Irrigation demand (m$^3$/h)')
+# plt.xticks(range(24),labels=labels_hours, rotation=90)
+# plt.xlim([0,24])
+# plt.ylim([0,250])
+# plt.tight_layout()
+# plt.subplots_adjust(left=0.15, right=1, top=0.95, bottom=0.18)
+# plt.show()
+# plt.rcParams['savefig.format']='pdf'
+# plt.savefig('results/ISGT/Irrigation_season', dpi=300)
 
 
-for i in df.index:
-    if (df.iloc[i]['diff']<-50) and df.iloc[i]['hour']==0:
-        df.loc[i,'Qreg'] = df.iloc[i]['Qreg_lag']
+# for i in df.index:
+#     if (df.iloc[i]['diff']<-50) and df.iloc[i]['hour']==0:
+#         df.loc[i,'Qreg'] = df.iloc[i]['Qreg_lag']
     
-df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
-fig = plt.figure(figsize=(3.4, 1.1))
-sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
-plt.legend(labels=['S','_','W','_'], ncol=1)
-plt.text(24.5,-50,'Time (h)')
-plt.xlabel(None)
-plt.ylabel('Demand (m$^3$/h)')
-plt.xticks(range(24),labels=labels_hours, rotation=90)
-plt.yticks([0,100,200])
-# plt.ylim([0,200])
-plt.xlim([0,24])
-plt.tight_layout()
-plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
-plt.show()
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
-plt.rcParams['savefig.format']='svg'
-plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+# df['Winter'] = df['date'].apply(lambda x: 0 if (x.month in [3,4,5,6,7,8]) else 1)
+# fig = plt.figure(figsize=(3.4, 1.1))
+# sns.lineplot(df, x='hour', y='Qreg', style='Winter', hue='Winter', palette=[cbcolors[1],cbcolors[0]], errorbar=('ci',90))
+# plt.legend(labels=['S','_','W','_'], ncol=1)
+# plt.text(24.5,-50,'Time (h)')
+# plt.xlabel(None)
+# plt.ylabel('Demand (m$^3$/h)')
+# plt.xticks(range(24),labels=labels_hours, rotation=90)
+# plt.yticks([0,100,200])
+# # plt.ylim([0,200])
+# plt.xlim([0,24])
+# plt.tight_layout()
+# plt.subplots_adjust(left=0.15, right=0.84, top=0.92, bottom=0.22)
+# plt.show()
+# plt.rcParams['savefig.format']='pdf'
+# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
+# plt.rcParams['savefig.format']='svg'
+# plt.savefig('results/ISGT/Irrigation_WS', dpi=300)
 
 #%% (PARALLEL PUMP)
 
