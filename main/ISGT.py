@@ -339,7 +339,7 @@ labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','
 
 cbcolors = sns.color_palette('colorblind')
 
-file = 'results/ISGT/Base/ISGT'
+file = 'results/ISGT/Case3/ISGT'
 
 df_meteo_aug = pd.read_csv('data/meteo/LesPlanes_meteo_hour_aug.csv').head(24)
 df_cons_aug = pd.read_csv('data/irrigation/LesPlanes_irrigation_aug.csv').head(24)
@@ -391,7 +391,7 @@ df_S['Excedentes'] = df_grid_aug['Excedentes']
 df_W.columns = [col.replace('w.','.') for col in df_W.columns]
 df_S.columns = [col.replace('s.','.') for col in df_W.columns]
 
-#%%
+#%
 i=0
 season=['S','W']
 for df in [df_S, df_W]:
@@ -455,8 +455,8 @@ for df in [df_S, df_W]:
     
     ax2 = fig.add_subplot(gs[1],sharex=ax1)
     ax2.figsize=(3.4,2)
-    # ax2.set_ylim(7500,14000)
-    # ax2.set_yticks([8000,10000,13000])
+    ax2.set_ylim(7500,14000)
+    ax2.set_yticks([8000,10000,13000])
     ax2.axhline(w_min,color='#AFAFAF', alpha=1, linewidth=1)
     ax2.axhline(w_max,color='#AFAFAF', alpha=1, linewidth=1)
     ax2.axhline(w_minT, color='#AFAFAF', linestyle='--', alpha=1, linewidth=1)
