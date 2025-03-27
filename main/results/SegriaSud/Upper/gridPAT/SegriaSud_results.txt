@@ -9,7 +9,7 @@ Problem:
   Upper bound: inf
   Number of objectives: 1
   Number of constraints: 0
-  Number of variables: 3602
+  Number of variables: 3700
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
@@ -20,7 +20,7 @@ Solver:
   Termination condition: optimal
   Id: 0
   Error rc: 0
-  Time: 16.63406491279602
+  Time: 14.736939191818237
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -29,7 +29,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-16.706467390060425 s
+14.81082820892334 s
 
 GOAL VALUE:
--45.68157580660679
+-56.245427035489705
