@@ -152,7 +152,6 @@ def RealPump(b, t, data, init_data):
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{n}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{n}]`
             - H (t) bounded :math:`H \ge 0`
-            - npu2 (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
             - PumpOn (t) :math:`b_{ON}(t) \in \{0,1\}`
@@ -192,9 +191,6 @@ def RealPump(b, t, data, init_data):
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
         0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(
-        0, data['nmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
@@ -532,7 +528,6 @@ def LinealizedPump(b, t, data, init_data):
             - Qin (t) bounded :math:`Q_{in} \in [-Q_{max}\,Q_{n}, 0]`
             - Qout (t) bounded :math:`Q_{out} \in [0, Q_{max}\,Q_{n}]`
             - H (t) bounded :math:`H \ge 0`
-            - npu2 (t) bounded :math:`n \ge 0`
             - Ph (t) bounded :math:`P_h \in [0, P_{max}]`
             - Pe (t) bounded :math:`P_e \in [0, P_{max}]`
             - PumpOn (t) :math:`b_{ON}(t) \in \{0,1\}`
@@ -578,9 +573,6 @@ def LinealizedPump(b, t, data, init_data):
     b.Pe = pyo.Var(t, initialize=init_data['Pe'], bounds=(
         0, data['Pmax']), within=pyo.NonNegativeReals)
     b.PumpOn = pyo.Var(t, initialize=1, within=pyo.Binary)
-    # b.PumpOn = pyo.Var(t, initialize=1, bounds=(0,1), within=pyo.NonNegativeReals)
-    b.npu2 = pyo.Var(t, initialize=init_data['n'], bounds=(
-        0, data['nmax']), within=pyo.NonNegativeReals)
 
     # Ports
     b.port_Qin = Port(initialize={'Q': (b.Qin, Port.Extensive)})
