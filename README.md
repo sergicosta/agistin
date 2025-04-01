@@ -24,7 +24,7 @@ The tool runs in [Python](https://www.python.org/) and uses the [Pyomo](http://w
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributors](#contributors)
+- [Development](#development)
 
 ## Installation
 
@@ -62,26 +62,45 @@ Find usage examples at ``./AGISTIN tool usage examples.pdf`` ([here](./AGISTIN%2
 
 You may find the full documentation at ``./main/docs/_build/html/index.html`` [here](./main/docs/_build/html/index.html)
 
-## Contributors
-In alphabetical order:
+## Development
 
 [<img src="https://citcea.upc.edu/ca/shared/logos/citcea.png" height="48px" align="center" alt="CITCEA-UPC logo">](https://citcea.upc.edu/ca)
-* Carla Cinto Campmany (carla.cinto@upc.edu)
-* Sergi Costa Dilmé (sergi.costa.dilme@upc.edu)
+* Sergi Costa Dilmé* (sergi.costa.dilme@upc.edu)
+* Juan Carlos Olives Camps* (juan.carlos.olives@upc.edu)
 * Pau García Motilla (pau.garcia.motilla@upc.edu)
+* Carla Cinto Campmany (carla.cinto@upc.edu)
 * Paula Muñoz Peña (paula.munoz.pena@upc.edu)
-* Juan Carlos Olives Camps (juan.carlos.olives@upc.edu)
-* Eduardo Prieto Araujo (eduardo.prieto-araujo@upc.edu)
+* Eduardo Prieto Araujo* (eduardo.prieto-araujo@upc.edu)
 
-[<img src="https://www.epri.com/static/media/epri-logo-2021-white.324099d1.svg" height="32px" align="center" alt="EPRI logo">](https://www.epri.com/)
-* Daniel Pombo (dpombo@epri.com)
+(*: corresponding authors)
+
+### Other contributions
+* Daniel Pombo (dpombo@epri.com): Utilities.clear_clc() function and insights 
 
 ## Citation
 
 If used in a scientific publication, we appreciate you cite the following paper:
 
+### Complementary citations
+
+S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Redesign of Large-Scale Irrigation Systems for Flexible Energy Storage,”
+in 2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1–6, 2024 [[Link](https://www.doi.org/10.1109/isgteurope62998.2024.10863693)]
+
+```
+@INPROCEEDINGS{AGISTIN_ISGT2024,
+  author    = {Costa-Dilmé, Sergi and Olives-Camps, J. Carlos and Muñoz-Peña, Paula and García-Motilla, Pau and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
+  booktitle = {2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE)},
+  title     = {Redesign of Large-Scale Irrigation Systems for Flexible Energy Storage},
+  year      = {2024},
+  month     = oct,
+  pages     = {1--5},
+  publisher = {IEEE},
+  doi       = {10.1109/isgteurope62998.2024.10863693},
+}
+```
+
 S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
-in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024
+in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024 [[Link](https://www.doi.org/10.1109/OSMSES62085.2024.10668997)]
 
 ```
 @INPROCEEDINGS{AGISTIN_opt_tool,
@@ -89,8 +108,6 @@ in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1�
   booktitle={2024 Open Source Modelling and Simulation of Energy Systems (OSMSES)}, 
   title={Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}, 
   year={2024},
-  volume={},
-  number={},
   pages={1-6},
   keywords={Irrigation;Uncertainty;Object oriented modeling;Libraries;Demand response;Power systems;Optimization;Open source;Multi-physics simulation;Power system analysis;Optimisation tool;Python;Object-oriented;Irrigation systems},
   doi={10.1109/OSMSES62085.2024.10668997}
