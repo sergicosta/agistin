@@ -43,14 +43,15 @@ def spiderplot(data, y, base_idx=0, ax=plt, linestyle=None, markers=None):
 
 
 df = pd.read_excel('UpperCases.xlsx')
+cbase = 166.85
 
 plt.rcParams['axes.prop_cycle'] = plt.cycler(color=cbcolors)
 
 fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(figsize=(3.4, 2.2),nrows=2,ncols=2,sharex=True,sharey=True)
-ax1.axhline(203.1,color='k',linestyle='--',linewidth=0.5)
-ax2.axhline(203.1,color='k',linestyle='--',linewidth=0.5)
-ax3.axhline(203.1,color='k',linestyle='--',linewidth=0.5)
-ax4.axhline(203.1,color='k',linestyle='--',linewidth=0.5)
+ax1.axhline(cbase,color='k',linestyle='--',linewidth=0.5)
+ax2.axhline(cbase,color='k',linestyle='--',linewidth=0.5)
+ax3.axhline(cbase,color='k',linestyle='--',linewidth=0.5)
+ax4.axhline(cbase,color='k',linestyle='--',linewidth=0.5)
 spiderplot(df.query('case==\'Base\'').reset_index(drop=True)[['pateff','psell','irr','COST']],y='COST', ax=ax1, linestyle=['-','--',':'], markers=['.','.','.'])
 spiderplot(df.query('case==\'grid\'').reset_index(drop=True)[['pateff','psell','irr','COST']],y='COST',ax=ax2, linestyle=['-','--',':'], markers=['.','.','.'])
 spiderplot(df.query('case==\'PAT\'').reset_index(drop=True)[['pateff','psell','irr','COST']],y='COST',ax=ax3, linestyle=['-','--',':'], markers=['.','.','.'])
