@@ -10,6 +10,7 @@
 
 from pyomo.util.infeasible import log_infeasible_constraints
 import logging
+import os
 
 import pandas as pd
 import seaborn as sns
@@ -149,8 +150,8 @@ hf=24
 
 df_meteo = pd.DataFrame()
 df_grid =  pd.read_csv('data/costs/PVPC_jan.csv').iloc[ho:hf].reset_index(drop=True)
-df_meteo['Irr']  = summer_day_mean['Irr']
-df_load = - summer_day_mean['CT_Edificio1']
+df_meteo['Irr']  =  winter_day_mean['Irr']
+df_load = - winter_day_mean['CT_Edificio1']
 
 df_meteo.reset_index(drop=True, inplace=True)
 df_load.reset_index(drop=True, inplace=True)
@@ -172,6 +173,7 @@ l_excs = df_grid['Excedentes']
 m.costs = pyo.Param(m.ts, initialize=l_costs)
 m.excs = pyo.Param(m.ts, initialize=l_excs)
         
+
 cost_new_pv = 0.00126*T/1000
 cp_bat = 0.00171*T/1000
 ce_bat = 0.00856*T/1000
@@ -195,15 +197,15 @@ m.Pipe01Ts = pyo.Block()
 m.PVs = pyo.Block()
 m.Grids = pyo.Block()
 m.EBs = pyo.Block()
-m.Bats = pyo.Block()
-# m.BatsDim = pyo.Block()
+# m.Bats = pyo.Block()
+m.BatsDim = pyo.Block()
 m.Loads = pyo.Block()
 
 
 
 
-data_R0 = {'dt':3600, 'W0':2.5e3, 'Wmin':0, 'Wmax':2.5e3, 'zmin':1, 'zmax':4}
-init_R0 = {'Q':[0]*T, 'W':[2.5e3]*T}
+data_R0 = {'dt':3600, 'W0':2e3, 'Wmin':0, 'Wmax':2.1e3, 'zmin':1, 'zmax':4}
+init_R0 = {'Q':[0]*T, 'W':[2e3]*T}
 Reservoir(m.Reservoir0s, m.ts, data_R0, init_R0)
 
 
@@ -226,7 +228,7 @@ init_c2 = {'Q':[0]*T, 'H':[77]*T, 'H0':[77]*T, 'zlow':[2]*T, 'zhigh':[67]*T}
 Pipe(m.Pipe02s, m.ts, data_c2, init_c2)
 
 
-data_Source = {'Qmax':1}
+data_Source = {'Qmax':1,'Qmin':0}
 init_Source = {'Q':[0.0]*T,'Qin':[0]*T,'Qout':[0]*T}
 VarSource(m.VarSources, m.ts, data_Source, init_Source )
 
@@ -245,13 +247,17 @@ data_pvs = {'Pinst':16e3, 'Pmax':66e3, 'forecast':df_meteo['Irr']/1000, 'eff':0.
 
 SolarPV(m.PVs, m.ts, data_pvs)
 
-data_bat = {'dt':3600, 'E0':0e3, 'Emax':40e3*3600, 'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9,'Einst':0e3, 'Pinst':0e3}
-init_bat = {'E':[0e3]*T, 'P':[0]*T}
-NewBattery(m.Bats, m.ts, data_bat, init_bat)
+# data_bat = {'dt':1, 'Emax':400e3,'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9}
+# init_bat = {'E':[45e3]*T, 'P':[0]*T}
+# NewBattery(m.Bats, m.ts, data_bat, init_bat)
 
-# data_batdim = {'dt':3600, 'E0':0e3, 'Emax':40e3*3600, 'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9,'Einst':0e3, 'Pinst':0e3}
-# init_batdim = {'E':[0e3]*T, 'P':[0]*T}
-# NewBattery(m.BatsDim, m.ts, data_batdim, init_batdim)
+# m.Bats.Pdim.fix(90e3)
+# m.Bats.Edim.fix(400e3)
+
+
+data_batdim = {'dt':1,'Emax':400e3, 'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9}
+init_batdim = {'E':[45e3]*T, 'P':[0]*T}
+NewBattery(m.BatsDim, m.ts, data_batdim, init_batdim)
 
 
 Grid(m.Grids, m.ts, {'Pmax':100e3}) # grid
@@ -265,9 +271,9 @@ Load(m.Loads, m.ts, data_loads, {})
 EB(m.EBs, m.ts)
 
 
-# def ConstraintPumpOnOffs (m,ts):
-#     return m.Pump1s.Pe[ts] * m.Pump2s.Pe[ts] == 0
-# m.p1p2s = pyo.Constraint(m.ts, rule = ConstraintPumpOnOffs)
+def ConstraintPumpOnOffs (m,ts):
+    return m.Pump1s.Pe[ts] * m.Pump2s.Pe[ts] == 0
+m.p1p2s = pyo.Constraint(m.ts, rule = ConstraintPumpOnOffs)
 
 
 #Energy constraint
@@ -332,9 +338,9 @@ m.c21r1_Qs = Arc(ports=(m.VarSources.port_Qout, m.Reservoir1s.port_Q), directed=
 
 m.pvebs = Arc(ports=(m.PVs.port_P, m.EBs.port_P), directed=True)
 m.gridebs = Arc(ports=(m.Grids.port_P, m.EBs.port_P), directed=True)
-m.batebs = Arc(ports=(m.Bats.port_P, m.EBs.port_P), directed = True)
+# m.batebs = Arc(ports=(m.Bats.port_P, m.EBs.port_P), directed = True)
 m.loadebs = Arc(ports=(m.Loads.port_Pin, m.EBs.port_P), directed=True)
-# m.batebsdim = Arc(ports=(m.BatsDim.port_P, m.EBs.port_P), directed = True)
+m.batebsdim = Arc(ports=(m.BatsDim.port_P, m.EBs.port_P), directed = True)
 
 
 
@@ -348,28 +354,29 @@ import time
 
 # Objective function
 def obj_fun(m):
-    return sum((m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6) for t in l_t )+ m.PVs.Pdim*cost_new_pv # + (m.BatsDim.Pdim*cp_bat + m.BatsDim.Edim*ce_bat)
-
-# def obj_fun(m):
-#     return sum(( m.Gridw.Pbuy[t]*m.costw[t]/1e6 - m.Gridw.Psell[t]*m.excw[t]/1e6 + 
-#              m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6)/2 for t in l_t ) + (m.Batw.Pdim*cp_bat + m.Batw.Edim*ce_bat) #+ m.PV.Pdim*cost_new_pv
+    return sum((m.Grids.Pbuy[t]*m.costs[t]/1e6 - m.Grids.Psell[t]*m.excs[t]/1e6) for t in l_t )+ m.PVs.Pdim*cost_new_pv  + (m.BatsDim.Pdim*cp_bat + m.BatsDim.Edim*ce_bat)
 
 
 m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
-instance = m.create_instance()
 
-start_time = time.time()
+instance, results, exec_time = solve(m,'bonmin')
+
+
+# m.goal = pyo.Objective(rule=obj_fun, sense=pyo.minimize)
+# instance = m.create_instance()
+
+# start_time = time.time()
 
 # solver = pyo.SolverFactory('asl:couenne') #ipopt asl:couenne gdpopt.enumerate
 # solver.options['branch_fbbt'] = 'no'
 # solver.solve(instance, tee=True)
 
-os.environ['NEOS_EMAIL'] = 'pau.garcia.motilla@upc.edu'
-solver_manager = pyo.SolverManagerFactory('neos')
-# results = solver_manager.solve(instance, solver="knitro")
-results = solver_manager.solve(instance, solver="couenne")
-# results = solver_manager.solve(instance, solver="minlp")
-results.write()
+# os.environ['NEOS_EMAIL'] = 'pau.garcia.motilla@upc.edu'
+# solver_manager = pyo.SolverManagerFactory('neos')
+# # results = solver_manager.solve(instance, solver="knitro")
+# results = solver_manager.solve(instance, solver="couenne")
+# # results = solver_manager.solve(instance, solver="minlp")
+# results.write()
 
 # with open("couenne.opt", "w") as file:
 #     file.write('''time_limit 4000
@@ -379,12 +386,65 @@ results.write()
 #                 use_quadratic no
 #                 feas_tolerance 1e-1
 #                 ''')
+
 # solver = pyo.SolverFactory('asl:couenne')
 # results = solver.solve(instance, tee=True)
 # results.write()
 # os.remove('couenne.opt') #Delete options
  
-exec_time = time.time() - start_time
+#%%
+def solve(m, solver='couenne'):
+
+    instance = m.create_instance()
+
+    start_time = time.time()
+
+    # if 'neos' in solver:w
+    #     os.environ['NEOS_EMAIL'] = 'sergi.costa.dilme@upc.edu'
+    #     solver_manager = pyo.SolverManagerFactory('neos')
+        
+    if solver=='couenne':
+        with open("couenne.opt", "w") as file:
+            file.write('''time_limit 100000
+                        convexification_cuts 1
+                        convexification_points 2
+                        use_quadratic no
+                        feas_tolerance 1e-1
+                        ''')
+        solver = pyo.SolverFactory('asl:couenne')
+        results = solver.solve(instance, tee=True)
+        results.write()
+        os.remove('couenne.opt') #Delete options
+
+    # elif solver=='bonmin':
+    #     solver = pyo.SolverFactory('bonmin')
+    #     results = solver.solve(instance, tee=True)
+
+    # B-BB, B-OA, B-QG, B-Hyb, B-Ecp, B-iFP
+    elif solver=='bonmin':
+        with open("bonmin.opt", "w") as file:
+            file.write('''bonmin.algorithm B-ECP
+                       bonmin.ecp_abs_tol 0.0001
+                       bonmin.warm_start optimum
+                       tol 0.0001
+                        ''')
+        solver = pyo.SolverFactory('bonmin')
+        results = solver.solve(instance, tee=True)
+
+    elif solver=='ipopt':
+        solver = pyo.SolverFactory('ipopt')
+        solver.options['max_iter'] = 1000000
+        results = solver.solve(instance, tee=True)
+
+    elif solver=='neos_couenne':
+        results = solver_manager.solve(instance, solver="couenne")
+        
+    elif solver=='neos_knitro':
+        results = solver_manager.solve(instance, solver="knitro")
+
+    exec_time = time.time() - start_time
+    
+    return instance, results, exec_time
 
 #%%
 
@@ -403,14 +463,14 @@ instance.Grids.Pbuy.pprint()
 #%% GET RESULTS
 from Utilities import get_results
 
-file = './results/CEDER/Case3_24hSummer'
+file = './results/CEDER/Case2_24hWinter_ECP'
 df_out, df_param, df_size = get_results(file=file, instance=instance, results=results, l_t=l_t, exec_time=exec_time)
 #%%
 
 
 #Plots
 
-file = './results/CEDER/Case3_24hSummer'
+file = './results/CEDER/Case3_24hWinter_ECP'
 df_out = pd.read_csv(file+'.csv').drop('Unnamed: 0',axis=1)
 df_param = pd.read_csv(file+'_param.csv').drop('Unnamed: 0',axis=1)
 df_size = pd.read_csv(file+'_size.csv').drop('Unnamed: 0',axis=1)
@@ -418,11 +478,11 @@ df_size = pd.read_csv(file+'_size.csv').drop('Unnamed: 0',axis=1)
 
 cbcolors = sns.color_palette('colorblind')
 
-l_costs = df_grid['PVPC']
+df_out['Loads.Pin'] = -df_out['Loads.Pout']
 
-df_out['Loads.Pin'] = - df_out['Loads.Pout']
+df_out['Pumps.Pe'] = df_out['Pump1s.Pe']+df_out['Pump2s.Pe']
 
-df_melted = pd.melt(df_out, id_vars=['t'], value_vars=['Pump1s.Pe', 'PVs.P', 'Loads.Pin', 'Turb1s.Pe', 'Grids.P','Bats.P'],
+df_melted = pd.melt(df_out, id_vars=['t'], value_vars=['Pumps.Pe', 'PVs.P', 'Loads.Pin', 'Turb1s.Pe', 'Grids.P'],
                     var_name='Variable', value_name='Value')
 df_melted['Value'] = df_melted['Value'] / 1000
 
@@ -435,9 +495,11 @@ plt.rcParams.update({
     'axes.spines.right': False
 })
 
+labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
+
 
 variable_names = {
-    'Pump1s.Pe': 'Pumps',
+    'Pumps.Pe': 'Pumps',
     'PVs.P': 'PV',
     'Loads.Pin': 'Load',
     'Turb1s.Pe': 'Turbine',
@@ -445,34 +507,29 @@ variable_names = {
     'Bats.P': 'Battery'
 }
 
-# Reemplazar los nombres de las variables en el DataFrame
 df_melted['Variable'] = df_melted['Variable'].replace(variable_names)
 
-# Definir los colores específicos para cada variable utilizando la paleta 'colorblind' de seaborn
 colors_dict = {
-    'PV': sns.color_palette("colorblind")[2],  # Verde
-    'Pumps': sns.color_palette("colorblind")[0],  # Azul
-    'Grid': sns.color_palette("colorblind")[7],  # Gris
-    'Battery': sns.color_palette("colorblind")[4],  # Purple
-    'Load': sns.color_palette("colorblind")[5],  # Marrón
-    'Turbine': sns.color_palette("colorblind")[3]  # Azul claro
+    'PV': sns.color_palette("colorblind")[2],
+    'Pumps': sns.color_palette("colorblind")[0],
+    'Grid': sns.color_palette("colorblind")[7],
+    'Battery': sns.color_palette("colorblind")[4],
+    'Load': sns.color_palette("colorblind")[3],
+    'Turbine': sns.color_palette("colorblind")[1]
 }
 
-# Power balance plot
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(7, 6), gridspec_kw={'height_ratios': [3, 1]})  # Ajuste del tamaño a 7x4 pulgadas
+import matplotlib.lines as mlines
 
-# Pivotear el DataFrame y llenar valores faltantes con 0
+fig, ax1 = plt.subplots(figsize=(3.4, 2.4))  
+
 df_pivot = df_melted.pivot(index='t', columns='Variable', values='Value').fillna(0)
 
-# Reordenar columnas para que PV y Electrical Load estén primero
-column_order = ['PV', 'Load'] + [col for col in df_pivot.columns if col not in ['PV', 'Load']]
+column_order = ['PV', 'Load','Pumps'] + [col for col in df_pivot.columns if col not in ['PV', 'Load','Pumps']]
 df_pivot = df_pivot[column_order]
 
-# Separar valores positivos y negativos
 df_positive = df_pivot.clip(lower=0)
 df_negative = df_pivot.clip(upper=0)
 
-# Graficar las barras apiladas
 bottom_pos = np.zeros(len(df_positive))
 for col in df_positive.columns:
     ax1.bar(df_positive.index, df_positive[col], bottom=bottom_pos, label=col, color=colors_dict[col])
@@ -483,36 +540,43 @@ for col in df_negative.columns:
     ax1.bar(df_negative.index, df_negative[col], bottom=bottom_neg, color=colors_dict[col])
     bottom_neg += df_negative[col]
 
-# Línea horizontal en y=0
 ax1.axhline(0, color='black', linewidth=1)
-ax1.set_ylim(-55, 55)
+ax1.set_ylim(-45, 45)
 
-# Etiquetas y título
-ax1.set_title('Generated and Consumed Power', fontsize=14)
-ax1.set_xlabel('Time [Hours]', fontsize=12)
-ax1.set_ylabel('Power [kW]', fontsize=12)
+ax1.set_ylabel('P (kW)', fontsize=8, loc='center', labelpad=2)
+ax1.text(24.5,-55,'Time (h)')
+ax1.set_xticks(range(0, 24))
+ax1.set_xticklabels(labels_hours, fontsize=7, rotation=0)
 
-# Segunda gráfica con costos
-ax2.plot(df_out['t'], df_grid['PVPC'], color='black', marker='o', linestyle='dashed', linewidth=2, label='PVPC')
-ax2.plot(df_out['t'], df_grid['Excedentes'], color='red', marker='o', linestyle='dashed', linewidth=2, label='Selling price')
-ax2.set_ylabel('Price [€]', color='black', fontsize=12)
-ax2.set_xlabel('Time [Hours]', fontsize=12)
-ax2.tick_params(axis='y', labelcolor='black')
+ax1_twin = ax1.twinx()
 
+# Graficar las líneas principales
+ax1_twin.plot(df_out['t'], df_grid['PVPC'], color='tab:red', linestyle='solid', linewidth=1.5, label='$c_{buy,g}$')
+ax1_twin.plot(df_out['t'], df_grid['Excedentes'], color='tab:red', linestyle='dashed', linewidth=1.5, label='$c_{sell,g}$')
 
-# Leyenda para el gráfico de energía generada/consumida (ax1)
+# Agregar una línea blanca debajo de las líneas del lineplot para dar el efecto de borde
+ax1_twin.plot(df_out['t'], df_grid['PVPC'], color='white', linestyle='solid', linewidth=2.25, zorder=-1)
+ax1_twin.plot(df_out['t'], df_grid['Excedentes'], color='white', linestyle='dashed', linewidth=3, zorder=-1)
+
+ax1_twin.set_ylabel('Price (€/MWh)', fontsize=8, color='black')
+ax1_twin.tick_params(axis='y', labelcolor='black')
+
+ax1_twin.spines["right"].set_visible(True)
+ax1_twin.spines["right"].set_color("black")
+ax1_twin.spines["right"].set_linewidth(1)
+ax1_twin.set_ylim(45,300)
+
 handles1, labels1 = ax1.get_legend_handles_labels()
-ax1.legend(handles1, labels1, loc='upper center', bbox_to_anchor=(0.23, 1.01), ncol=3, fontsize=9)
+handles2, labels2 = ax1_twin.get_legend_handles_labels()
 
-# Leyenda separada para los precios (ax2)
-handles2, labels2 = ax2.get_legend_handles_labels()
-ax2.legend(handles2, labels2, loc='upper center', bbox_to_anchor=(0.2, 1), ncol=2, fontsize=9)
+handles = handles1 + handles2
+labels = labels1 + labels2
 
-# Ajustes finales
+ax1.legend(handles, labels, loc='upper center', fontsize=7, bbox_to_anchor=(0.5, -0.22),
+           fancybox=False, shadow=False, ncol=4)
+
 plt.tight_layout()
-
-# Guardar la figura
-plt.rcParams['savefig.format']='pdf'
+plt.rcParams['savefig.format'] = 'pdf'
 plt.savefig(file + 'Electrical', dpi=300)
 plt.show()
 
@@ -522,80 +586,125 @@ df = df_out
 colors = sns.color_palette("colorblind", len(df_pivot.columns))
 
 
-# 2n Plot, Volume and flow
 
-fig = plt.figure(figsize=(7, 4))  
+#----------------- 2nd Plot, Volume and Flow--------------------------
 
-fig.add_subplot(2, 1, 1)
-ax1 = sns.lineplot(data=df, x=df.index, y='Reservoir1s.W', label='R1', color=cbcolors[2], marker='^')
-sns.lineplot(data=df, x=df.index, y='Reservoir0s.W', label='R0', color=cbcolors[3], marker='v')
-sns.lineplot(data=df, x=df.index, y='Reservoir2s.W', label='R2', color=cbcolors[0], marker='x')
+fig = plt.figure(figsize=(3.4, 2.4))
 
-# Título y etiquetas ajustadas para buena legibilidad
-plt.title("Reservoirs level", fontsize=14)
-plt.xlabel('Time', fontsize=12)
-plt.ylabel('Volume [m3]', fontsize=12)
-
-ax2 = fig.add_subplot(2, 1, 2)
-df.plot(
-    y=['Pipe01s.Q', 'Pipe02s.Q', 'Turb1s.Qout'], 
+ax2 = fig.add_subplot(2, 1, 1)
+df[['Pipe01s.Q', 'Pipe02s.Q', 'Turb1s.Qout']].plot(
     kind='bar', 
     stacked=False, 
-    ylabel='Q', 
+    ylabel='Flow (m³/s)', 
     ax=ax2, 
     color=[cbcolors[2], cbcolors[1], cbcolors[0]], 
-    edgecolor='dimgray', 
-    label=['Pipe1', 'Pipe2', 'Turbine'], 
     sharex=True, 
-    width=1
+    width=1.5
 )
 
-ax2.legend()
-plt.xlabel('Time [Hours]', fontsize=12)
-plt.ylabel('Flow [m3/s]', fontsize=12)
+ax2.set_xlabel('', fontsize=8)
+ax2.set_ylabel('Flow (m³/s)', fontsize=8)
+ax2.set_xticklabels(labels_hours, fontsize=7, rotation=0) 
+ax2.legend(['Pipe1', 'Pipe2', 'Turbine'], fontsize=8, loc='upper center', bbox_to_anchor=(0.5, -0.28), ncol=3)
+ax2.text(24.5,-0.005,'Time (h)')
+
+fig.add_subplot(2, 1, 2)
+df_out['Reservoir0s.W'] = df_out['Reservoir0s.W']/2500*100
+df_out['Reservoir1s.W'] = df_out['Reservoir1s.W']/1500*100
+df_out['Reservoir2s.W'] = df_out['Reservoir2s.W']/500*100
+
+ax1 = sns.lineplot(data=df, x=df.index, y='Reservoir1s.W', label='R1', color=cbcolors[2], marker='^')
+sns.lineplot(data=df, x=df.index, y='Reservoir0s.W', label='R0', color=cbcolors[0], marker='v')
+sns.lineplot(data=df, x=df.index, y='Reservoir2s.W', label='R2', color=cbcolors[1], marker='x')
+
+# ax1.set_title("Reservoirs Level", fontsize=10)
+ax1.set_xticks(range(0, len(df)))
+ax1.set_xticklabels(labels_hours, fontsize=7, rotation=0)  # Asigna las etiquetas de las horas
+ax1.set_xlabel('', fontsize=8)
+ax1.set_ylabel('Volume (\%)', fontsize=8)
+ax1.text(24.5,-25,'Time (h)')
+ax1.legend(fontsize=8, loc='upper center', bbox_to_anchor=(0.5, -0.28), ncol=3)
+
+plt.subplots_adjust(hspace=0.35)
 
 plt.tight_layout()
 
-plt.rcParams['savefig.format']='pdf'
+plt.rcParams['savefig.format'] = 'pdf'
 plt.savefig(file + '_VQ', dpi=300)
+plt.show()
+
+
+#%% battery plot
+SOC = df_out['Bats.E']/400e3*100
+fig, ax = plt.subplots(figsize=(3.4, 2.4))  
+
+
+ax.axhline(80, color='black', linestyle='--', linewidth=1.5, zorder=5, clip_on=False)
+ax.axhline(10, color='black', linestyle='--', linewidth=1.5, zorder=5, clip_on=False)
+
+sns.lineplot(x=df_out['t'], y=SOC, color=cbcolors[4], ax=ax,marker='v')
+ax.set_xlabel('', fontsize=8)
+ax.set_ylabel('SOC (\%)', fontsize=8)
+ax.set_xticks(range(0, 24))
+ax.set_xticklabels(labels_hours, fontsize=8, rotation=0)
+ax.axhline(0, color='black', linewidth=1)
+
+ax.text(24.5,-10,'Time (h)',fontsize=8)
+
+
+plt.tight_layout()
+plt.subplots_adjust(bottom=0.4)
+ax.set_ylim(0, max(SOC) * 1.05)  
+plt.rcParams['savefig.format'] = 'pdf'
+plt.savefig(file + 'Bats_Energy', dpi=300)
+
 plt.show()
 
 
 #%%
 
 # Operating costs comparasison
+
+# Colores colorblind
+
 cbcolors = sns.color_palette('colorblind')
 
+# Datos
 df = pd.DataFrame({
     'Case': ['Case 1 Winter', 'Case 1 Summer', 'Case 2 Winter', 'Case 2 Summer', 'Case 3 Winter', 'Case 3 Summer'],
-    'Value': [24.9485, 18.1257, 11.36194, -7.243651, 8.563524, -8.86408]
+    'Value': [26.57, 21.84, 12.41, -7.78, -3.78, -21.83]
 })
 
+# Extraer Case y Season
 df['Case_Number'] = df['Case'].str.extract(r'(Case \d+)')  
 df['Season'] = df['Case'].str.extract(r'(Winter|Summer)')  
 
+# Pivotear para formato adecuado de barplot
 df_pivot = df.pivot(index='Case_Number', columns='Season', values='Value')
 
-# Crear el gráfico de barras
-fig, ax = plt.subplots(figsize=(7, 4))
-df_pivot.plot(kind='bar', ax=ax,color = cbcolors)
+# Colores personalizados: Azul para Winter, Anaranjado para Summer
+colors = {'Winter': cbcolors[3], 'Summer': cbcolors[0]}
 
-# Añadir la línea negra en y=0
+# Crear figura
+fig, ax = plt.subplots(figsize=(3.4, 2.4))
+
+# Graficar con colores específicos
+df_pivot.plot(kind='bar', ax=ax, color=[colors['Winter'], colors['Summer']])
+
+# Línea en 0
 ax.axhline(0, color='black', linewidth=1)
 
-# Personalizar el gráfico
-ax.set_title('Winter and Summer Costs per Case', fontsize=14)
-ax.set_xlabel('Case', fontsize=12)
-ax.set_ylabel('24h Cost [EUR]', fontsize=12)
+# Etiquetas y formato
+ax.set_xlabel('', fontsize=12)
+ax.set_ylabel('Cost (€/day)', fontsize=8)
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
-ax.legend(title='Season')
+ax.legend(title='Season', loc='lower left')
 
-# Mostrar el gráfico
 plt.tight_layout()
 
-plt.rcParams['savefig.format']='pdf'
-plt.savefig('./results/CEDER/'+'CaseCostsComparison', dpi=300)
+# Guardar y mostrar
+plt.rcParams['savefig.format'] = 'pdf'
+plt.savefig('./results/CEDER/' + 'CaseCostsComparison', dpi=300)
 
 plt.show()
-
 
