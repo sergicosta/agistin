@@ -16,9 +16,11 @@ Problem:
 # ----------------------------------------------------------
 Solver: 
 - Status: ok
-  Message: couenne\x3a Optimal
+  Message: bonmin\x3a Optimal
   Termination condition: optimal
   Id: 3
+  Error rc: 0
+  Time: 5.0474326610565186
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -27,7 +29,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-2095.102215051651 s
+5.141809701919556 s
 
 GOAL VALUE:
--14.357610006411917
+11.332066802694056

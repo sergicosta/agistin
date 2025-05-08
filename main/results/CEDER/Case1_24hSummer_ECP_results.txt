@@ -9,16 +9,18 @@ Problem:
   Upper bound: inf
   Number of objectives: 1
   Number of constraints: 0
-  Number of variables: 1708
+  Number of variables: 1586
   Sense: unknown
 # ----------------------------------------------------------
 #   Solver Information
 # ----------------------------------------------------------
 Solver: 
 - Status: ok
-  Message: couenne\x3a Optimal
+  Message: bonmin\x3a Optimal
   Termination condition: optimal
   Id: 3
+  Error rc: 0
+  Time: 4.556229591369629
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -27,7 +29,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-2095.102215051651 s
+4.754826784133911 s
 
 GOAL VALUE:
--14.357610006411917
+21.84060660705406
