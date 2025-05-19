@@ -33,6 +33,7 @@ def Pipe(b, t, data, init_data):
          - 'Qmax': Maximum allowed flow :math:`Q_{max}`
          - 'zlow_bounds': zmin and zmax of the lower reservoir as a ``tuple`` (optional)
          - 'zhigh_bounds': zmin and zmax of the upper reservoir as a ``tuple`` (optional)
+         - 'H_approx': Approximation for height between reservoirs :math:`\hat{H}` (optional)
          
     init_data
          - 'Q': Flow :math:`Q(t)` as a ``list`` or pandas ``Series``
@@ -94,9 +95,12 @@ def Pipe(b, t, data, init_data):
     b.port_zhigh = Port(initialize={'z': (b.zhigh, Port.Equality)})
     
     # Constraints
-    def Constraint_H(_b, _t):
-        return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(_b.Qp[_t]**2 -_b.Qn[_t]**2)
-        # return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(2*_b.signQ[_t]-1)*_b.Q[_t]**2
+    if('H_approx' in data):
+        def Constraint_H(_b, _t):
+            return _b.H[_t] == data['H_approx'] + _b.K*(_b.Qp[_t]**2 -_b.Qn[_t]**2)
+    else:
+        def Constraint_H(_b, _t):
+            return _b.H[_t] ==  _b.zhigh[_t] - _b.zlow[_t] + _b.K*(_b.Qp[_t]**2 -_b.Qn[_t]**2)
     b.c_H = pyo.Constraint(t, rule = Constraint_H)
     
     def Constraint_Q(_b, _t):
