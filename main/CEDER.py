@@ -149,9 +149,9 @@ ho=0
 hf=24
 
 df_meteo = pd.DataFrame()
-df_grid =  pd.read_csv('data/costs/PVPC_jan.csv').iloc[ho:hf].reset_index(drop=True)
-df_meteo['Irr']  =  winter_day_mean['Irr']
-df_load = - winter_day_mean['CT_Edificio1']
+df_grid =  pd.read_csv('data/costs/PVPC_aug.csv').iloc[ho:hf].reset_index(drop=True)
+df_meteo['Irr']  =  summer_day_mean['Irr']
+df_load = - summer_day_mean['CT_Edificio1']
 
 df_meteo.reset_index(drop=True, inplace=True)
 df_load.reset_index(drop=True, inplace=True)
@@ -197,7 +197,7 @@ m.Pipe01Ts = pyo.Block()
 m.PVs = pyo.Block()
 m.Grids = pyo.Block()
 m.EBs = pyo.Block()
-# m.Bats = pyo.Block()
+m.Bats = pyo.Block()
 m.BatsDim = pyo.Block()
 m.Loads = pyo.Block()
 
@@ -247,12 +247,12 @@ data_pvs = {'Pinst':16e3, 'Pmax':66e3, 'forecast':df_meteo['Irr']/1000, 'eff':0.
 
 SolarPV(m.PVs, m.ts, data_pvs)
 
-# data_bat = {'dt':1, 'Emax':400e3,'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9}
-# init_bat = {'E':[45e3]*T, 'P':[0]*T}
-# NewBattery(m.Bats, m.ts, data_bat, init_bat)
+data_bat = {'dt':1, 'Emax':400e3,'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9}
+init_bat = {'E':[45e3]*T, 'P':[0]*T}
+NewBattery(m.Bats, m.ts, data_bat, init_bat)
 
-# m.Bats.Pdim.fix(90e3)
-# m.Bats.Edim.fix(400e3)
+m.Bats.Pdim.fix(90e3)
+m.Bats.Edim.fix(400e3)
 
 
 data_batdim = {'dt':1,'Emax':400e3, 'Pmax':90e3, 'SOCmin':0.1, 'SOCmax':0.80, 'eff_ch':0.9, 'eff_dc':0.9}
@@ -338,7 +338,7 @@ m.c21r1_Qs = Arc(ports=(m.VarSources.port_Qout, m.Reservoir1s.port_Q), directed=
 
 m.pvebs = Arc(ports=(m.PVs.port_P, m.EBs.port_P), directed=True)
 m.gridebs = Arc(ports=(m.Grids.port_P, m.EBs.port_P), directed=True)
-# m.batebs = Arc(ports=(m.Bats.port_P, m.EBs.port_P), directed = True)
+m.batebs = Arc(ports=(m.Bats.port_P, m.EBs.port_P), directed = True)
 m.loadebs = Arc(ports=(m.Loads.port_Pin, m.EBs.port_P), directed=True)
 m.batebsdim = Arc(ports=(m.BatsDim.port_P, m.EBs.port_P), directed = True)
 
@@ -470,7 +470,7 @@ df_out, df_param, df_size = get_results(file=file, instance=instance, results=re
 
 #Plots
 
-file = './results/CEDER/Case3_24hWinter_ECP'
+file = './results/CEDER/Case3_24hSummer_ECP'
 df_out = pd.read_csv(file+'.csv').drop('Unnamed: 0',axis=1)
 df_param = pd.read_csv(file+'_param.csv').drop('Unnamed: 0',axis=1)
 df_size = pd.read_csv(file+'_size.csv').drop('Unnamed: 0',axis=1)
@@ -493,7 +493,7 @@ plt.rcParams.update({
     "font.size": 9,
     'axes.spines.top': False,
     'axes.spines.right': False
-})
+}) 
 
 labels_hours = ['0','','','','','','6','','','','','','12','','','','','','18','','','','','23']
 
@@ -532,12 +532,12 @@ df_negative = df_pivot.clip(upper=0)
 
 bottom_pos = np.zeros(len(df_positive))
 for col in df_positive.columns:
-    ax1.bar(df_positive.index, df_positive[col], bottom=bottom_pos, label=col, color=colors_dict[col])
+    ax1.bar(df_positive.index, df_positive[col], bottom=bottom_pos, label=col, color=colors_dict[col],width=0.5)
     bottom_pos += df_positive[col]
 
 bottom_neg = np.zeros(len(df_negative))
 for col in df_negative.columns:
-    ax1.bar(df_negative.index, df_negative[col], bottom=bottom_neg, color=colors_dict[col])
+    ax1.bar(df_negative.index, df_negative[col], bottom=bottom_neg, color=colors_dict[col],width=0.5)
     bottom_neg += df_negative[col]
 
 ax1.axhline(0, color='black', linewidth=1)
@@ -550,11 +550,9 @@ ax1.set_xticklabels(labels_hours, fontsize=7, rotation=0)
 
 ax1_twin = ax1.twinx()
 
-# Graficar las líneas principales
 ax1_twin.plot(df_out['t'], df_grid['PVPC'], color='tab:red', linestyle='solid', linewidth=1.5, label='$c_{buy,g}$')
 ax1_twin.plot(df_out['t'], df_grid['Excedentes'], color='tab:red', linestyle='dashed', linewidth=1.5, label='$c_{sell,g}$')
 
-# Agregar una línea blanca debajo de las líneas del lineplot para dar el efecto de borde
 ax1_twin.plot(df_out['t'], df_grid['PVPC'], color='white', linestyle='solid', linewidth=2.25, zorder=-1)
 ax1_twin.plot(df_out['t'], df_grid['Excedentes'], color='white', linestyle='dashed', linewidth=3, zorder=-1)
 
@@ -577,7 +575,7 @@ ax1.legend(handles, labels, loc='upper center', fontsize=7, bbox_to_anchor=(0.5,
 
 plt.tight_layout()
 plt.rcParams['savefig.format'] = 'pdf'
-plt.savefig(file + 'Electrical', dpi=300)
+# plt.savefig(file + 'Electrical', dpi=300)
 plt.show()
 
 
@@ -630,7 +628,7 @@ plt.subplots_adjust(hspace=0.35)
 plt.tight_layout()
 
 plt.rcParams['savefig.format'] = 'pdf'
-plt.savefig(file + '_VQ', dpi=300)
+# plt.savefig(file + '_VQ', dpi=300)
 plt.show()
 
 
