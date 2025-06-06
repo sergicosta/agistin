@@ -20,7 +20,7 @@ Solver:
   Termination condition: optimal
   Id: 3
   Error rc: 0
-  Time: 40.65762758255005
+  Time: 1273.5339262485504
 # ----------------------------------------------------------
 #   Solution Information
 # ----------------------------------------------------------
@@ -29,7 +29,7 @@ Solution:
   number of solutions displayed: 0
 
 Execution time:
-40.82335662841797 s
+1273.8197824954987 s
 
 GOAL VALUE:
-1631.9630101234575
+1632.2067699261147
