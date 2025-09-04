@@ -113,3 +113,5 @@ in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1â€
   doi={10.1109/OSMSES62085.2024.10668997}
 }
 ```
+# Funding
+AGISTIN is supported by the European Unionâ€™s Horizon Europe programme under agreement 101096197. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or European Climate, Infrastructure and Environment Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.
