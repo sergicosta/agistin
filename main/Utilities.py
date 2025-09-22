@@ -89,7 +89,7 @@ def REEAPI2df(start_date, end_date):
 
     if values_list:
         df = pd.DataFrame(values_list)
-        df['datetime'] = pd.to_datetime(df['datetime'], format='%Y-%m-%dT%H:%M:%S.%f%z',utc=True)
+        df['datetime'] = pd.to_datetime(df['datetime'], format='%Y-%m-%dT%H:%M:%S.%f%z',utc=False)
         df['datetime'] = df['datetime'].dt.strftime('%Y-%m-%d %H:%M')
     else:
         df = pd.DataFrame()
@@ -161,8 +161,9 @@ def get_results(file, instance, results, l_t, exec_time):
             f.write('\nGOAL VALUE:\n'+str(value(instance.goal))+'\n')
             f.close()
         model_to_file(instance,file+'_model.txt')
-        
+
     return df_out, df_param, df_size
+
 
 def get_n_variables(model):
     
