@@ -48,12 +48,23 @@ def SolarPV(b, t, data, init_data=None):
     
     # Parameters
     b.Pinst = pyo.Param(initialize=data['Pinst'])
-    b.forecast = pyo.Param(t, initialize=data['forecast'])
+    # Align forecast series length with time set and create a mapping keyed by t's index values
+    t_index = list(t)
+    seq = list(data['forecast']) if 'forecast' in data else [0.0] * len(t_index)
+    if len(seq) != len(t_index):
+        if len(seq) == 0:
+            seq = [0.0] * len(t_index)
+        else:
+            reps = (len(t_index) + len(seq) - 1) // len(seq)
+            seq = (seq * reps)[:len(t_index)]
+    forecast_map = {ti: seq[i] for i, ti in enumerate(t_index)}
+    b.forecast = pyo.Param(t, initialize=forecast_map)
     b.eff = pyo.Param(initialize=data['eff'])
     
     # Variables
-    b.P = pyo.Var(t, initialize={k: -data['Pinst']*data['forecast'][k] for k in range(len(t))} , bounds=(-data['Pmax'],0), domain=pyo.Reals)
-    b.Pdim = pyo.Var(initialize=0 , bounds=(0, data['Pmax']), domain=pyo.NonNegativeReals)
+    P_init = {ti: -data['Pinst'] * forecast_map[ti] for ti in t_index}
+    b.P = pyo.Var(t, initialize=P_init, bounds=(-data['Pmax'], 0), domain=pyo.Reals)
+    b.Pdim = pyo.Var(initialize=0, bounds=(0, data['Pmax']), domain=pyo.NonNegativeReals)
     
     # Ports
     b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})

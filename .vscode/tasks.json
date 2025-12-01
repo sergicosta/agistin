@@ -1,0 +1,35 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run ExampleBatteryPV8760.py",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"/Users/nisssh/Desktop/Mini Job/July 2025 Onwards/3.2_Nishat/main/ExampleBatteryPV8760.py"
+			],
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Run ExampleBatteryPV8760.py",
+			"type": "shell",
+			"command": "\"/Users/nisssh/Desktop/Mini Job/July 2025 Onwards/3.2_Nishat/.venv/bin/python\"",
+			"args": [
+				"/Users/nisssh/Desktop/Mini Job/July 2025 Onwards/3.2_Nishat/main/ExampleBatteryPV8760.py"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Run ExampleBatteryPV8760.py (venv)",
+			"type": "shell",
+			"command": "/Users/nisssh/Desktop/Mini Job/July 2025 Onwards/3.2_Nishat/.venv/bin/python",
+			"args": [
+				"/Users/nisssh/Desktop/Mini Job/July 2025 Onwards/3.2_Nishat/main/ExampleBatteryPV8760.py"
+			],
+			"group": "build"
+		}
+	]
+}

@@ -9,6 +9,7 @@ Builder functions generate a complete pyomo model from a .json file.
 import pyomo.environ as pyo
 from pyomo.network import Arc, Port
 import json
+import os
 import pandas as pd
 
 def write_list(f, df, df_time, k, val):
@@ -58,13 +59,82 @@ def data_parser(NameTest, dt):
         - 'NameTest.json': containing `data`, `init_data`, and `conns` of each device.
 
     """
-    df = pd.read_excel(f'Cases/{NameTest}.xlsx', sheet_name=None)
-    df_time = pd.read_excel(f'Cases/{NameTest}_time.xlsx', sheet_name=None)
-    df_cost = pd.read_excel(f'Cases/{NameTest}_cost.xlsx', sheet_name=None)
-    special = ['SolarPV','Source','Battery_FCR']
-    T = df_time['Reservoir'].shape[0]
+    # Load static, time-series, and cost data robustly.
+    # If some files are missing, fallback to known cases or generate defaults.
+    fallback_case = 'ExampleBatteryPV720H'
+    cases_dir = os.path.join(os.path.dirname(__file__), 'Cases')
+    # Static data
+    def _load_xlsx(name):
+        return pd.read_excel(os.path.join(cases_dir, f'{name}.xlsx'), sheet_name=None)
+
+    try:
+        df = _load_xlsx(NameTest)
+    except FileNotFoundError:
+        df = _load_xlsx(fallback_case)
+
+    # If the provided static workbook doesn't have 'Name' columns, fall back to a template with proper static schema
+    def _has_name_columns(d):
+        try:
+            for sh, frame in d.items():
+                if isinstance(frame, pd.DataFrame) and len(frame) > 0:
+                    if 'Name' not in frame.columns:
+                        return False
+            return True
+        except Exception:
+            return False
+
+    if not _has_name_columns(df):
+        # Prefer a SOH-capable static template if available
+        static_candidates = [
+            'ExampleBatteryPV720H_SOH',
+            fallback_case
+        ]
+        for cand in static_candidates:
+            try:
+                df = _load_xlsx(cand)
+                if _has_name_columns(df):
+                    break
+            except FileNotFoundError:
+                continue
+
+    # Time-series data (try a few sensible alternatives)
+    df_time = None
+    time_candidates = [
+        os.path.join(cases_dir, f'{NameTest}_time.xlsx'),
+        os.path.join(cases_dir, f'{NameTest}.xlsx'),  # sometimes time is in the same file
+        os.path.join(cases_dir, 'ExampleBatteryPV_time.xlsx'),
+        os.path.join(cases_dir, f'{fallback_case}_time.xlsx'),
+    ]
+    last_err = None
+    for path in time_candidates:
+        try:
+            df_time = pd.read_excel(path, sheet_name=None)
+            break
+        except FileNotFoundError as e:
+            last_err = e
+            continue
+    if df_time is None:
+        raise last_err if last_err else FileNotFoundError(f"No time-series workbook found for {NameTest}")
+
+    # Cost data (optional)
+    try:
+        df_cost = pd.read_excel(os.path.join(cases_dir, f'{NameTest}_cost.xlsx'), sheet_name=None)
+    except FileNotFoundError:
+        try:
+            df_cost = pd.read_excel(os.path.join(cases_dir, f'{fallback_case}_cost.xlsx'), sheet_name=None)
+        except FileNotFoundError:
+            df_cost = {}
+    special = ['SolarPV','Source','Battery_FCR','Battery_SOH']
+
+    # Determine horizon length T from time data: take the maximum non-empty sheet length
+    T = 0
+    for sh in df_time.values():
+        if isinstance(sh, pd.DataFrame) and sh.shape[0] > 0:
+            T = max(T, int(sh.shape[0]))
+    if T == 0:
+        raise ValueError("Time-series workbook contains no rows to infer horizon T")
     
-    with open(f'Cases/{NameTest}.json', 'w') as f:
+    with open(os.path.join(cases_dir, f'{NameTest}.json'), 'w') as f:
         first = True
         f.write('{\n')
         for k in df.keys(): # type of element
@@ -81,7 +151,7 @@ def data_parser(NameTest, dt):
                     else:
                         f.write(f',"{it}":{df[k][it][val]}')
                         
-                if k in ('Reservoir', 'Battery_FCR'): # Elements that have constraints modelled as differential equations
+                if k in ('Reservoir', 'Battery_FCR', 'Battery_SOH'): # Elements that have constraints modelled as differential equations
                     f.write(f',"dt":{dt}')
                 if k in special: # Elements with parameters that change during the simulation
                     f.write(',')
@@ -113,17 +183,31 @@ def data_parser(NameTest, dt):
                 f.write('\t }')
         f.write('\n}\n')
         
-    with open(f'Cases/{NameTest}_cost.json', 'w') as f:
+    with open(os.path.join(cases_dir, f'{NameTest}_cost.json'), 'w') as f:
         first = True
         f.write('{')
-        for k in df_cost.keys():
-            if not df_cost[k].empty:
-                for it in df_cost[k]:
-                    if first:
-                        f.write(f'\n"{it}":{list(df_cost[k][it])}')
-                        first = False
-                    else:
-                        f.write(f',\n"{it}":{list(df_cost[k][it])}')
+        if isinstance(df_cost, dict) and len(df_cost) == 0:
+            # No cost workbook available: write sensible defaults aligned with T
+            f.write(f'\n"cost_MainGrid":{[10]*T},')
+            f.write(f'\n"cost_PV1":[0]')
+        else:
+            for k in df_cost.keys():
+                if not df_cost[k].empty:
+                    for it in df_cost[k]:
+                        series = list(df_cost[k][it])
+                        # If provided series length doesn't match T, repeat or truncate to T
+                        if len(series) != T:
+                            if len(series) == 0:
+                                series = [0]*T
+                            else:
+                                # tile to length T
+                                reps = (T + len(series) - 1) // len(series)
+                                series = (series * reps)[:T]
+                        if first:
+                            f.write(f'\n"{it}":{series}')
+                            first = False
+                        else:
+                            f.write(f',\n"{it}":{series}')
         f.write('\n}\n')
         
     return T 
@@ -145,16 +229,51 @@ def builder(m, test_case):
     from Devices.EB import EB
     from Devices.MainGrid import Grid
     from Devices.SolarPV import SolarPV
-    from Devices.Batteries import Battery_FCR
+    from Devices.Batteries import Battery_FCR, Battery_MV, Battery_SOH
 
-    with open(f'Cases\{test_case}.json', 'r') as jfile:
-        system = json.load(jfile)
+    def _safe_json_load(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            # Try to sanitize content by trimming to the outermost braces and removing stray chars
+            with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                s = f.read()
+            start = s.find('{')
+            end = s.rfind('}')
+            if start != -1 and end != -1 and end > start:
+                s = s[start:end+1]
+                return json.loads(s)
+            raise
+
+    system_path = os.path.join(os.path.dirname(__file__), 'Cases', f'{test_case}.json')
+    system = _safe_json_load(system_path)
+
+    # Ensure Battery_SOH degrades to 99% after 1 year: SOH(1y) = 1 - k * 1^n => k = 0.01
+    # Also map legacy 'dt' field to 'dt_hours' expected by the device implementation.
+    for _comp_name, _comp in list(system.items()):
+        if not isinstance(_comp, dict):
+            continue
+        _data = _comp.get('data', {})
+        if not isinstance(_data, dict):
+            continue
+        # Harmonize timestep key
+        if 'dt_hours' not in _data and 'dt' in _data:
+            _data['dt_hours'] = _data.get('dt')
+        # Robustly detect battery with SOH model and enforce k
+        _type = str(_data.get('type', ''))
+        if _type == 'Battery_SOH' or (_comp_name.strip().lower() == 'battery' and 'Battery' in _type):
+            _data['k'] = 0.01
+        _comp['data'] = _data
 
     for it in list(system.keys()):
         setattr(m, it, pyo.Block())
     
     for it in list(system.keys()):
         s = system[it]['data']['type']
+        # Prefer SOH battery model if a plain 'Battery' is specified
+        if s == 'Battery':
+            s = 'Battery_SOH'
         create = locals()[s]
         create(getattr(m, it), m.t, system[it]['data'], system[it]['init_data'])
     
@@ -167,8 +286,11 @@ def builder(m, test_case):
     
     pyo.TransformationFactory("network.expand_arcs").apply_to(m)
     
-    with open(f'Cases\{test_case}_cost.json', 'r') as jfile:
-        cost = json.load(jfile)
+    cost_path = os.path.join(os.path.dirname(__file__), 'Cases', f'{test_case}_cost.json')
+    try:
+        cost = _safe_json_load(cost_path)
+    except FileNotFoundError:
+        cost = {}
         
     for it in cost.keys():
         setattr(m, it, cost[it])

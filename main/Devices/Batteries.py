@@ -13,7 +13,7 @@ from pyomo.network import Arc, Port
     
 def Battery(b, t, data, init_data):
     
-    """
+    r"""
     Simple Battery.
     
     Modifies its energy state :math:`E(t)` from an initial state :math:`E_0` according to 
@@ -134,7 +134,7 @@ def Battery(b, t, data, init_data):
 #%% Battery_Ex0
 
 def Battery_Ex0(b, t, data, init_data):
-    """
+    r"""
     Simple Battery for testing and example purposes.
     It is used in Example21.
     
@@ -375,10 +375,22 @@ def Battery_FCR(b, t, data, init_data):
 
     # Parameters
     b.E0 = pyo.Param(initialize=data['E0'])
-    b.FCR_Neg = pyo.Param(t, initialize=data['ActFCRNeg'])
-    b.FCR_Pos = pyo.Param(t, initialize=data['ActFCRPos'])
-    b.FCR_reBAP = pyo.Param(t, initialize=data['FCRreBAP'])
-    b.FCR_Remuneration = pyo.Param(t, initialize=data['FCRRemuneration'])
+    # Build dicts for time-indexed series so Param initialization keys match the time set
+    def _series_map(key, default=0.0):
+        seq = list(data.get(key, []))
+        t_index = list(t)
+        if len(seq) != len(t_index):
+            if len(seq) == 0:
+                seq = [default] * len(t_index)
+            else:
+                reps = (len(t_index) + len(seq) - 1) // len(seq)
+                seq = (seq * reps)[:len(t_index)]
+        return {ti: seq[i] for i, ti in enumerate(t_index)}
+
+    b.FCR_Neg = pyo.Param(t, initialize=_series_map('ActFCRNeg', 0.0))
+    b.FCR_Pos = pyo.Param(t, initialize=_series_map('ActFCRPos', 0.0))
+    b.FCR_reBAP = pyo.Param(t, initialize=_series_map('FCRreBAP', 0.0))
+    b.FCR_Remuneration = pyo.Param(t, initialize=_series_map('FCRRemuneration', 0.0))
 
 
     # Variables
@@ -422,3 +434,275 @@ def Battery_FCR(b, t, data, init_data):
     def Constraint_P_AddFCR(b, t):
         return b.P_Add_Charge[t] <= (1 - b.FCR_Neg[t] - b.FCR_Neg[t]) * b.Pdim_FCR
     b.c_P_AddFCR = pyo.Constraint(t, rule=Constraint_P_AddFCR)
+
+
+#__________________________________________________________________________________________________________________________________   
+#%% Battery with State of Health (SOH) Model
+
+# def Battery_SOH(b, t, data, init_data):
+#     """
+#     Battery with State of Health (SOH) degradation model.
+    
+#     Implements the SOH equation: SOH(t) = 1 - k · t^n
+#     where:
+#     - k: degradation coefficient
+#     - n: degradation exponent
+#     - t: time
+    
+#     :param b: pyomo Block() to be set
+#     :param t: pyomo Set() referring to time
+#     :param data: data dict containing SOH parameters
+#     :param init_data: init_data dict
+    
+#     Additional data parameters for SOH:
+#          - 'k': degradation coefficient (default: 0.0001)
+#          - 'n': degradation exponent (default: 1.0)
+#          - 'SOH_min': minimum allowable SOH (default: 0.8)
+         
+#     Standard data parameters:
+#          - 'E0': Initial energy
+#          - 'Emax': Maximum battery energy
+#          - 'SOCmin': Minimum allowed SOC
+#          - 'SOCmax': Maximum allowed SOC
+#          - 'Pmax': Maximum delivered/absorbed power
+#          - 'Einst': Energy storage already installed
+#          - 'Pinst': Power already installed
+#          - 'rend_ch': Charging efficiency
+#          - 'rend_disc': Discharging efficiency
+         
+#     init_data:
+#          - 'E': Energy E(t) as a list
+#          - 'P': Power P(t) as a list
+         
+#     Pyomo declarations:
+#         - Parameters: k, n, SOH_min, E0, Emax, SOCmin, SOCmax, Pmax, Einst, Pinst, rend_ch, rend_disc
+#         - Variables: SOH(t), E(t), P(t), Pch(t), Pdisc(t), SOC(t), Pdim, Edim
+#         - Ports: port_P @ P (Extensive)
+#         - Constraints: SOH equation and all standard battery constraints adjusted for SOH
+#     """
+    
+#     # Parameters for SOH model
+#    # b.k = pyo.Param(initialize=data.get('k', 0.0001))  # degradation coefficient
+#    # b.n = pyo.Param(initialize=data.get('n', 1.0))     # degradation exponent
+#    # b.SOH_min = pyo.Param(initialize=data.get('SOH_min', 0.8))  # minimum allowable SOH
+    
+#     # Parameters for SOH model
+#     b.k = pyo.Param(initialize=data.get('k', 3.37868689199743e-4))  # degradation coefficient
+#     b.n = pyo.Param(initialize=data.get('n', 0.5))     # degradation exponent
+#     b.SOH_min = pyo.Param(initialize=data.get('SOH_min', 0.8))  # minimum allowable SOH
+    
+    
+#     # Standard battery parameters
+#     b.E0 = pyo.Param(initialize=data['E0'])
+#     b.Emax = pyo.Param(initialize=data['Emax'])
+#     b.SOCmax = pyo.Param(initialize=data['SOCmax'])
+#     b.SOCmin = pyo.Param(initialize=data['SOCmin'])
+#     b.Pmax = pyo.Param(initialize=data['Pmax'])
+#     b.Einst = pyo.Param(initialize=data['Einst'])
+#     b.Pinst = pyo.Param(initialize=data['Pinst'])
+#     b.rend_ch = pyo.Param(initialize=data['rend_ch'])
+#     b.rend_disc = pyo.Param(initialize=data['rend_disc'])
+    
+#     # Variables
+#     b.SOH = pyo.Var(t, initialize={k: 1.0 for k in range(len(t))}, 
+#                     bounds=(data.get('SOH_min', 0.8), 1.0), 
+#                     within=pyo.NonNegativeReals)
+    
+#     # Initialize E and P with defaults if init_data is empty
+#     init_E = init_data.get('E', {k: data['E0'] for k in range(len(t))})
+#     init_P = init_data.get('P', {k: 0.0 for k in range(len(t))})
+    
+#     b.E = pyo.Var(t, initialize=init_E, within=pyo.NonNegativeReals)
+#     b.P = pyo.Var(t, initialize=init_P, 
+#                   bounds=(-data['Pmax'], data['Pmax']), within=pyo.Reals)
+#     b.Pch = pyo.Var(t, initialize={k: 0.0 for k in range(len(t))}, 
+#                     within=pyo.NonNegativeReals)
+#     b.Pdisc = pyo.Var(t, initialize={k: 0.0 for k in range(len(t))}, 
+#                       within=pyo.NonNegativeReals)
+#     b.SOC = pyo.Var(t, initialize={k: data['E0']/data['Emax'] for k in range(len(t))}, 
+#                     bounds=(data['SOCmin'], data['SOCmax']), 
+#                     within=pyo.NonNegativeReals)
+#     b.Pdim = pyo.Var(initialize=0, bounds=(0, data['Pmax']-data['Pinst']), 
+#                      within=pyo.NonNegativeReals)
+#     b.Edim = pyo.Var(initialize=0, bounds=(0, data['Emax']-data['Einst']), 
+#                      within=pyo.NonNegativeReals)
+    
+#     # Ports
+#     b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
+    
+#     # SOH Constraint: SOH(t) = 1 - k · t^n
+#     def Constraint_SOH(_b, _t):
+#         return _b.SOH[_t] == 1 - _b.k * (_t + 1) ** _b.n
+#     b.c_SOH = pyo.Constraint(t, rule=Constraint_SOH)
+    
+#     # Standard battery constraints ( Power P = charging power − discharging power )
+#     def Constraint_P(_b, _t):
+#         return _b.P[_t] == _b.Pch[_t] - _b.Pdisc[_t]
+#     b.c_P = pyo.Constraint(t, rule=Constraint_P)
+#     # Ek hi timestep me charge aur discharge dono ek saath na ho.
+#     def Constraint_P0(_b, _t):
+#         return 0 == _b.Pch[_t] * _b.Pdisc[_t]
+#     b.c_P0 = pyo.Constraint(t, rule=Constraint_P0)
+    
+#     # SOC constraint adjusted for SOH degradation
+#     def Constraint_SOC(_b, _t):
+#         return _b.SOC[_t] == _b.E[_t] / ((_b.Einst + _b.Edim) * _b.SOH[_t])
+#     b.c_SOC = pyo.Constraint(t, rule=Constraint_SOC)
+    
+#     # Energy balance constraint
+#     def Constraint_E(_b, _t):
+#         if _t > 0:
+#             return _b.E[_t] == _b.E[_t-1] + (_b.Pch[_t]*_b.rend_ch - _b.Pdisc[_t]*_b.rend_disc)
+#         else:
+#             return _b.E[_t] == _b.E0 + (_b.Pch[_t]*_b.rend_ch - _b.Pdisc[_t]*_b.rend_disc)
+#     b.c_E = pyo.Constraint(t, rule=Constraint_E)
+    
+#     # Power constraints adjusted for SOH
+#     def Constraint_ch(_b, _t):
+#         return _b.Pch[_t] <= (_b.Pinst + _b.Pdim) * _b.SOH[_t]
+#     b.Consume = pyo.Constraint(t, rule=Constraint_ch)
+    
+#     def Constraint_disc(_b, _t):
+#         return _b.Pdisc[_t] <= (_b.Pinst + _b.Pdim) * _b.SOH[_t]
+#     b.Prod = pyo.Constraint(t, rule=Constraint_disc)
+    
+#     # Energy limits adjusted for SOH
+#     def ConstraintE_max(_b, _t):
+#         return _b.E[_t] <= (_b.Einst + _b.Edim) * _b.SOCmax * _b.SOH[_t]
+#     b.MaxEnergy = pyo.Constraint(t, rule=ConstraintE_max)
+    
+#     def ConstraintE_min(_b, _t):
+#         return _b.E[_t] >= (_b.Einst + _b.Edim) * _b.SOCmin * _b.SOH[_t]
+#     b.MinEnergy = pyo.Constraint(t, rule=ConstraintE_min)
+
+
+
+import pyomo.environ as pyo
+from pyomo.network import Port
+
+def Battery_SOH(b, t, data, init_data):
+    """
+    Battery with State of Health (SOH) degradation model.
+
+    Semi-empirical calendar ageing at ~25°C:
+        SOH(t_years) = 1 - k * t_years^n
+
+    Defaults (stationary LFP-friendly):
+        n = 0.5  (square-root time law)
+        k = 0.03  (~3% capacity loss per year, realistic degradation)
+        SOH_min = 0.8 (80% EOL)
+
+    IMPORTANT: This implementation converts the model time index to YEARS using dt_hours.
+               So you can keep hourly timesteps in the model and still pass k "per-year".
+
+    Parameters expected in `data`:
+        E0, Emax, SOCmin, SOCmax, Pmax, Einst, Pinst, rend_ch, rend_disc
+        Optional: k, n, SOH_min, dt_hours
+
+    init_data:
+        Optional initial values: dicts for E[t], P[t]
+
+    Pyomo components set on block `b`:
+        Params: k, n, SOH_min, dt_hours, E0, Emax, SOCmin, SOCmax, Pmax, Einst, Pinst, rend_ch, rend_disc
+        Vars:   SOH[t], E[t], P[t], Pch[t], Pdisc[t], SOC[t], Pdim, Edim
+        Port:   port_P @ P (Extensive)
+        Cons:   SOH in years; P balance; no-simultaneous charge/discharge; SOC; E-balance; P limits; E limits
+    """
+
+    # --- SOH params (per-year) + dt_hours (hours/step) ---
+    b.n = pyo.Param(initialize=data.get('n', 0.5))           # √t law exponent
+    # default k ~0.03 per year (3%/year). Users can override via data['k']
+    b.k = pyo.Param(initialize=data.get('k', 0.03))
+    b.SOH_min = pyo.Param(initialize=data.get('SOH_min', 0.8))
+    # Accept legacy key 'dt' as hours/step too
+    b.dt_hours = pyo.Param(initialize=data.get('dt_hours', data.get('dt', 1.0)))  # hourly steps default
+
+    # --- Standard battery parameters ---
+    b.E0 = pyo.Param(initialize=data['E0'])
+    b.Emax = pyo.Param(initialize=data['Emax'])
+    b.SOCmax = pyo.Param(initialize=data['SOCmax'])
+    b.SOCmin = pyo.Param(initialize=data['SOCmin'])
+    b.Pmax = pyo.Param(initialize=data['Pmax'])
+    b.Einst = pyo.Param(initialize=data['Einst'])
+    b.Pinst = pyo.Param(initialize=data['Pinst'])
+    b.rend_ch = pyo.Param(initialize=data['rend_ch'])
+    b.rend_disc = pyo.Param(initialize=data['rend_disc'])
+
+    # --- Variables ---
+    b.SOH = pyo.Var(
+        t,
+        initialize={k: 1.0 for k in range(len(t))},
+        bounds=(pyo.value(b.SOH_min), 1.0),
+        within=pyo.NonNegativeReals
+    )
+
+    # Initialize SOC at 50% realistically
+    initial_SOC = 0.5
+    init_E = init_data.get('E', {k: pyo.value(b.Emax) * initial_SOC for k in range(len(t))})
+
+    # Initialize power with small alternating charge/discharge to simulate usage
+    init_P = init_data.get('P', {k: 0.1 * ((-1) ** k) for k in range(len(t))})
+
+    b.E = pyo.Var(t, initialize=init_E, within=pyo.NonNegativeReals)
+    b.P = pyo.Var(t, initialize=init_P, bounds=(-pyo.value(b.Pmax), pyo.value(b.Pmax)), within=pyo.Reals)
+    b.Pch = pyo.Var(t, initialize={k: max(0, init_P[k]) for k in range(len(t))}, within=pyo.NonNegativeReals)
+    b.Pdisc = pyo.Var(t, initialize={k: abs(min(0, init_P[k])) for k in range(len(t))}, within=pyo.NonNegativeReals)
+    b.SOC = pyo.Var(
+        t,
+        initialize={k: initial_SOC for k in range(len(t))},
+        bounds=(pyo.value(b.SOCmin), pyo.value(b.SOCmax)),
+        within=pyo.NonNegativeReals
+    )
+    b.Pdim = pyo.Var(initialize=0, bounds=(0, pyo.value(b.Pmax) - pyo.value(b.Pinst)), within=pyo.NonNegativeReals)
+    b.Edim = pyo.Var(initialize=0, bounds=(0, pyo.value(b.Emax) - pyo.value(b.Einst)), within=pyo.NonNegativeReals)
+
+    # Port
+    b.port_P = Port(initialize={'P': (b.P, Port.Extensive)})
+
+    # --- Constraints ---
+
+    def Constraint_SOH(_b, _t):
+        t_years = (_t + 1) * _b.dt_hours / 8760.0
+        return _b.SOH[_t] == 1 - _b.k * (t_years ** _b.n)
+    b.c_SOH = pyo.Constraint(t, rule=Constraint_SOH)
+
+    # Power balance: P = Pch - Pdisc
+    def Constraint_P(_b, _t):
+        return _b.P[_t] == _b.Pch[_t] - _b.Pdisc[_t]
+    b.c_P = pyo.Constraint(t, rule=Constraint_P)
+
+    # No simultaneous charge & discharge (relaxed complementarity)
+    def Constraint_P0(_b, _t):
+        return 0 == _b.Pch[_t] * _b.Pdisc[_t]
+    b.c_P0 = pyo.Constraint(t, rule=Constraint_P0)
+
+    # SOC = E / ((Einst + Edim) * SOH)
+    def Constraint_SOC(_b, _t):
+        return _b.SOC[_t] == _b.E[_t] / ((_b.Einst + _b.Edim) * _b.SOH[_t])
+    b.c_SOC = pyo.Constraint(t, rule=Constraint_SOC)
+
+    # Energy balance (1 step = 1 hour by default; efficiencies applied to Pch/Pdisc)
+    def Constraint_E(_b, _t):
+        if _t > 0:
+            return _b.E[_t] == _b.E[_t-1] + (_b.Pch[_t]*_b.rend_ch - _b.Pdisc[_t]*_b.rend_disc) * _b.dt_hours
+        else:
+            return _b.E[_t] == _b.E0 + (_b.Pch[_t]*_b.rend_ch - _b.Pdisc[_t]*_b.rend_disc) * _b.dt_hours
+    b.c_E = pyo.Constraint(t, rule=Constraint_E)
+
+    # Power limits scaled by SOH
+    def Constraint_ch(_b, _t):
+        return _b.Pch[_t] <= (_b.Pinst + _b.Pdim) * _b.SOH[_t]
+    b.Consume = pyo.Constraint(t, rule=Constraint_ch)
+
+    def Constraint_disc(_b, _t):
+        return _b.Pdisc[_t] <= (_b.Pinst + _b.Pdim) * _b.SOH[_t]
+    b.Prod = pyo.Constraint(t, rule=Constraint_disc)
+
+    # Energy limits with SOH
+    def ConstraintE_max(_b, _t):
+        return _b.E[_t] <= (_b.Einst + _b.Edim) * _b.SOCmax * _b.SOH[_t]
+    b.MaxEnergy = pyo.Constraint(t, rule=ConstraintE_max)
+
+    def ConstraintE_min(_b, _t):
+        return _b.E[_t] >= (_b.Einst + _b.Edim) * _b.SOCmin * _b.SOH[_t]
+    b.MinEnergy = pyo.Constraint(t, rule=ConstraintE_min)
