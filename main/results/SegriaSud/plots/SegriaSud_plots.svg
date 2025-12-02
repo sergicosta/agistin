@@ -6,7 +6,7 @@
    version="1.1"
    id="svg231271"
    sodipodi:docname="SegriaSud_plots.svg"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -27,14 +27,14 @@
      inkscape:document-units="pt"
      showgrid="false"
      inkscape:zoom="0.66724533"
-     inkscape:cx="768.83265"
-     inkscape:cy="1823.9168"
+     inkscape:cx="-478.08502"
+     inkscape:cy="1692.7807"
      inkscape:window-width="1920"
      inkscape:window-height="1051"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g2209684-4-2"
+     inkscape:current-layer="g1816575-0-6-6"
      showguides="false" />
   <metadata
      id="metadata230458">
@@ -235302,7 +235302,7 @@
        id="tspan246110-5-0-71-28-0"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1.7924647"
-       y="-619.12408">Price (€/MWh)</tspan></text>
+       y="-619.12408">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -235314,7 +235314,7 @@
        id="tspan246110-2-7-9-2-0-2"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="12.751602"
-       y="-832.23169">P (kW)</tspan></text>
+       y="-832.23169">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -236247,7 +236247,7 @@
        id="tspan246110-5-0-71-28-0-7"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1.7924647"
-       y="-856.42413">Price (€/MWh)</tspan></text>
+       y="-856.42413">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -236259,7 +236259,7 @@
        id="tspan246110-2-7-9-2-0-2-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="12.751602"
-       y="-1069.5317">P (kW)</tspan></text>
+       y="-1069.5317">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239110,7 +239110,7 @@
          id="tspan246110-2-7-3-79-8-8-1-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-53.282055"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239182,7 +239182,7 @@
          id="tspan246110-5-0-71-28-0-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-30.303316">Price (€/MWh)</tspan></text>
+         y="-30.303316">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239194,7 +239194,7 @@
          id="tspan246110-2-7-9-2-0-2-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-243.41089">P (kW)</tspan></text>
+         y="-243.41089">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239867,7 +239867,7 @@
          id="tspan246110-2-7-3-79-8-8-1-3-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-298.08206"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239939,7 +239939,7 @@
          id="tspan246110-5-0-71-28-0-7-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-275.1033">Price (€/MWh)</tspan></text>
+         y="-275.1033">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -239951,7 +239951,7 @@
          id="tspan246110-2-7-9-2-0-2-6-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-488.21088">P (kW)</tspan></text>
+         y="-488.21088">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -240643,7 +240643,7 @@
        id="tspan246110-5-0-71-28-0-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-486.21442"
-       y="-641.47003">Price (€/MWh)</tspan></text>
+       y="-641.47003">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -240655,7 +240655,7 @@
        id="tspan246110-2-7-9-2-0-2-43"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-471.67035"
-       y="-854.57764">P (kW)</tspan></text>
+       y="-854.57764">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -241343,7 +241343,7 @@
        id="tspan246110-5-0-71-28-0-7-9"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-486.21442"
-       y="-878.77002">Price (€/MWh)</tspan></text>
+       y="-878.77002">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -241355,7 +241355,7 @@
        id="tspan246110-2-7-9-2-0-2-6-0"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-471.67035"
-       y="-1091.8776">P (kW)</tspan></text>
+       y="-1091.8776">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242049,7 +242049,7 @@
          id="tspan246110-2-7-3-79-8-8-1-4-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-53.282055"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242121,7 +242121,7 @@
          id="tspan246110-5-0-71-28-0-4-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-30.303316">Price (€/MWh)</tspan></text>
+         y="-30.303316">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242133,7 +242133,7 @@
          id="tspan246110-2-7-9-2-0-2-4-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-243.41089">P (kW)</tspan></text>
+         y="-243.41089">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242806,7 +242806,7 @@
          id="tspan246110-2-7-3-79-8-8-1-3-6-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-298.08206"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242878,7 +242878,7 @@
          id="tspan246110-5-0-71-28-0-7-6-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-275.1033">Price (€/MWh)</tspan></text>
+         y="-275.1033">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -242890,7 +242890,7 @@
          id="tspan246110-2-7-9-2-0-2-6-3-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-488.21088">P (kW)</tspan></text>
+         y="-488.21088">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -243582,7 +243582,7 @@
        id="tspan246110-5-0-71-28-0-6-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1424.9965"
-       y="-619.38062">Price (€/MWh)</tspan></text>
+       y="-619.38062">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -243594,7 +243594,7 @@
        id="tspan246110-2-7-9-2-0-2-43-8"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1410.4524"
-       y="-832.48822">P (kW)</tspan></text>
+       y="-832.48822">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -244282,7 +244282,7 @@
        id="tspan246110-5-0-71-28-0-7-9-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1424.9965"
-       y="-856.6806">Price (€/MWh)</tspan></text>
+       y="-856.6806">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -244294,7 +244294,7 @@
        id="tspan246110-2-7-9-2-0-2-6-0-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1410.4524"
-       y="-1069.7882">P (kW)</tspan></text>
+       y="-1069.7882">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -244988,7 +244988,7 @@
          id="tspan246110-2-7-3-79-8-8-1-4-4-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-53.282055"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -245060,7 +245060,7 @@
          id="tspan246110-5-0-71-28-0-4-7-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-30.303316">Price (€/MWh)</tspan></text>
+         y="-30.303316">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -245072,7 +245072,7 @@
          id="tspan246110-2-7-9-2-0-2-4-6-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-243.41089">P (kW)</tspan></text>
+         y="-243.41089">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -245745,7 +245745,7 @@
          id="tspan246110-2-7-3-79-8-8-1-3-6-1-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-298.08206"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -245817,7 +245817,7 @@
          id="tspan246110-5-0-71-28-0-7-6-1-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-275.1033">Price (€/MWh)</tspan></text>
+         y="-275.1033">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -245829,7 +245829,7 @@
          id="tspan246110-2-7-9-2-0-2-6-3-5-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-488.21088">P (kW)</tspan></text>
+         y="-488.21088">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -246521,7 +246521,7 @@
        id="tspan246110-5-0-71-28-0-6-6-4"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-953.11377"
-       y="-636.8067">Price (€/MWh)</tspan></text>
+       y="-636.8067">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -246533,7 +246533,7 @@
        id="tspan246110-2-7-9-2-0-2-43-8-8"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-938.5697"
-       y="-849.91431">P (kW)</tspan></text>
+       y="-849.91431">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -247221,7 +247221,7 @@
        id="tspan246110-5-0-71-28-0-7-9-6-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-953.11377"
-       y="-874.10669">Price (€/MWh)</tspan></text>
+       y="-874.10669">Price [€/MWh]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -247233,7 +247233,7 @@
        id="tspan246110-2-7-9-2-0-2-6-0-3-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-938.5697"
-       y="-1087.2142">P (kW)</tspan></text>
+       y="-1087.2142">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -247927,7 +247927,7 @@
          id="tspan246110-2-7-3-79-8-8-1-4-4-8-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-53.282055"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -247999,7 +247999,7 @@
          id="tspan246110-5-0-71-28-0-4-7-0-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-30.303316">Price (€/MWh)</tspan></text>
+         y="-30.303316">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -248011,7 +248011,7 @@
          id="tspan246110-2-7-9-2-0-2-4-6-4-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-243.41089">P (kW)</tspan></text>
+         y="-243.41089">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -248684,7 +248684,7 @@
          id="tspan246110-2-7-3-79-8-8-1-3-6-1-8-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-298.08206"
-         y="1251.1611">Time (h)</tspan></text>
+         y="1251.1611">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -248756,7 +248756,7 @@
          id="tspan246110-5-0-71-28-0-7-6-1-4-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1210.0867"
-         y="-275.1033">Price (€/MWh)</tspan></text>
+         y="-275.1033">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -248768,7 +248768,7 @@
          id="tspan246110-2-7-9-2-0-2-6-3-5-1-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1195.5426"
-         y="-488.21088">P (kW)</tspan></text>
+         y="-488.21088">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256127,9 +256127,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="14.616533"
-       y="-469.62051">Q (m<tspan
+       y="-469.62051">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574">3</tspan>/s)</tspan></text>
+   id="tspan1465574">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256144,7 +256144,7 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="523.62695"
-       y="-152.9713">C (€/d)</tspan></text>
+       y="-152.9713">C [€/d]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256159,9 +256159,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-6-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="467.28513"
-       y="239.44087">Demand (m<tspan
+       y="239.44087">Demand [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan220512">3</tspan>/h)</tspan></text>
+   id="tspan220512">3</tspan>/h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256173,7 +256173,7 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-6-5"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="451.67737"
-       y="-152.9713">C (€/d)</tspan></text>
+       y="-152.9713">C [€/d]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256187,11 +256187,11 @@
        x="-53.720657"
        y="-469.62051">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610">R4 </tspan>(10<tspan
+   id="tspan1465610">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256269,9 +256269,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="15.792879"
-       y="-235.86479">Q (m<tspan
+       y="-235.86479">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -256285,11 +256285,11 @@
        x="-52.544319"
        y="-235.86479">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5">R5 </tspan>(10<tspan
+   id="tspan1465610-5">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -258786,9 +258786,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-123.17015"
-       y="-470.65536">Q (m<tspan
+       y="-470.65536">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-7">3</tspan>/s)</tspan></text>
+   id="tspan1465574-7">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -258802,11 +258802,11 @@
        x="-191.50737"
        y="-470.65536">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-7">R4 </tspan>(10<tspan
+   id="tspan1465610-7">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-6">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-5">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-5">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -258884,9 +258884,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-8"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-121.99382"
-       y="-236.89964">Q (m<tspan
+       y="-236.89964">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-3">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-3">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -258900,11 +258900,11 @@
        x="-190.33101"
        y="-236.89964">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-0">R5 </tspan>(10<tspan
+   id="tspan1465610-5-0">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-2">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-3">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-3">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -258929,7 +258929,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-4"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-278.31815"
-       y="200.89809">Time (h)</tspan></text>
+       y="200.89809">Time [h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -259003,7 +259003,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-1-0"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-43.672096"
-       y="200.04839">Time (h)</tspan></text>
+       y="200.04839">Time [h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -259017,7 +259017,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-2"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-67.296616"
-       y="-415.5542">Change from base (p.u.)</tspan></text>
+       y="-415.5542">Change from base [p.u.]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -259091,7 +259091,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-93"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="438.28268"
-       y="-454.82013">Time (h)</tspan></text>
+       y="-454.82013">Time [h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -261230,9 +261230,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-7"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-418.68646"
-           y="333.50583">Q (m<tspan
+           y="333.50583">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-1">3</tspan>/s)</tspan></text>
+   id="tspan1465574-1">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -261246,11 +261246,11 @@
            x="-487.02368"
            y="333.50583">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-4">R4 </tspan>(10<tspan
+   id="tspan1465610-4">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-03">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-4">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-4">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -261328,9 +261328,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-0"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-417.51013"
-           y="567.2616">Q (m<tspan
+           y="567.2616">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-0">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-0">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -261344,11 +261344,11 @@
            x="-485.84735"
            y="567.2616">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-05">R5 </tspan>(10<tspan
+   id="tspan1465610-5-05">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-29">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-1">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-1">3</tspan>]</tspan></text>
     </g>
     <g
        id="g1816575-0"
@@ -263850,9 +263850,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-3-4"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-347.79254"
-           y="332.25159">Q (m<tspan
+           y="332.25159">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-7-7">3</tspan>/s)</tspan></text>
+   id="tspan1465574-7-7">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -263866,11 +263866,11 @@
            x="-416.12976"
            y="332.25159">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-7-3">R4 </tspan>(10<tspan
+   id="tspan1465610-7-3">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-6-8">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-5-6">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-5-6">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -263948,9 +263948,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-8-0"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-346.61621"
-           y="566.00732">Q (m<tspan
+           y="566.00732">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-3-9">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-3-9">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -263964,11 +263964,11 @@
            x="-414.9534"
            y="566.00732">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-0-2">R5 </tspan>(10<tspan
+   id="tspan1465610-5-0-2">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-2-4">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-3-5">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-3-5">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -263982,7 +263982,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-4-3"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="524.58881"
-           y="425.52048">Time (h)</tspan></text>
+           y="425.52048">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -264056,7 +264056,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-3"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="759.23486"
-           y="424.67078">Time (h)</tspan></text>
+           y="424.67078">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -266239,9 +266239,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-7-7"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-418.68646"
-           y="333.50583">Q (m<tspan
+           y="333.50583">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-1-6">3</tspan>/s)</tspan></text>
+   id="tspan1465574-1-6">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -266255,11 +266255,11 @@
            x="-487.02368"
            y="333.50583">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-4-5">R4 </tspan>(10<tspan
+   id="tspan1465610-4-5">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-03-0">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-4-9">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-4-9">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -266337,9 +266337,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-0-2"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-417.51013"
-           y="567.2616">Q (m<tspan
+           y="567.2616">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-0-8">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-0-8">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -266353,11 +266353,11 @@
            x="-485.84735"
            y="567.2616">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-05-5">R5 </tspan>(10<tspan
+   id="tspan1465610-5-05-5">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-29-6">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-1-9">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-1-9">3</tspan>]</tspan></text>
     </g>
     <g
        id="g1816575-0-6"
@@ -268859,9 +268859,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-3-4-3"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-347.79254"
-           y="332.25159">Q (m<tspan
+           y="332.25159">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-7-7-1">3</tspan>/s)</tspan></text>
+   id="tspan1465574-7-7-1">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -268875,11 +268875,11 @@
            x="-416.12976"
            y="332.25159">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-7-3-5">R4 </tspan>(10<tspan
+   id="tspan1465610-7-3-5">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-6-8-0">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-5-6-0">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-5-6-0">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -268957,9 +268957,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-8-0-2"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-346.61621"
-           y="566.00732">Q (m<tspan
+           y="566.00732">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-3-9-6">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-3-9-6">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -268973,11 +268973,11 @@
            x="-414.9534"
            y="566.00732">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-0-2-9">R5 </tspan>(10<tspan
+   id="tspan1465610-5-0-2-9">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-2-4-2">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-3-5-4">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-3-5-4">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -268991,7 +268991,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-4-3-6"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="524.58881"
-           y="425.52048">Time (h)</tspan></text>
+           y="425.52048">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -269065,7 +269065,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-3-2"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="759.23486"
-           y="424.67078">Time (h)</tspan></text>
+           y="424.67078">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -271248,9 +271248,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-7-7-1"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-418.68646"
-           y="333.50583">Q (m<tspan
+           y="333.50583">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-1-6-2">3</tspan>/s)</tspan></text>
+   id="tspan1465574-1-6-2">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -271264,11 +271264,11 @@
            x="-487.02368"
            y="333.50583">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-4-5-0">R4 </tspan>(10<tspan
+   id="tspan1465610-4-5-0">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-03-0-4">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-4-9-2">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-4-9-2">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -271346,9 +271346,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-0-2-8"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-417.51013"
-           y="567.2616">Q (m<tspan
+           y="567.2616">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-0-8-7">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-0-8-7">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -271362,11 +271362,11 @@
            x="-485.84735"
            y="567.2616">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-05-5-9">R5 </tspan>(10<tspan
+   id="tspan1465610-5-05-5-9">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-29-6-5">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-1-9-3">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-1-9-3">3</tspan>]</tspan></text>
     </g>
     <g
        id="g1816575-0-6-6"
@@ -273868,9 +273868,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-3-4-3-9"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-347.79254"
-           y="332.25159">Q (m<tspan
+           y="332.25159">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-7-7-1-7">3</tspan>/s)</tspan></text>
+   id="tspan1465574-7-7-1-7">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -273884,11 +273884,11 @@
            x="-416.12976"
            y="332.25159">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-7-3-5-3">R4 </tspan>(10<tspan
+   id="tspan1465610-7-3-5-3">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-6-8-0-0">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-5-6-0-6">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-5-6-0-6">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -273966,9 +273966,9 @@
            id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-8-0-2-4"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="-346.61621"
-           y="566.00732">Q (m<tspan
+           y="566.00732">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-3-9-6-1">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-3-9-6-1">3</tspan>/s]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -273982,11 +273982,11 @@
            x="-414.9534"
            y="566.00732">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-0-2-9-1">R5 </tspan>(10<tspan
+   id="tspan1465610-5-0-2-9-1">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-2-4-2-2">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-3-5-4-8">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-3-5-4-8">3</tspan>]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -274000,7 +274000,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-4-3-6-5"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="524.58881"
-           y="425.52048">Time (h)</tspan></text>
+           y="425.52048">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -274074,7 +274074,7 @@
            id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-3-2-4"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
            x="759.23486"
-           y="424.67078">Time (h)</tspan></text>
+           y="424.67078">Time [h]</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -284428,7 +284428,7 @@
        id="tspan246110-2-5-3-8-4-2-7-3-3-2"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';fill:#4d4d4d;fill-opacity:1;stroke-width:1.70079"
        x="-23.21945"
-       y="-568.95862">Grid connected</tspan></text>
+       y="-568.95862">Case 2 (Grid connected)</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#4d4d4d;fill-opacity:1;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -284439,7 +284439,7 @@
        id="tspan246110-2-5-3-8-4-2-7-3-3-2-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';fill:#4d4d4d;fill-opacity:1;stroke-width:1.70079"
        x="-128.6433"
-       y="-495.21838">Pump as turbine</tspan></text>
+       y="-495.21838">Case 1 (Pump as turbine)</tspan></text>
   <path
      d="M 79.357686,13.4811"
      clip-path="url(#pf9e665b387-0)"
@@ -284467,7 +284467,7 @@
        id="tspan246110-2-5-3-8-4-2-7-3-3-2-1"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';fill:#4d4d4d;fill-opacity:1;stroke-width:1.70079"
        x="-23.21945"
-       y="-495.21838">PaT + grid</tspan></text>
+       y="-495.21838">Case 3 (PaT + grid con.)</tspan></text>
   <g
      id="g159152"
      transform="translate(-1315.2378,-282.83245)">
@@ -290075,7 +290075,7 @@
        id="tspan246110-2-7-9-2-0-2-6-5"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1875.3958"
-       y="-1084.4172">P (kW)</tspan></text>
+       y="-1084.4172">P [kW]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -292155,9 +292155,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-05"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1873.5308"
-       y="-484.50598">Q (m<tspan
+       y="-484.50598">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-9">3</tspan>/s)</tspan></text>
+   id="tspan1465574-9">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -292171,11 +292171,11 @@
        x="-1941.8679"
        y="-484.50598">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-2">R4 </tspan>(10<tspan
+   id="tspan1465610-2">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-5">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-3">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-3">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -292253,9 +292253,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-9"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-1872.3545"
-       y="-250.75024">Q (m<tspan
+       y="-250.75024">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-8">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-8">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -292269,11 +292269,11 @@
        x="-1940.6917"
        y="-250.75024">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-1">R5 </tspan>(10<tspan
+   id="tspan1465610-5-1">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-9">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-68">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-68">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294770,9 +294770,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-3-6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-2011.3174"
-       y="-485.54083">Q (m<tspan
+       y="-485.54083">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-7-2">3</tspan>/s)</tspan></text>
+   id="tspan1465574-7-2">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294786,11 +294786,11 @@
        x="-2079.6548"
        y="-485.54083">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-7-0">R4 </tspan>(10<tspan
+   id="tspan1465610-7-0">R4 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-6-0">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-5-0">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-5-0">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294868,9 +294868,9 @@
        id="tspan246110-2-7-3-7-7-7-2-1-48-6-7-9-8-3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-2010.1411"
-       y="-251.7851">Q (m<tspan
+       y="-251.7851">Q [m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-2-3-94">3</tspan>/s)</tspan></text>
+   id="tspan1465574-2-3-94">3</tspan>/s]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294884,11 +294884,11 @@
        x="-2078.4783"
        y="-251.7851">W<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan1465610-5-0-3">R5 </tspan>(10<tspan
+   id="tspan1465610-5-0-3">R5 </tspan>[10<tspan
    style="font-size:65%;baseline-shift:super"
    id="tspan1465608-0-2-6">3</tspan>m<tspan
    style="font-size:65%;baseline-shift:super"
-   id="tspan1465574-5-9-3-0">3</tspan>/s)</tspan></text>
+   id="tspan1465574-5-9-3-0">3</tspan>]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294902,7 +294902,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-4-0"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-293.20358"
-       y="2089.0454">Time (h)</tspan></text>
+       y="2089.0454">Time [h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -294976,7 +294976,7 @@
        id="tspan246110-2-7-3-79-8-8-1-4-5-1-0-9"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
        x="-58.557545"
-       y="2088.1958">Time (h)</tspan></text>
+       y="2088.1958">Time [h]</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -296355,7 +296355,7 @@
          id="tspan246110-2-7-3-7-0-0-7-8-1-3-2-3-7-0-9-7-9-0-4-2-7-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-893.77283"
-         y="-693.89172">Time (h)</tspan></text>
+         y="-693.89172">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -296367,7 +296367,7 @@
          id="tspan246110-2-7-3-7-0-0-7-8-1-3-2-3-7-0-9-7-9-0-4-2-7-1-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="711.07928"
-         y="-864.24384">Price (€/MWh)</tspan></text>
+         y="-864.24384">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -296391,9 +296391,9 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="708.95978"
          y="-1076.8733"
-         id="tspan376505-7">(tCO<tspan
+         id="tspan376505-7">[tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536">2</tspan>-eq/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -297059,7 +297059,7 @@
          id="tspan246110-2-7-3-7-0-0-7-8-1-3-2-3-7-0-9-7-9-0-4-2-7-1-97"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-857.18707"
-         y="-574.10504">Time (h)</tspan></text>
+         y="-574.10504">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -297071,7 +297071,7 @@
          id="tspan246110-2-7-3-7-0-0-7-8-1-3-2-3-7-0-9-7-9-0-4-2-7-1-9-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="591.2926"
-         y="-827.65808">Price (€/MWh)</tspan></text>
+         y="-827.65808">Price [€/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -297095,9 +297095,9 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="589.1731"
          y="-1040.2876"
-         id="tspan376505-7-7">(tCO<tspan
+         id="tspan376505-7-7">[tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536-9">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536-9">2</tspan>-eq/MWh]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -297134,9 +297134,9 @@
        y="-873.09021"
        id="tspan376505-7-7-0">f<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan78984">GHG</tspan> (tCO<tspan
+   id="tspan78984">GHG</tspan> [tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536-9-7">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536-9-7">2</tspan>-eq/MWh]</tspan></text>
   <text
      xml:space="preserve"
      transform="scale(0.75)"
@@ -297788,7 +297788,7 @@
          id="tspan246110-2-7-9-2-0-2-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-1875.3958"
-         y="-847.11719">P (kW)</tspan></text>
+         y="-847.11719">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -297877,9 +297877,9 @@
          y="-635.79028"
          id="tspan376505-7-7-0-4">f<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan78984-8">GHG</tspan> (tCO<tspan
+   id="tspan78984-8">GHG</tspan> [tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536-9-7-8">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536-9-7-8">2</tspan>-eq/MWh]</tspan></text>
     <g
        id="line2d_33-8-4"
        style="stroke-linecap:butt;stroke-linejoin:round"
@@ -300466,7 +300466,7 @@
          id="tspan246110-2-7-3-79-8-8-1-4-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-658.409"
-         y="2063.3584">Time (h)</tspan></text>
+         y="2063.3584">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -300538,7 +300538,7 @@
          id="tspan246110-2-7-9-2-0-2-4-05"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-2007.7399"
-         y="-848.53778">P (kW)</tspan></text>
+         y="-848.53778">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -300627,9 +300627,9 @@
          y="-637.21094"
          id="tspan376505-7-7-0-7">f<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan78984-2">GHG</tspan> (tCO<tspan
+   id="tspan78984-2">GHG</tspan> [tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536-9-7-3">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536-9-7-3">2</tspan>-eq/MWh]</tspan></text>
     <g
        id="line2d_33-8-42"
        style="stroke-linecap:butt;stroke-linejoin:round"
@@ -301271,7 +301271,7 @@
          id="tspan246110-2-7-3-79-8-8-1-3-6-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-895.70898"
-         y="2063.3584">Time (h)</tspan></text>
+         y="2063.3584">Time [h]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -301343,7 +301343,7 @@
          id="tspan246110-2-7-9-2-0-2-6-3-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';stroke-width:1.70079"
          x="-2007.7399"
-         y="-1085.8378">P (kW)</tspan></text>
+         y="-1085.8378">P [kW]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:normal;font-family:'Nimbus Roman No9 L';-inkscape-font-specification:'Nimbus Roman No9 L';text-align:center;text-decoration-color:#000000;fill:#1e1e1e;stroke-width:1.70079;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none;stop-color:#000000"
@@ -301432,9 +301432,9 @@
          y="-874.51105"
          id="tspan376505-7-7-0-5">f<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan78984-6">GHG</tspan> (tCO<tspan
+   id="tspan78984-6">GHG</tspan> [tCO<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan376536-9-7-34">2</tspan>-eq/MWh)</tspan></text>
+   id="tspan376536-9-7-34">2</tspan>-eq/MWh]</tspan></text>
     <g
        id="line2d_33-8-8"
        style="stroke-linecap:butt;stroke-linejoin:round"
