@@ -84,7 +84,7 @@ If used in a scientific publication, we appreciate you cite the following paper:
 ### Complementary citations
 
 S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Redesign of Large-Scale Irrigation Systems for Flexible Energy Storage,”
-in 2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1–6, 2024 [[Link](https://www.doi.org/10.1109/isgteurope62998.2024.10863693)]
+in 2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1–5, 2024 [[Link](https://www.doi.org/10.1109/isgteurope62998.2024.10863693)]
 
 ```
 @INPROCEEDINGS{AGISTIN_ISGT2024,
@@ -112,6 +112,21 @@ in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1�
   keywords={Irrigation;Uncertainty;Object oriented modeling;Libraries;Demand response;Power systems;Optimization;Open source;Multi-physics simulation;Power system analysis;Optimisation tool;Python;Object-oriented;Irrigation systems},
   doi={10.1109/OSMSES62085.2024.10668997}
 }
+```
+
+P. García-Motilla, S. Costa-Dilmé, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Relaxation Techniques for Optimisation of Irrigation Systems as Flexible Energy Storage,”
+in 2025 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1–5, 2025 [[Link](https://www.doi.org/10.1109/ISGTEurope64741.2025.11305501)]
+
+```
+@INPROCEEDINGS{AGISTIN_ISGT2025_relaxationtechniques,
+  author={García-Motilla, Pau and Costa-Dilmé, Sergi and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
+  booktitle={2025 IEEE PES Innovative Smart Grid Technologies Conference Europe (ISGT Europe)}, 
+  title={Relaxation Techniques for Optimisation of Irrigation Systems as Flexible Energy Storage}, 
+  year={2025},
+  pages={1-5},
+  keywords={Irrigation;Renewable energy sources;Europe;Hydroelectric power generation;Hydraulic systems;Smart grids;Power systems;Optimization;Energy storage;Convergence;Energy storage;Irrigation systems;MINLP optimization;Relaxation techniques},
+  doi={10.1109/ISGTEurope64741.2025.11305501}}
+
 ```
 # Funding
 AGISTIN is supported by the European Union’s Horizon Europe programme under agreement 101096197. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or European Climate, Infrastructure and Environment Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.
