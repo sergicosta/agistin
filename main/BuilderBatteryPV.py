@@ -229,7 +229,7 @@ def builder(m, test_case):
     from Devices.EB import EB
     from Devices.MainGrid import Grid
     from Devices.SolarPV import SolarPV
-    from Devices.Batteries import Battery_FCR, Battery_MV, Battery_SOH
+    from Devices.Batteries import Battery_FCR, Battery_MV, Battery_SOH, Battery_SOH_Najera
 
     def _safe_json_load(path):
         try:

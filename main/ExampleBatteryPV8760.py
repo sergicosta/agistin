@@ -16,6 +16,9 @@ Created on Thu Mar  7 10:07:16 2024
 # Import pyomo
 import pyomo.environ as pyo
 from pyomo.network import Arc, Port
+import json
+import os
+import pandas as pd
 
 # Import builder
 from BuilderBatteryPV import data_parser, builder
@@ -25,7 +28,6 @@ from Devices.MainGrid import Grid
 from Devices.EB import EB
 # from Devices.Batteries import Battery_MV
 from Devices.SolarPV import SolarPV
-from Devices.Batteries import Battery_SOH
 #from Devices.Pumps import Pump
 
 
@@ -36,14 +38,30 @@ from Devices.Batteries import Battery_SOH
 from Utilities import clear_clc
 
 """
-Select the 8760-hour example dataset (base name, without _time/_cost).
+Select the 2-year (17518-hour) example dataset (base name, without _time/_cost).
+This is the 1-year ExampleBatteryPV8760H input data repeated twice.
 """
-data_filename = "ExampleBatteryPV8760H"
+data_filename = "ExampleBatteryPV8760H_2Y"
 
 """
 Generate JSON from Excel and infer horizon T. dt=1 means 1 hour/step for this case.
 """
 T = data_parser(data_filename, dt=1)
+
+"""
+Switch the battery block to the combined calendar + cycling ageing model
+(Battery_SOH_Najera), based on Najera et al. 2023 (LFP/NMC semi-empirical
+ageing model). The static Excel data still labels the battery as
+'Battery_SOH', so the JSON type is patched here before building the model.
+"""
+_json_path = os.path.join(os.path.dirname(__file__), 'Cases', f'{data_filename}.json')
+with open(_json_path, 'r') as _f:
+    _system = json.load(_f)
+for _name, _comp in _system.items():
+    if isinstance(_comp, dict) and _comp.get('data', {}).get('type') in ('Battery_SOH', 'Battery_SOH_Cycle'):
+        _comp['data']['type'] = 'Battery_SOH_Najera'
+with open(_json_path, 'w') as _f:
+    json.dump(_system, _f)
 
 m = pyo.ConcreteModel()
 
@@ -83,55 +101,43 @@ solver.solve(instance, tee=False)
 #instance.Grid.Psell.pprint()
 instance.Grid.P.pprint()
 
-# Degradation summary and life estimation
+total_cost = pyo.value(instance.goal)
+print(f"\nTotal objective (grid + PV cost, over the {T} steps): {total_cost:.2f}\n")
+
+# Degradation summary (combined calendar + cycling ageing, Battery_SOH_Najera)
 if hasattr(instance, 'Battery') and hasattr(instance.Battery, 'SOH'):
-    # Print SOH over time (compact) and key parameters
-    instance.Battery.SOH.pprint()
+    P_vals = [pyo.value(instance.Battery.P[t]) for t in instance.t]
+    SOC_vals = [pyo.value(instance.Battery.SOC[t]) for t in instance.t]
+    Qcal_vals = [pyo.value(instance.Battery.Q_cal[t]) for t in instance.t]
+    Qcyc_vals = [pyo.value(instance.Battery.Q_cyc[t]) for t in instance.t]
+    SOH_vals = [pyo.value(instance.Battery.SOH[t]) for t in instance.t]
 
-    # Extract parameters and compute metrics
-    try:
-        k = float(pyo.value(instance.Battery.k))
-        n = float(pyo.value(instance.Battery.n))
-        soh_min = float(pyo.value(instance.Battery.SOH_min))
-        dt_h = float(pyo.value(instance.Battery.dt_hours))
-    except Exception:
-        k, n, soh_min, dt_h = 0.03, 0.5, 0.8, 1.0
-
-    T_steps = len(list(instance.t)) if hasattr(instance, 't') else len(l_t)
+    dt_h = float(pyo.value(instance.Battery.dt_hours))
+    T_steps = len(list(instance.t))
     horizon_years = T_steps * dt_h / 8760.0
 
-    # Theoretical EOL (years) when SOH(t) = SOH_min = 1 - k * t^n
-    # t_EOL = ((1 - SOH_min) / k)^(1/n) if k>0
-    if k > 0 and (1 - soh_min) > 0:
-        eol_years = ((1.0 - soh_min) / k) ** (1.0 / n)
-    else:
-        eol_years = float('inf')
-
-    # Observed start/end SOH and average annual degradation over solved horizon
-    soh_vals = [float(pyo.value(instance.Battery.SOH[t])) for t in instance.t]
-    soh_start = soh_vals[0]
-    soh_end = soh_vals[-1]
-    avg_deg_per_year = (soh_start - soh_end) / max(horizon_years, 1e-9)
-
-    # Instantaneous degradation rate at end (derivative of model): dSOH/dt_years = -k*n*t^(n-1)
-    t_end_years = horizon_years
-    if t_end_years > 0:
-        inst_rate_end = -k * n * (t_end_years ** (n - 1.0))
-    else:
-        inst_rate_end = 0.0
-
-    print("\n===== Battery SOH degradation summary =====")
-    print(f"Model: SOH = 1 - k * t^n  (t in years)")
-    print(f"k={k:.5f}  n={n:.3f}  SOH_min={soh_min:.3f}  dt_hours={dt_h}")
+    print("\n===== Battery SOH degradation summary (calendar + cycling) =====")
+    print(f"Model: SOH = 1 - (Q_cal + Q_cyc)/100, Q_cal & Q_cyc per Najera et al. 2023")
     print(f"Horizon: {T_steps} steps (~{horizon_years:.2f} years)")
-    print(f"SOH start={soh_start:.6f}  SOH end={soh_end:.6f}")
-    print(f"Average annual degradation over horizon ≈ {avg_deg_per_year*100:.3f}%/year")
-    print(f"Instantaneous degradation rate at end ≈ {inst_rate_end*100:.3f}%/year")
-    if eol_years != float('inf'):
-        print(f"Estimated end-of-life (SOH={soh_min:.0%}) at ≈ {eol_years:.2f} years from t=0")
-        if horizon_years < eol_years:
-            print(f"Remaining life from horizon end ≈ {max(eol_years - horizon_years, 0):.2f} years")
-    print("==========================================\n")
+    print(f"SOH start={SOH_vals[0]:.6f}  SOH end={SOH_vals[-1]:.6f}")
+    print(f"Q_cal start={Qcal_vals[0]:.4f}%  Q_cal end={Qcal_vals[-1]:.4f}%")
+    print(f"Q_cyc start={Qcyc_vals[0]:.4f}%  Q_cyc end={Qcyc_vals[-1]:.4f}%")
+    print("==================================================================\n")
+
+    # Save Power, SOC and ageing breakdown to CSV
+    out_dir = os.path.join(os.path.dirname(__file__), 'Cycling_and_Calendar_Aging')
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, 'Battery_2Years_CombinedAging.csv')
+    df = pd.DataFrame({
+        'Time_hour': list(range(1, T_steps + 1)),
+        'Power': P_vals,
+        'SOC': SOC_vals,
+        'Q_cal_pct': Qcal_vals,
+        'Q_cyc_pct': Qcyc_vals,
+        'SOH': SOH_vals,
+    })
+    df.to_csv(out_path, index=False)
+    print(f"Saved combined ageing results to: {out_path}")
 #instance.EB.P_bal.pprint()
 #instance.EB.P.pprint()
 

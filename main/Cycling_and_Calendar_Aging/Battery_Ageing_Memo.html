@@ -1,0 +1,436 @@
+<title>Battery Ageing Model — Implementation Memo</title>
+<style>
+  :root{
+    --ground:#F3F2EE;
+    --surface:#FFFFFF;
+    --ink:#191C1E;
+    --ink-soft:#565B5E;
+    --ink-faint:#8A8F91;
+    --line:#DEDCD4;
+    --line-strong:#C7C4BA;
+    --cal:#1F5F6B;
+    --cal-soft:#DCE7E9;
+    --cyc:#B8722E;
+    --cyc-soft:#F0E3D4;
+    --warn-bg:#FBF2E3;
+    --warn-line:#E0B978;
+    --warn-ink:#6B4A17;
+  }
+  :root[data-theme="dark"]{
+    --ground:#14171A;
+    --surface:#1B1F22;
+    --ink:#ECEBE6;
+    --ink-soft:#A2A7AA;
+    --ink-faint:#72787B;
+    --line:#2C3134;
+    --line-strong:#3A4044;
+    --cal:#6FC3D4;
+    --cal-soft:#20353A;
+    --cyc:#E2A15C;
+    --cyc-soft:#3B2E1C;
+    --warn-bg:#2B2419;
+    --warn-line:#5C4626;
+    --warn-ink:#E3C48C;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#14171A;
+      --surface:#1B1F22;
+      --ink:#ECEBE6;
+      --ink-soft:#A2A7AA;
+      --ink-faint:#72787B;
+      --line:#2C3134;
+      --line-strong:#3A4044;
+      --cal:#6FC3D4;
+      --cal-soft:#20353A;
+      --cyc:#E2A15C;
+      --cyc-soft:#3B2E1C;
+      --warn-bg:#2B2419;
+      --warn-line:#5C4626;
+      --warn-ink:#E3C48C;
+    }
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 28px 96px;
+  }
+  h1,h2,h3{
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
+    font-weight:400;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .memo-head{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:22px;
+    margin-bottom:36px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0 0 10px;
+  }
+  h1{
+    font-size:30px;
+    margin:0 0 14px;
+    letter-spacing:.002em;
+  }
+  .meta{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:4px 14px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    max-width:420px;
+  }
+  .meta dt{color:var(--ink-faint);}
+  .meta dd{margin:0;}
+
+  section{margin-top:44px;}
+  .sec-num{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:12px;
+    color:var(--cal);
+    letter-spacing:.06em;
+  }
+  h2{
+    font-size:20px;
+    margin:2px 0 14px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+  p{margin:0 0 14px; max-width:64ch;}
+  .lede{
+    font-size:16px;
+    color:var(--ink-soft);
+  }
+
+  .formula-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:18px 0 22px;
+  }
+  @media (max-width:600px){ .formula-grid{grid-template-columns:1fr;} }
+  .fcard{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:18px 18px 20px;
+  }
+  .fcard.cal{border-top:3px solid var(--cal);}
+  .fcard.cyc{border-top:3px solid var(--cyc);}
+  .fcard h3{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:12.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .fcard.cal h3{color:var(--cal);}
+  .fcard.cyc h3{color:var(--cyc);}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .fcard.cal .dot{background:var(--cal);}
+  .fcard.cyc .dot{background:var(--cyc);}
+  .formula{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:13px;
+    line-height:1.6;
+    background:var(--ground);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:12px 14px;
+    overflow-x:auto;
+    white-space:pre;
+    color:var(--ink);
+  }
+  .fcard .depends{
+    margin-top:12px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .fcard .depends b{color:var(--ink);font-weight:600;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:8px 12px;
+    border-bottom:1px solid var(--line);
+    font-variant-numeric:tabular-nums;
+  }
+  th{
+    font-weight:600;
+    color:var(--ink-soft);
+    font-size:11.5px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--line-strong);
+  }
+  .num{font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;}
+  .table-wrap{overflow-x:auto; margin:14px 0 22px;}
+
+  code, .inline-code{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:.92em;
+    background:var(--cal-soft);
+    padding:.1em .35em;
+    border-radius:2px;
+  }
+
+  .filelist{list-style:none; margin:0 0 22px; padding:0;}
+  .filelist li{
+    display:grid;
+    grid-template-columns:minmax(160px,280px) 1fr;
+    gap:16px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13.5px;
+  }
+  .filelist li:first-child{border-top:1px solid var(--line);}
+  .filelist .path{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:12.5px;
+    color:var(--cal);
+    word-break:break-word;
+  }
+  .filelist .desc{color:var(--ink-soft);}
+
+  .results-band{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:3px;
+    overflow:hidden;
+    margin:18px 0 8px;
+  }
+  .stat{
+    background:var(--surface);
+    padding:16px 14px;
+  }
+  .stat .label{
+    font-size:11px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:8px;
+  }
+  .stat .value{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:19px;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .value .arrow{color:var(--ink-faint); font-size:14px; margin:0 4px;}
+  .stat.cal .value{color:var(--cal);}
+  .stat.cyc .value{color:var(--cyc);}
+
+  .chart-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:20px 20px 8px;
+    margin:20px 0 24px;
+  }
+  .chart-legend{
+    display:flex;
+    gap:20px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .chart-legend span{display:flex; align-items:center; gap:6px;}
+  .chart-legend .sw{width:14px; height:3px; border-radius:2px;}
+  svg{display:block; width:100%; height:auto;}
+  .gridline{stroke:var(--line); stroke-width:1;}
+  .axis-label{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+    font-size:10px;
+    fill:var(--ink-faint);
+  }
+
+  .callout{
+    background:var(--warn-bg);
+    border:1px solid var(--warn-line);
+    border-radius:3px;
+    padding:16px 18px;
+    margin:20px 0;
+    font-size:13.5px;
+    color:var(--warn-ink);
+  }
+  .callout .callout-label{
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:6px;
+    display:block;
+  }
+  .callout code{background:rgba(0,0,0,.06); color:inherit;}
+  :root[data-theme="dark"] .callout code,
+  @media (prefers-color-scheme:dark){ .callout code{background:rgba(255,255,255,.08);} }
+
+  footer{
+    margin-top:56px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:var(--ink-faint);
+  }
+</style>
+
+<div class="page">
+
+  <div class="memo-head">
+    <p class="eyebrow">AGISTIN — Task 4.6 Optimization Tool · Technical Memo</p>
+    <h1>Battery Ageing Model: Combined Calendar &amp; Cycling Implementation</h1>
+    <dl class="meta">
+      <dt>To</dt><dd>Project Supervisor</dd>
+      <dt>Re</dt><dd>Battery State-of-Health model, 2-year simulation</dd>
+      <dt>Reference</dt><dd>Nájera et al., <em>J. Energy Storage</em> 72 (2023) 108016</dd>
+    </dl>
+  </div>
+
+  <section>
+    <p class="sec-num">01</p>
+    <h2>Objective</h2>
+    <p class="lede">Replace the previous time-only degradation model with a combined <b>calendar + cycling ageing model</b>, so battery health predictions depend on current (charge/discharge), State of Charge, and temperature — not elapsed time alone.</p>
+    <p>The two mechanisms are modelled separately and then summed, matching the source paper's own construction: a battery loses capacity both from <em>sitting</em> (calendar ageing) and from <em>being used</em> (cycling ageing).</p>
+  </section>
+
+  <section>
+    <p class="sec-num">02</p>
+    <h2>Formulas implemented</h2>
+    <div class="formula-grid">
+      <div class="fcard cal">
+        <h3><span class="dot"></span>Calendar ageing</h3>
+        <div class="formula">Ln(Q_cal) =
+  f · e^(g·SoC) · e^(h/T) · t_days^z</div>
+        <div class="depends">Depends on <b>SoC</b>, constant <b>T</b>, elapsed <b>time</b></div>
+      </div>
+      <div class="fcard cyc">
+        <h3><span class="dot"></span>Cycling ageing</h3>
+        <div class="formula">Ln(Q_cyc) =
+  |a·T² + b·T + c| · e^((d·T+e)·Crate) · AH</div>
+        <div class="depends">Depends on <b>current</b> (via C-rate, Ah), constant <b>T</b></div>
+      </div>
+    </div>
+    <p>Combined into a single State of Health: <code>SOH = 1 − (Q_cal + Q_cyc) / 100</code></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th><th>Used in</th></tr></thead>
+        <tbody>
+          <tr><td class="num">f</td><td class="num">647,260,000</td><td>Calendar</td></tr>
+          <tr><td class="num">g</td><td class="num">1.4219</td><td>Calendar</td></tr>
+          <tr><td class="num">h</td><td class="num">−8,219.1</td><td>Calendar</td></tr>
+          <tr><td class="num">z</td><td class="num">0.5</td><td>Calendar</td></tr>
+          <tr><td class="num">a</td><td class="num">2.9961 × 10⁻⁸</td><td>Cycling</td></tr>
+          <tr><td class="num">b</td><td class="num">−1.7339 × 10⁻⁵</td><td>Cycling</td></tr>
+          <tr><td class="num">c</td><td class="num">0.0025</td><td>Cycling</td></tr>
+          <tr><td class="num">d</td><td class="num">−0.0124</td><td>Cycling</td></tr>
+          <tr><td class="num">e</td><td class="num">3.8738</td><td>Cycling</td></tr>
+          <tr><td class="num">T</td><td class="num">298.15 K (25 °C)</td><td>Both — held constant</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--ink-soft);">Parameters correspond to the Sony US26650FT LFP cell — Table 3 of the reference paper — the only LFP cell there with both ageing mechanisms validated together.</p>
+  </section>
+
+  <section>
+    <p class="sec-num">03</p>
+    <h2>Files changed</h2>
+    <ul class="filelist">
+      <li><span class="path">main/Devices/Batteries.py</span><span class="desc">New function <code>Battery_SOH_Najera</code> implementing the combined model</span></li>
+      <li><span class="path">main/BuilderBatteryPV.py</span><span class="desc">Registered the new model for use by the optimization builder</span></li>
+      <li><span class="path">main/Cases/ExampleBatteryPV8760H_2Y.xlsx</span><span class="desc">2-year input dataset (1-year real data repeated twice)</span></li>
+      <li><span class="path">main/ExampleBatteryPV8760.py</span><span class="desc">Runs the 2-year dataset through the new model; exports results</span></li>
+      <li><span class="path">main/Cycling_and_Calendar_Aging/Battery_2Years_CombinedAging.csv</span><span class="desc">Output: hourly Power, SoC, Q_cal, Q_cyc, SOH over 2 years</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="sec-num">04</p>
+    <h2>Results — 2-year simulation, 17,518 hourly steps</h2>
+
+    <div class="results-band">
+      <div class="stat cal">
+        <div class="label">Calendar ageing</div>
+        <div class="value">1.000%<span class="arrow">→</span>1.019%</div>
+      </div>
+      <div class="stat cyc">
+        <div class="label">Cycling ageing</div>
+        <div class="value">1.000%<span class="arrow">→</span>1.323%</div>
+      </div>
+      <div class="stat">
+        <div class="label">State of Health</div>
+        <div class="value">98.00%<span class="arrow">→</span>97.66%</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-legend">
+        <span><span class="sw" style="background:var(--cal)"></span>Calendar (Q_cal)</span>
+        <span><span class="sw" style="background:var(--cyc)"></span>Cycling (Q_cyc)</span>
+      </div>
+      <svg viewBox="0 0 680 220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Calendar versus cycling ageing over 24 months">
+        <!-- gridlines -->
+        <line class="gridline" x1="40" y1="20" x2="40" y2="180"></line>
+        <line class="gridline" x1="40" y1="180" x2="660" y2="180"></line>
+        <line class="gridline" x1="40" y1="100" x2="660" y2="100" stroke-dasharray="2 3"></line>
+        <text class="axis-label" x="8" y="24">1.35%</text>
+        <text class="axis-label" x="8" y="104">1.18%</text>
+        <text class="axis-label" x="8" y="184">1.00%</text>
+        <text class="axis-label" x="40" y="200">0 mo</text>
+        <text class="axis-label" x="336" y="200">12 mo</text>
+        <text class="axis-label" x="628" y="200">24 mo</text>
+
+        <!-- Q_cal: 1.000 -> 1.019, scaled to same 1.00-1.35 axis -->
+        <polyline fill="none" stroke="var(--cal)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+          points="40,180.0 66,177.4 92,175.4 118,173.9 144,172.5 170,171.2 196,169.9 222,168.7 248,167.5 274,166.3 300,165.1 326,163.9 352,162.8 378,161.6 404,160.5 430,159.4 456,158.3 482,157.2 508,156.1 534,155.0 560,153.9 586,153.9 612,153.2 638,152.6 664,153.4"
+        />
+
+        <!-- Q_cyc: 1.000 -> 1.322, scaled to 1.00-1.35 axis -->
+        <polyline fill="none" stroke="var(--cyc)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+          points="40,180.0 66,169.9 92,161.4 118,153.1 144,145.0 170,137.1 196,129.5 222,122.1 248,114.9 274,107.9 300,101.1 326,94.5 352,88.1 378,81.9 404,75.9 430,70.1 456,64.4 482,58.9 508,53.6 534,48.4 560,43.4 586,43.9 612,39.4 638,34.9 664,29.5"
+        />
+      </svg>
+    </div>
+
+    <p>Over 24 months, cycling ageing accounts for the large majority of total capacity loss. This is consistent with the battery being held at low State of Charge for most of the horizon in this scenario — which the model correctly predicts as suppressing calendar ageing.</p>
+  </section>
+
+  <section>
+    <p class="sec-num">05</p>
+    <h2>Known limitation</h2>
+    <div class="callout">
+      <span class="callout-label">Numerical sensitivity in the cycling term</span>
+      The coefficient <code>(a·T² + b·T + c)</code> is a near-cancellation of three very small numbers. Using only the ~5 significant figures published in the paper's table causes this term to flip sign at typical operating temperatures — an artifact not present in the paper's own figures. A magnitude-preserving correction (<code>abs()</code>) was applied and documented in code. Higher-precision parameters from the underlying PhD thesis (ref. [21] in the paper) would remove the need for this safeguard.
+    </div>
+  </section>
+
+  <footer>
+    AGISTIN Task 4.6 Optimization Tool — internal technical memo.
+  </footer>
+
+</div>
