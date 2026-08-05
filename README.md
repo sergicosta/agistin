@@ -83,11 +83,26 @@ If used in a scientific publication, we appreciate you cite the following paper:
 
 ### Complementary citations
 
+S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
+in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024 [[Link](https://www.doi.org/10.1109/OSMSES62085.2024.10668997)]
+
+```
+@INPROCEEDINGS{AGISTIN_OSMSES2024_optimisation,
+  author={Costa-Dilmé, Sergi and Olives-Camps, J. Carlos and Muñoz-Peña, Paula and García-Motilla, Pau and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
+  booktitle={2024 Open Source Modelling and Simulation of Energy Systems (OSMSES)}, 
+  title={Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}, 
+  year={2024},
+  pages={1-6},
+  keywords={Irrigation;Uncertainty;Object oriented modeling;Libraries;Demand response;Power systems;Optimization;Open source;Multi-physics simulation;Power system analysis;Optimisation tool;Python;Object-oriented;Irrigation systems},
+  doi={10.1109/OSMSES62085.2024.10668997}
+}
+```
+
 S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Redesign of Large-Scale Irrigation Systems for Flexible Energy Storage,”
 in 2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1–5, 2024 [[Link](https://www.doi.org/10.1109/isgteurope62998.2024.10863693)]
 
 ```
-@INPROCEEDINGS{AGISTIN_ISGT2024,
+@INPROCEEDINGS{AGISTIN_ISGT2024_redesign,
   author    = {Costa-Dilmé, Sergi and Olives-Camps, J. Carlos and Muñoz-Peña, Paula and García-Motilla, Pau and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
   booktitle = {2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE)},
   title     = {Redesign of Large-Scale Irrigation Systems for Flexible Energy Storage},
@@ -96,21 +111,6 @@ in 2024 IEEE PES Innovative Smart Grid Technologies Europe (ISGT EUROPE), pp. 1�
   pages     = {1--5},
   publisher = {IEEE},
   doi       = {10.1109/isgteurope62998.2024.10863693},
-}
-```
-
-S. Costa-Dilmé, J. C. Olives-Camps, P. Muñoz-Peña, P. García-Motilla, O. Gomis-Bellmunt, and E. Prieto-Araujo, “Multi-physics operation and sizing optimisation in pyomo: Application to large irrigation systems,”
-in 2024 Open Source Modelling and Simulation of Energy Systems (OSMSES), pp. 1–6, 2024 [[Link](https://www.doi.org/10.1109/OSMSES62085.2024.10668997)]
-
-```
-@INPROCEEDINGS{AGISTIN_opt_tool,
-  author={Costa-Dilmé, Sergi and Olives-Camps, J. Carlos and Muñoz-Peña, Paula and García-Motilla, Pau and Gomis-Bellmunt, Oriol and Prieto-Araujo, Eduardo},
-  booktitle={2024 Open Source Modelling and Simulation of Energy Systems (OSMSES)}, 
-  title={Multi-physics operation and sizing optimisation in Pyomo: Application to large irrigation systems}, 
-  year={2024},
-  pages={1-6},
-  keywords={Irrigation;Uncertainty;Object oriented modeling;Libraries;Demand response;Power systems;Optimization;Open source;Multi-physics simulation;Power system analysis;Optimisation tool;Python;Object-oriented;Irrigation systems},
-  doi={10.1109/OSMSES62085.2024.10668997}
 }
 ```
 
