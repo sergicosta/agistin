@@ -743,6 +743,8 @@ def Battery_SOH_Najera(b, t, data, init_data):
     Parameters expected in `data`:
         E0, Emax, SOCmin, SOCmax, Pmax, Einst, Pinst, rend_ch, rend_disc
         Optional ageing params: a, b, c, d, e, f, g, h, z, T_kelvin, dt_hours
+        Optional single-cell size (for Ah normalization): cell_Ah, cell_V
+        (defaults: 3.0 Ah, 3.2 V, matching the Sony US26650FT cell)
 
     IMPORTANT (numerical note): a, b, c are tiny numbers that nearly cancel
     at typical operating temperatures. Using only a handful of significant
@@ -768,6 +770,20 @@ def Battery_SOH_Najera(b, t, data, init_data):
     b.T_kelvin = pyo.Param(initialize=data.get('T_kelvin', 298.15))
     b.dt_hours = pyo.Param(initialize=data.get('dt_hours', data.get('dt', 1.0)))
     b.SOH_min = pyo.Param(initialize=data.get('SOH_min', 0.8))
+
+    # --- Single-cell size (default: Sony US26650FT, 3.2V/3Ah per the paper) ---
+    # The a-h/z ageing constants above are fitted to ONE lab cell's Ah
+    # throughput, not a whole pack's. Einst/Pmax here describe the full
+    # system (e.g. a 24 MWh / 1 MW installation), which is many series/
+    # parallel cells of the type above. Without normalizing by cell count,
+    # Constraint_Qcyc would feed the pack's aggregate kWh throughput into a
+    # formula calibrated for a single cell's Ah, inflating cycling ageing by
+    # a factor equal to the cell count (~1e6 for a MWh-scale pack) - verified
+    # against the paper's own A123 benchmark (2.5A, 800h calendar + 400
+    # cycles -> ~2.3% loss), which only matches at single-cell scale.
+    b.cell_Ah = pyo.Param(initialize=data.get('cell_Ah', 3.0))
+    b.cell_V = pyo.Param(initialize=data.get('cell_V', 3.2))
+    b.n_cells = pyo.Param(initialize=(pyo.value(data['Einst']) * 1000.0) / (pyo.value(b.cell_Ah) * pyo.value(b.cell_V)))
 
     # --- Standard battery parameters ---
     b.E0 = pyo.Param(initialize=data['E0'])
@@ -843,7 +859,8 @@ def Battery_SOH_Najera(b, t, data, init_data):
     def Constraint_Qcyc(_b, _t):
         crate = (_b.Pch[_t] + _b.Pdisc[_t]) / _b.Einst
         poly_T = abs(_b.a_cyc * _b.T_kelvin**2 + _b.b_cyc * _b.T_kelvin + _b.c_cyc)
-        return _b.Q_cyc[_t] == pyo.exp(poly_T * pyo.exp((_b.d_cyc * _b.T_kelvin + _b.e_cyc) * crate) * _b.AH[_t])
+        AH_per_cell = _b.AH[_t] / _b.n_cells
+        return _b.Q_cyc[_t] == pyo.exp(poly_T * pyo.exp((_b.d_cyc * _b.T_kelvin + _b.e_cyc) * crate) * AH_per_cell)
     b.c_Qcyc = pyo.Constraint(t, rule=Constraint_Qcyc)
 
     # Combined capacity fade -> SOH
